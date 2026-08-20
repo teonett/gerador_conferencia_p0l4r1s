@@ -1,0 +1,16 @@
+{
+  "name": "Checklist Fácil",
+  "short_name": "Checklist",
+  "description": "Crie e execute checklists com evidências fotográficas.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f7f5ef",
+  "theme_color": "#173f35",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
