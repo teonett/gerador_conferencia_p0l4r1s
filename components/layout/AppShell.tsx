@@ -1,5 +1,3 @@
-'use client';
-
 import type { Template } from '../../domain/checklist';
 import { COLORS, SIDEBAR_WIDTH } from '../../domain/constants';
 
@@ -16,8 +14,8 @@ export function AppShell({
   children,
   view,
   onNavigate,
-  templates,
-  setTemplates,
+  templates: _templates,
+  setTemplates: _setTemplates,
 }: AppShellProps) {
   return (
     <div style={{ display: 'flex', minHeight: '100vh' }}>

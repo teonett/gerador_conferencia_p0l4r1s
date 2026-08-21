@@ -1,5 +1,3 @@
-'use client';
-
 import { useState } from 'react';
 import type { Template } from '../../domain/checklist';
 import { COLORS } from '../../domain/constants';

@@ -10,7 +10,6 @@ export async function POST(
     return Response.json({ error: 'Respostas são obrigatórias.' }, { status: 400 });
   }
 
-  const answers = JSON.parse(answersJson);
   const responseId = crypto.randomUUID();
   const photos: Record<string, string> = {};
 

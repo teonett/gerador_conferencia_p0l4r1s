@@ -16,7 +16,7 @@ export const SIDEBAR_WIDTH = 240;
 export const WORKSPACE_MAX_WIDTH = 1500;
 
 export const PHOTO = {
-  maxPerQuestion: 1,
+  maxPerQuestion: 4,
   preview: {
     width: 120,
     height: 68,
@@ -29,6 +29,23 @@ export const PHOTO = {
   },
   r2KeyPattern: 'responses/{responseId}/{itemId}-{filename}',
   maxSizeBytes: 10 * 1024 * 1024,
+};
+
+export const OPTION = {
+  min: 3,
+  max: 6,
+  outrosLabel: 'Outros',
+};
+
+export const OBSERVATION = {
+  minLength: 5,
+};
+
+export const METRIC_COLORS = {
+  yes: '#22c55e',
+  no: '#ef4444',
+  other: '#eab308',
+  pending: '#e3e4dc',
 };
 
 export const PDF = {

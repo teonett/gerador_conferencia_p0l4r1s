@@ -24,7 +24,7 @@ describe('Sanitização de filename', () => {
   it('remove caracteres inválidos', () => {
     const input = ' foto com espaços.jpg';
     const result = input.replace(/[^a-zA-Z0-9._-]/g, '-');
-    assert.strictEqual(result, '-foto-com-espa-os-.jpg');
+    assert.strictEqual(result, '-foto-com-espa-os.jpg');
   });
 });
 

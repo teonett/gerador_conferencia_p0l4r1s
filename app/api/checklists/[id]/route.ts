@@ -1,5 +1,3 @@
-import type { Template } from '../../../../domain/checklist';
-
 export async function PUT(
   request: Request,
   env: { DB: D1Database },
@@ -27,4 +25,16 @@ export async function PUT(
     .run();
 
   return Response.json({ saved: true });
+}
+
+export async function DELETE(
+  _request: Request,
+  env: { DB: D1Database },
+  params: { id: string }
+): Promise<Response> {
+  await env.DB.prepare('DELETE FROM checklists WHERE id = ?')
+    .bind(params.id)
+    .run();
+
+  return Response.json({ deleted: true });
 }
