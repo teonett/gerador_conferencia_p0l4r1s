@@ -9,6 +9,7 @@ export interface Item {
   options: string[];
   answerType: AnswerType;
   selection: SelectionType;
+  defaultOption?: string;
 }
 
 export interface Field {
@@ -33,6 +34,20 @@ export interface Template {
 
 export type Answers = Record<string, string[]>;
 export type Metadata = Record<string, string>;
+
+export function buildInitialAnswers(items: Item[]): Answers {
+  const initial: Answers = {};
+  for (const item of items) {
+    if (
+      item.answerType === 'choice' &&
+      item.defaultOption &&
+      item.options.includes(item.defaultOption)
+    ) {
+      initial[item.id] = [item.defaultOption];
+    }
+  }
+  return initial;
+}
 
 export interface ResponsePayload {
   id: string;

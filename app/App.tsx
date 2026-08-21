@@ -138,6 +138,7 @@ export function App() {
           signature={signature}
           confirmedAt={confirmedAt!}
           onBack={() => setView('run')}
+          onAnswersChange={setAnswers}
         />
       )}
     </AppShell>

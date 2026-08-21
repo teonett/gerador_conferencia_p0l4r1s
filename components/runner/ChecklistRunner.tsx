@@ -1,40 +1,10 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import type { Template, Item } from '../../domain/checklist';
-import { COLORS, METRIC_COLORS, PHOTO, OBSERVATION } from '../../domain/constants';
-import {
-  applyDefaultAnswer,
-  classifyAnswer,
-  collectChoiceOptions,
-  computeAnswerMetrics,
-  type AnswerClass,
-} from '../../domain/metrics';
-
-const CLASS_COLORS: Record<AnswerClass | 'pending', string> = {
-  yes: METRIC_COLORS.yes,
-  no: METRIC_COLORS.no,
-  other: METRIC_COLORS.other,
-  pending: '#9ca3af',
-};
-
-function MetricChip({ label, value, color }: { label: string; value: number; color: string }) {
-  return (
-    <span
-      style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: 6,
-        padding: '4px 10px',
-        borderRadius: 999,
-        border: `1px solid ${COLORS.line}`,
-        background: 'white',
-        fontSize: 13,
-      }}
-    >
-      <span style={{ width: 8, height: 8, borderRadius: '50%', background: color }} />
-      {label}: <strong>{value}</strong>
-    </span>
-  );
-}
+import { buildInitialAnswers } from '../../domain/checklist';
+import { COLORS, PHOTO, OBSERVATION } from '../../domain/constants';
+import { applyDefaultAnswer } from '../../domain/metrics';
+import { AnswerMetricsBar } from '../metrics/AnswerMetricsBar';
+import { BulkDefaultControl } from '../metrics/BulkDefaultControl';
 
 interface ChecklistRunnerProps {
   template: Template;
@@ -49,30 +19,20 @@ interface ChecklistRunnerProps {
 }
 
 export function ChecklistRunner({ template, onFinish, onBack }: ChecklistRunnerProps) {
-  const [answers, setAnswers] = useState<Record<string, string[]>>({});
+  const [answers, setAnswers] = useState<Record<string, string[]>>(() =>
+    buildInitialAnswers(template.items)
+  );
   const [metadata, setMetadata] = useState<Record<string, string>>({});
   const [observations, setObservations] = useState('');
   const [photos, setPhotos] = useState<Record<string, File[]>>({});
   const [currentIndex, setCurrentIndex] = useState(0);
   const [validationError, setValidationError] = useState('');
-  const [defaultOption, setDefaultOption] = useState('');
 
   const currentItem: Item | null = template.items[currentIndex] || null;
   const isLast = currentIndex === template.items.length - 1;
-  const metrics = useMemo(
-    () => computeAnswerMetrics(template.items, answers),
-    [template.items, answers]
-  );
-  const bulkOptions = useMemo(() => collectChoiceOptions(template.items), [template.items]);
 
   const handleAnswer = (itemId: string, value: string[]) => {
     setAnswers({ ...answers, [itemId]: value });
-    setValidationError('');
-  };
-
-  const handleApplyDefault = () => {
-    if (!defaultOption) return;
-    setAnswers(applyDefaultAnswer(template.items, answers, defaultOption));
     setValidationError('');
   };
 
@@ -141,99 +101,16 @@ export function ChecklistRunner({ template, onFinish, onBack }: ChecklistRunnerP
       </div>
 
       <div style={{ marginBottom: 24 }}>
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            marginBottom: 6,
-            fontSize: 13,
-            color: '#666',
-          }}
-        >
-          <span>
-            {metrics.answered} de {metrics.total} respondidas
-          </span>
-          <span>
-            {metrics.total > 0 ? Math.round((metrics.answered / metrics.total) * 100) : 0}%
-          </span>
-        </div>
-        <div
-          style={{
-            display: 'flex',
-            height: 10,
-            borderRadius: 5,
-            overflow: 'hidden',
-            background: METRIC_COLORS.pending,
-          }}
-        >
-          {metrics.yes > 0 && (
-            <div
-              title={`Sim: ${metrics.yes}`}
-              style={{ flexGrow: metrics.yes, background: METRIC_COLORS.yes, transition: 'flex-grow 0.3s' }}
-            />
-          )}
-          {metrics.no > 0 && (
-            <div
-              title={`Não: ${metrics.no}`}
-              style={{ flexGrow: metrics.no, background: METRIC_COLORS.no, transition: 'flex-grow 0.3s' }}
-            />
-          )}
-          {metrics.other > 0 && (
-            <div
-              title={`Outros: ${metrics.other}`}
-              style={{ flexGrow: metrics.other, background: METRIC_COLORS.other, transition: 'flex-grow 0.3s' }}
-            />
-          )}
-        </div>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 10 }}>
-          {bulkOptions.map((option) => (
-            <MetricChip
-              key={option}
-              label={option}
-              value={metrics.byOption[option] || 0}
-              color={CLASS_COLORS[classifyAnswer(option)]}
-            />
-          ))}
-          <MetricChip label="Pendentes" value={metrics.pending} color={CLASS_COLORS.pending} />
-        </div>
+        <AnswerMetricsBar items={template.items} answers={answers} />
       </div>
 
-      {bulkOptions.length > 0 && (
-        <div
-          style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: 8,
-            alignItems: 'center',
-            marginBottom: 24,
-          }}
-        >
-          <label style={{ fontSize: 14, fontWeight: 500 }}>Resposta padrão</label>
-          <select
-            value={defaultOption}
-            onChange={(e) => setDefaultOption(e.target.value)}
-            style={{ width: 220 }}
-          >
-            <option value="">Selecione uma opção</option>
-            {bulkOptions.map((option) => (
-              <option key={option} value={option}>
-                {option}
-              </option>
-            ))}
-          </select>
-          <button
-            className="secondary"
-            onClick={handleApplyDefault}
-            disabled={!defaultOption}
-            style={{
-              opacity: defaultOption ? 1 : 0.5,
-              cursor: defaultOption ? 'pointer' : 'not-allowed',
-            }}
-          >
-            Aplicar a todas as perguntas
-          </button>
-        </div>
-      )}
+      <BulkDefaultControl
+        items={template.items}
+        onApply={(option) => {
+          setAnswers(applyDefaultAnswer(template.items, answers, option));
+          setValidationError('');
+        }}
+      />
 
       {template.fields && (
         <div style={{ marginBottom: 32 }}>

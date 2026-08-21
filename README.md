@@ -56,8 +56,9 @@ Gerador de checklists genérico ("Checklist Fácil"): crie modelos de inspeção
    - **Escolha múltipla** — várias opções por pergunta.
    - **Texto livre** — resposta digitada.
 4. Marque perguntas como **obrigatórias** quando necessário.
-5. Opcionalmente adicione **campos de identificação** (ex.: Data da inspeção, Setor).
-6. **Salvar** — o modelo recebe um `shareToken` automático.
+5. Opcionalmente, defina a **Resposta padrão** da pergunta (dentro de *Editar* → select "Resposta padrão") — ela já vem pré-aplicada quando alguém iniciar o checklist.
+6. Opcionalmente adicione **campos de identificação** (ex.: Data da inspeção, Setor).
+7. **Salvar** — o modelo recebe um `shareToken` automático.
 
 > Regras do editor: mínimo de 3 e máximo de 6 opções por pergunta; a opção `"Outros"` é obrigatória e sempre a última.
 
@@ -82,7 +83,9 @@ No card do modelo, clique em **Preencher**. O runner exibe uma pergunta por vez:
 
 ### 3. Resposta padrão em massa (metrics)
 
-Ideal quando a maioria das respostas é igual (ex.: quase tudo `Sim`):
+Ideal quando a maioria das respostas é igual (ex.: quase tudo `Sim`). Disponível **durante o preenchimento** e também na tela de **revisão**:
+
+> **Defaults parametrizados no modelo:** ao criar/editar um modelo, cada pergunta pode ter uma *Resposta padrão* configurada no editor. Ela é pré-aplicada automaticamente no início da execução (`buildInitialAnswers`), e o seletor em massa continua disponível para alterar tudo depois.
 
 1. Selecione a opção desejada no seletor **Resposta padrão** (união das opções de todas as perguntas).
 2. Clique em **Aplicar a todas as perguntas** — todos os itens de escolha que possuírem aquela opção passam a ter essa resposta.
@@ -129,7 +132,14 @@ Quem abrir já cai direto na tela de preenchimento daquele modelo.
 
 ### 6. Revisão e PDF
 
-Ao responder a última pergunta, clique em **Revisar e assinar**: confira todas as respostas, desenhe a assinatura e gere o PDF A4 (gerado localmente no navegador via jsPDF).
+Ao responder a última pergunta, clique em **Revisar e assinar**. A tela de revisão também é **editável**:
+
+- **Resposta padrão em massa** — o mesmo seletor "Aplicar a todas as perguntas" está disponível para corrigir tudo de uma vez.
+- **Edição individual** — cada pergunta pode ser alterada na hora (botões de opção ou texto livre).
+- **Métricas ao vivo** — a barra verde/vermelha/amarela e os contadores refletem as edições.
+- **Alerta de obrigatórias** — perguntas obrigatórias sem resposta ficam com borda laranja.
+
+Depois, desenhe a assinatura e gere o PDF A4 (gerado localmente no navegador via jsPDF) já com as respostas editadas.
 
 ---
 
@@ -152,7 +162,7 @@ stateDiagram-v2
 
 ```mermaid
 flowchart TD
-    A(["Iniciar execução"]) --> B["Preencher identificação<br/>(data, setor, responsável...)"]
+    A(["Iniciar execução<br/>(defaults do modelo pré-aplicados)"]) --> B["Preencher identificação<br/>(data, setor, responsável...)"]
     B --> C{"Pergunta atual"}
     C -->|texto livre| D["Digitar resposta"]
     C -->|escolha| E["Selecionar opção(ões)<br/>ou aplicar resposta padrão a todas"]
@@ -162,8 +172,9 @@ flowchart TD
     G -->|não| H["Exibir erro"] --> C
     G -->|sim| I{"Última pergunta?"}
     I -->|não| C
-    I -->|sim| J["Revisão + assinatura"]
+    I -->|sim| J["Revisão + assinatura<br/>(edição individual ou resposta padrão)"]
     J --> K["Gerar PDF"]
+    J -->|voltar p/ editar| C
 ```
 
 ### Leitura via link compartilhado
@@ -306,10 +317,13 @@ interface Item {
   options: string[];              // rótulos das opções
   answerType: 'text' | 'choice';
   selection: 'single' | 'multiple';
+  defaultOption?: string;         // resposta padrão (pré-aplicada na execução)
 }
 
 type Answers  = Record<string, string[]>; // itemId -> opções selecionadas
 type Metadata = Record<string, string>;   // fieldId -> valor digitado
+
+buildInitialAnswers(items) // Answers iniciais a partir dos defaults do modelo
 ```
 
 Funções puras de métricas (`domain/metrics.ts`):
@@ -334,6 +348,7 @@ collectChoiceOptions(items)               // união das opções p/ o seletor
 - **Observações** gerais: vazias ou com no mínimo 5 caracteres (validadas ao finalizar).
 - **Fotos**: máximo de 4 por pergunta, 10 MB cada.
 - **Opções**: 3 a 6 por pergunta; `Outros` sempre presente e último.
+- **Resposta padrão por pergunta**: configurável no editor (`Item.defaultOption`); deve pertencer às opções da pergunta — renomear/remover a opção limpa o default automaticamente. Perguntas de texto livre não aceitam default.
 - **Seed CIPA**: inserido automaticamente no primeiro `GET /api/checklists` com banco vazio (id `cipa-areas-administrativas`, token `cipa-administrativas`).
 - **PDF** é gerado no cliente; o endpoint de `responses` existe para persistência futura (fotos → R2).
 
@@ -395,7 +410,10 @@ gerador_conferencia_polaris/
 ├── components/
 │   ├── dashboard/Dashboard.tsx     # home: hero + grid de modelos
 │   ├── layout/AppShell.tsx         # sidebar + layout
-│   ├── report/ReportReview.tsx     # revisão + assinatura + PDF
+│   ├── metrics/
+│   │   ├── AnswerMetricsBar.tsx    # barra segmentada + contadores (runner e revisão)
+│   │   └── BulkDefaultControl.tsx  # seletor "Resposta padrão" + aplicar em massa
+│   ├── report/ReportReview.tsx     # revisão editável + assinatura + PDF
 │   ├── runner/ChecklistRunner.tsx  # execução: etapas, resposta padrão, métricas
 │   └── templates/
 │       ├── TemplateCard.tsx        # card de modelo

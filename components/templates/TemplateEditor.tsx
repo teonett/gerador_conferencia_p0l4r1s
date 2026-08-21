@@ -24,6 +24,23 @@ function makeBlankItem(): Item {
   };
 }
 
+function sanitizeItem(it: Item): Item {
+  const options = ensureOutros(it.options);
+  const validDefault =
+    it.answerType === 'choice' &&
+    !!it.defaultOption &&
+    options.includes(it.defaultOption);
+  return {
+    id: it.id,
+    title: it.title,
+    required: it.required,
+    options,
+    answerType: it.answerType,
+    selection: it.selection,
+    ...(validDefault ? { defaultOption: it.defaultOption } : {}),
+  };
+}
+
 export function TemplateEditor({ onSave, onCancel, initial }: TemplateEditorProps) {
   const [title, setTitle] = useState(initial?.title || '');
   const [description, setDescription] = useState(initial?.description || '');
@@ -61,13 +78,25 @@ export function TemplateEditor({ onSave, onCancel, initial }: TemplateEditorProp
     setItems(items.map((it) => (it.id === id ? { ...it, title } : it)));
   };
 
+  const handleUpdateDefaultOption = (itemId: string, value: string) => {
+    setItems(
+      items.map((it) =>
+        it.id === itemId ? { ...it, defaultOption: value || undefined } : it
+      )
+    );
+  };
+
   const handleUpdateOption = (itemId: string, optIndex: number, value: string) => {
     setItems(
       items.map((it) => {
         if (it.id !== itemId) return it;
         const opts = [...it.options];
         opts[optIndex] = value;
-        return { ...it, options: opts };
+        const next = { ...it, options: opts };
+        if (next.defaultOption && !opts.includes(next.defaultOption)) {
+          delete next.defaultOption;
+        }
+        return next;
       })
     );
   };
@@ -92,7 +121,11 @@ export function TemplateEditor({ onSave, onCancel, initial }: TemplateEditorProp
         if (opt === OPTION.outrosLabel) return it;
         if (it.options.length <= OPTION.min) return it;
         const opts = it.options.filter((_, i) => i !== optIndex);
-        return { ...it, options: ensureOutros(opts) };
+        const next = { ...it, options: ensureOutros(opts) };
+        if (next.defaultOption && !next.options.includes(next.defaultOption)) {
+          delete next.defaultOption;
+        }
+        return next;
       })
     );
   };
@@ -160,10 +193,7 @@ export function TemplateEditor({ onSave, onCancel, initial }: TemplateEditorProp
         title: title.trim(),
         description,
         category,
-        items: items.map((it) => ({
-          ...it,
-          options: ensureOutros(it.options),
-        })),
+        items: items.map(sanitizeItem),
         shareToken: initial?.shareToken || crypto.randomUUID().slice(0, 8),
       };
 
@@ -269,6 +299,11 @@ export function TemplateEditor({ onSave, onCancel, initial }: TemplateEditorProp
                   onClick={() => setEditingItemId(item.id)}
                 >
                   {item.title || '(sem título)'}
+                  {item.defaultOption && (
+                    <span style={{ fontSize: 12, fontWeight: 400, color: '#666' }}>
+                      {' '}· padrão: {item.defaultOption}
+                    </span>
+                  )}
                 </span>
               )}
               <button
@@ -323,6 +358,28 @@ export function TemplateEditor({ onSave, onCancel, initial }: TemplateEditorProp
                   >
                     + Adicionar opção
                   </button>
+                )}
+                {item.answerType === 'choice' && (
+                  <div style={{ marginTop: 12 }}>
+                    <label style={{ display: 'block', fontSize: 13, fontWeight: 500, marginBottom: 4 }}>
+                      Resposta padrão
+                    </label>
+                    <select
+                      value={item.defaultOption || ''}
+                      onChange={(e) => handleUpdateDefaultOption(item.id, e.target.value)}
+                      style={{ width: 220, fontSize: 13 }}
+                    >
+                      <option value="">Nenhuma</option>
+                      {item.options.filter(Boolean).map((opt) => (
+                        <option key={opt} value={opt}>
+                          {opt}
+                        </option>
+                      ))}
+                    </select>
+                    <p style={{ fontSize: 12, color: '#666', marginTop: 4 }}>
+                      Pré-preenche esta resposta ao iniciar o checklist.
+                    </p>
+                  </div>
                 )}
               </div>
             )}
