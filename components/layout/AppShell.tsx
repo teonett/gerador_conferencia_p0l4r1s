@@ -1,10 +1,10 @@
-import type { Template } from '../../domain/checklist';
+import type { Template, View } from '../../domain/checklist';
 import { COLORS, SIDEBAR_WIDTH } from '../../domain/constants';
 
 interface AppShellProps {
   children: React.ReactNode;
-  view: string;
-  onNavigate: (view: 'home' | 'templates' | 'run' | 'report') => void;
+  view: View;
+  onNavigate: (view: 'home' | 'templates' | 'history') => void;
   onRun: (template: Template) => void;
   templates: Template[];
   setTemplates: (templates: Template[]) => void;
@@ -61,6 +61,21 @@ export function AppShell({
             }}
           >
             Modelos
+          </button>
+          <button
+            onClick={() => onNavigate('history')}
+            style={{
+              display: 'block',
+              width: '100%',
+              textAlign: 'left',
+              padding: '12px 16px',
+              borderRadius: 8,
+              backgroundColor: view === 'history' ? COLORS.mint : 'transparent',
+              color: COLORS.ink,
+              fontWeight: view === 'history' ? 600 : 400,
+            }}
+          >
+            Histórico
           </button>
         </nav>
       </aside>

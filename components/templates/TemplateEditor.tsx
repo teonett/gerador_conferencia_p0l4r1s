@@ -21,6 +21,7 @@ function makeBlankItem(): Item {
     answerType: 'choice',
     selection: 'single',
     options: ['Sim', 'Não', OPTION.outrosLabel],
+    defaultOption: 'Sim',
   };
 }
 
@@ -78,10 +79,12 @@ export function TemplateEditor({ onSave, onCancel, initial }: TemplateEditorProp
     setItems(items.map((it) => (it.id === id ? { ...it, title } : it)));
   };
 
-  const handleUpdateDefaultOption = (itemId: string, value: string) => {
+  const handleToggleDefault = (itemId: string, option: string) => {
     setItems(
       items.map((it) =>
-        it.id === itemId ? { ...it, defaultOption: value || undefined } : it
+        it.id === itemId
+          ? { ...it, defaultOption: it.defaultOption === option ? undefined : option }
+          : it
       )
     );
   };
@@ -325,10 +328,12 @@ export function TemplateEditor({ onSave, onCancel, initial }: TemplateEditorProp
             {isEditing && (
               <div style={{ padding: '0 12px 12px' }}>
                 <p style={{ fontSize: 12, color: '#666', marginBottom: 8 }}>
-                  Opções ({item.options.length}/{OPTION.max}) — "Outros" é obrigatório e sempre o último:
+                  Opções ({item.options.length}/{OPTION.max}) — "Outros" é obrigatório e sempre o último.
+                  Marque <strong>Padrão</strong> na opção que já deve vir pré-selecionada; sem marcação, a resposta é individual:
                 </p>
                 {item.options.map((opt, oi) => {
                   const isOutros = opt === OPTION.outrosLabel;
+                  const canBeDefault = Boolean(opt.trim());
                   return (
                     <div key={oi} style={{ display: 'flex', gap: 8, marginBottom: 6, alignItems: 'center' }}>
                       <span style={{ color: '#999', fontSize: 12, minWidth: 18 }}>{oi + 1}.</span>
@@ -338,6 +343,27 @@ export function TemplateEditor({ onSave, onCancel, initial }: TemplateEditorProp
                         disabled={isOutros}
                         style={{ flex: 1, fontSize: 13 }}
                       />
+                      <label
+                        title="Resposta padrão desta pergunta"
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 4,
+                          fontSize: 12,
+                          color: item.defaultOption === opt ? COLORS.green : '#666',
+                          cursor: canBeDefault ? 'pointer' : 'not-allowed',
+                          opacity: canBeDefault ? 1 : 0.4,
+                        }}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={item.defaultOption === opt}
+                          disabled={!canBeDefault}
+                          onChange={() => handleToggleDefault(item.id, opt)}
+                          style={{ width: 14, height: 14, margin: 0 }}
+                        />
+                        Padrão
+                      </label>
                       {!isOutros && item.options.length > OPTION.min && (
                         <button
                           className="secondary"
@@ -358,28 +384,6 @@ export function TemplateEditor({ onSave, onCancel, initial }: TemplateEditorProp
                   >
                     + Adicionar opção
                   </button>
-                )}
-                {item.answerType === 'choice' && (
-                  <div style={{ marginTop: 12 }}>
-                    <label style={{ display: 'block', fontSize: 13, fontWeight: 500, marginBottom: 4 }}>
-                      Resposta padrão
-                    </label>
-                    <select
-                      value={item.defaultOption || ''}
-                      onChange={(e) => handleUpdateDefaultOption(item.id, e.target.value)}
-                      style={{ width: 220, fontSize: 13 }}
-                    >
-                      <option value="">Nenhuma</option>
-                      {item.options.filter(Boolean).map((opt) => (
-                        <option key={opt} value={opt}>
-                          {opt}
-                        </option>
-                      ))}
-                    </select>
-                    <p style={{ fontSize: 12, color: '#666', marginTop: 4 }}>
-                      Pré-preenche esta resposta ao iniciar o checklist.
-                    </p>
-                  </div>
                 )}
               </div>
             )}

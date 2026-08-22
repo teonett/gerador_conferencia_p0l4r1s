@@ -1,0 +1,2 @@
+ALTER TABLE responses ADD COLUMN metadata TEXT NOT NULL DEFAULT '{}';
+ALTER TABLE responses ADD COLUMN observations TEXT NOT NULL DEFAULT '';

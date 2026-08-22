@@ -1,7 +1,7 @@
 export const COLORS = {
   ink: '#18362f',
-  green: '#173f35',
-  mint: '#dcece1',
+  green: '#005ca9',
+  mint: '#d9e8f6',
   orange: '#ff774c',
   cream: '#f7f5ef',
   line: '#e3e4dc',
@@ -52,7 +52,7 @@ export const PDF = {
   pageSize: 'A4',
   unit: 'mm',
   headerHeight: 34,
-  headerBg: '#173f35',
+  headerBg: '#005ca9',
   itemRow: {
     leftX: 14,
     width: 181,

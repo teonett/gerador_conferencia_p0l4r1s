@@ -1,6 +1,6 @@
 export type AnswerType = 'text' | 'choice';
 export type SelectionType = 'single' | 'multiple';
-export type View = 'home' | 'templates' | 'run' | 'report';
+export type View = 'home' | 'templates' | 'run' | 'report' | 'history';
 
 export interface Item {
   id: string;

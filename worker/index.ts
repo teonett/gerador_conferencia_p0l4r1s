@@ -3,6 +3,7 @@ import { cors } from 'hono/cors';
 import { GET as getChecklists, POST as postChecklist } from '../app/api/checklists/route';
 import { PUT as putChecklist, DELETE as deleteChecklist } from '../app/api/checklists/[id]/route';
 import { POST as postResponse } from '../app/api/checklists/[id]/responses/route';
+import { GET as getResponses } from '../app/api/responses/route';
 
 type Bindings = {
   DB: D1Database;
@@ -21,7 +22,13 @@ app.delete('/api/checklists/:id', (c) => deleteChecklist(c.req.raw, c.env, { id:
 app.post('/api/checklists/:id/responses', (c) =>
   postResponse(c.req.raw, c.env, { id: c.req.param('id') })
 );
+app.get('/api/responses', (c) => getResponses(c.req.raw, c.env));
 
-app.get('*', (c) => c.env.ASSETS.fetch(c.req.raw));
+app.get('*', (c) => {
+  if (!c.env.ASSETS) {
+    return c.text('Assets não configurados (binding ASSETS ausente).', 503);
+  }
+  return c.env.ASSETS.fetch(c.req.raw);
+});
 
 export default app;

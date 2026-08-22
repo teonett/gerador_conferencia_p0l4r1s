@@ -56,7 +56,7 @@ Gerador de checklists genérico ("Checklist Fácil"): crie modelos de inspeção
    - **Escolha múltipla** — várias opções por pergunta.
    - **Texto livre** — resposta digitada.
 4. Marque perguntas como **obrigatórias** quando necessário.
-5. Opcionalmente, defina a **Resposta padrão** da pergunta (dentro de *Editar* → select "Resposta padrão") — ela já vem pré-aplicada quando alguém iniciar o checklist.
+5. Opcionalmente, marque o checkbox **Padrão** na opção desejada da pergunta (dentro de *Editar*) — ela já vem pré-aplicada quando alguém iniciar o checklist; perguntas sem marcação são respondidas individualmente. Perguntas novas já nascem com `Sim` marcado.
 6. Opcionalmente adicione **campos de identificação** (ex.: Data da inspeção, Setor).
 7. **Salvar** — o modelo recebe um `shareToken` automático.
 

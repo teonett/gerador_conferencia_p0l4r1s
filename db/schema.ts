@@ -15,6 +15,8 @@ export const responses = sqliteTable('responses', {
   id: text('id').primaryKey(),
   checklistId: text('checklist_id').notNull(),
   answers: text('answers').notNull(),
+  metadata: text('metadata').notNull().default('{}'),
+  observations: text('observations').notNull().default(''),
   photos: text('photos').notNull().default('{}'),
   completedAt: integer('completed_at').notNull(),
 });

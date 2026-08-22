@@ -1,19 +1,21 @@
 import { useState, useEffect } from 'react';
-import type { Template } from '../domain/checklist';
+import type { Template, View } from '../domain/checklist';
 import { AppShell } from '../components/layout/AppShell';
 import { Dashboard } from '../components/dashboard/Dashboard';
 import { TemplateEditor } from '../components/templates/TemplateEditor';
 import { ChecklistRunner } from '../components/runner/ChecklistRunner';
 import { ReportReview } from '../components/report/ReportReview';
+import { ResponseHistory } from '../components/history/ResponseHistory';
 
 export function App() {
-  const [view, setView] = useState<'home' | 'templates' | 'run' | 'report'>('home');
+  const [view, setView] = useState<View>('home');
   const [templates, setTemplates] = useState<Template[]>([]);
   const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null);
   const [editingTemplate, setEditingTemplate] = useState<Template | null>(null);
   const [answers, setAnswers] = useState<Record<string, string[]>>({});
   const [metadata, setMetadata] = useState<Record<string, string>>({});
   const [observations, setObservations] = useState('');
+  const [photos, setPhotos] = useState<Record<string, File[]>>({});
   const [signature, setSignature] = useState('');
   const [confirmedAt, setConfirmedAt] = useState<string | null>(null);
 
@@ -45,6 +47,7 @@ export function App() {
     setAnswers({});
     setMetadata({});
     setObservations('');
+    setPhotos({});
     setSignature('');
     setConfirmedAt(null);
     setView('run');
@@ -86,12 +89,14 @@ export function App() {
     answers: Record<string, string[]>;
     metadata: Record<string, string>;
     observations: string;
+    photos: Record<string, File[]>;
     signature: string;
     confirmedAt: string;
   }) => {
     setAnswers(data.answers);
     setMetadata(data.metadata);
     setObservations(data.observations);
+    setPhotos(data.photos);
     setSignature(data.signature);
     setConfirmedAt(data.confirmedAt);
     setView('report');
@@ -125,6 +130,10 @@ export function App() {
       {view === 'run' && selectedTemplate && (
         <ChecklistRunner
           template={selectedTemplate}
+          initialAnswers={answers}
+          initialMetadata={metadata}
+          initialObservations={observations}
+          initialPhotos={photos}
           onFinish={handleFinish}
           onBack={() => setView('home')}
         />
@@ -135,12 +144,13 @@ export function App() {
           answers={answers}
           metadata={metadata}
           observations={observations}
+          photos={photos}
           signature={signature}
           confirmedAt={confirmedAt!}
           onBack={() => setView('run')}
-          onAnswersChange={setAnswers}
         />
       )}
+      {view === 'history' && <ResponseHistory templates={templates} />}
     </AppShell>
   );
 }

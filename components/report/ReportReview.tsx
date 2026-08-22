@@ -1,76 +1,73 @@
 import { useState } from 'react';
-import type { Template, Item } from '../../domain/checklist';
+import type { Template } from '../../domain/checklist';
 import { COLORS } from '../../domain/constants';
-import { applyDefaultAnswer } from '../../domain/metrics';
 import { generatePdf } from '../../lib/pdf';
 import { AnswerMetricsBar } from '../metrics/AnswerMetricsBar';
-import { BulkDefaultControl } from '../metrics/BulkDefaultControl';
 
 interface ReportReviewProps {
   template: Template;
   answers: Record<string, string[]>;
   metadata: Record<string, string>;
   observations: string;
+  photos: Record<string, File[]>;
   signature: string;
   confirmedAt: string;
   onBack: () => void;
-  onAnswersChange?: (answers: Record<string, string[]>) => void;
 }
+
+type SaveState = 'idle' | 'saving' | 'saved' | 'error';
 
 export function ReportReview({
   template,
   answers,
   metadata,
   observations,
+  photos,
   signature: initialSignature,
   confirmedAt: initialConfirmedAt,
   onBack,
-  onAnswersChange,
 }: ReportReviewProps) {
-  const [editableAnswers, setEditableAnswers] = useState(answers);
   const [signature, setSignature] = useState(initialSignature);
   const [confirmed, setConfirmed] = useState(!!initialConfirmedAt);
   const [confirmedAt, setConfirmedAt] = useState(initialConfirmedAt);
   const [generating, setGenerating] = useState(false);
+  const [saveState, setSaveState] = useState<SaveState>('idle');
 
-  const setItemAnswer = (itemId: string, value: string[]) => {
-    const next = { ...editableAnswers, [itemId]: value };
-    setEditableAnswers(next);
-    onAnswersChange?.(next);
-  };
-
-  const toggleOption = (item: Item, option: string) => {
-    const current = editableAnswers[item.id] || [];
-    if (item.selection === 'single') {
-      setItemAnswer(item.id, current.includes(option) ? [] : [option]);
-    } else {
-      setItemAnswer(
-        item.id,
-        current.includes(option)
-          ? current.filter((o) => o !== option)
-          : [...current, option]
-      );
+  const persistResponse = async () => {
+    try {
+      setSaveState('saving');
+      const formData = new FormData();
+      formData.append('answers', JSON.stringify(answers));
+      formData.append('metadata', JSON.stringify(metadata));
+      formData.append('observations', observations);
+      for (const [itemId, files] of Object.entries(photos)) {
+        for (const file of files) {
+          formData.append(`photo:${itemId}`, file);
+        }
+      }
+      const res = await fetch(`/api/checklists/${template.id}/responses`, {
+        method: 'POST',
+        body: formData,
+      });
+      if (!res.ok) throw new Error();
+      setSaveState('saved');
+    } catch {
+      setSaveState('error');
     }
-  };
-
-  const handleApplyDefault = (option: string) => {
-    if (!option) return;
-    const next = applyDefaultAnswer(template.items, editableAnswers, option);
-    setEditableAnswers(next);
-    onAnswersChange?.(next);
   };
 
   const handleConfirm = () => {
     if (!signature) return;
     setConfirmedAt(new Date().toISOString());
     setConfirmed(true);
+    persistResponse();
   };
 
   const handleDownload = async () => {
     if (!confirmed) return;
     setGenerating(true);
     try {
-      await generatePdf(template, editableAnswers, metadata, observations, signature, confirmedAt);
+      await generatePdf(template, answers, metadata, observations, signature, confirmedAt);
     } finally {
       setGenerating(false);
     }
@@ -80,7 +77,7 @@ export function ReportReview({
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 24 }}>
         <button className="secondary" onClick={onBack}>
-          ← Voltar
+          ← Voltar ao preenchimento
         </button>
       </div>
 
@@ -89,13 +86,8 @@ export function ReportReview({
       </h2>
 
       <div style={{ background: 'white', borderRadius: 12, padding: 24, marginBottom: 24 }}>
-        <AnswerMetricsBar items={template.items} answers={editableAnswers} />
+        <AnswerMetricsBar items={template.items} answers={answers} />
       </div>
-
-      <BulkDefaultControl
-        items={template.items}
-        onApply={handleApplyDefault}
-      />
 
       <div style={{ background: 'white', borderRadius: 12, padding: 24, marginBottom: 24 }}>
         <h3 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Identificação</h3>
@@ -107,7 +99,7 @@ export function ReportReview({
       </div>
 
       {template.items.map((item, index) => {
-        const current = editableAnswers[item.id] || [];
+        const current = answers[item.id] || [];
         const missingRequired = item.required && current.length === 0;
         return (
           <div
@@ -124,34 +116,13 @@ export function ReportReview({
               {index + 1}. {item.title}
               {item.required && <span style={{ color: COLORS.orange }}> *</span>}
             </p>
-            {item.answerType === 'text' ? (
-              <input
-                value={current[0] || ''}
-                onChange={(e) => setItemAnswer(item.id, [e.target.value])}
-                placeholder="Digite a resposta"
-                style={{ marginTop: 8 }}
-              />
-            ) : (
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 8 }}>
-                {item.options.map((option) => {
-                  const isSelected = current.includes(option);
-                  return (
-                    <button
-                      key={option}
-                      onClick={() => toggleOption(item, option)}
-                      style={{
-                        padding: '8px 16px',
-                        borderRadius: 8,
-                        border: `1px solid ${isSelected ? COLORS.green : COLORS.line}`,
-                        background: isSelected ? COLORS.mint : 'white',
-                        color: isSelected ? COLORS.green : COLORS.ink,
-                      }}
-                    >
-                      {option}
-                    </button>
-                  );
-                })}
-              </div>
+            <p style={{ marginTop: 8, color: COLORS.green }}>
+              Resposta: {current.join(', ') || '—'}
+            </p>
+            {(photos[item.id]?.length || 0) > 0 && (
+              <p style={{ marginTop: 4, fontSize: 13, color: '#666' }}>
+                📷 {photos[item.id].length} foto(s)
+              </p>
             )}
             {missingRequired && (
               <p style={{ marginTop: 8, fontSize: 13, color: COLORS.orange }}>
@@ -201,8 +172,10 @@ export function ReportReview({
               if (!e.target.checked) {
                 setConfirmed(false);
                 setConfirmedAt('');
+                setSaveState('idle');
               }
             }}
+            style={{ width: 14, height: 14, margin: 0 }}
           />
           Confirmo que as informações são verdadeiras.
         </label>
@@ -210,11 +183,21 @@ export function ReportReview({
           <button
             className="primary"
             onClick={handleConfirm}
-            disabled={!signature}
+            disabled={!signature || saveState === 'saving'}
             style={{ marginTop: 16 }}
           >
-            Confirmar e finalizar
+            {saveState === 'saving' ? 'Salvando...' : 'Confirmar e finalizar'}
           </button>
+        )}
+        {saveState === 'saved' && (
+          <p style={{ marginTop: 12, fontSize: 13, color: COLORS.green }}>
+            ✓ Resposta registrada no histórico.
+          </p>
+        )}
+        {saveState === 'error' && (
+          <p style={{ marginTop: 12, fontSize: 13, color: COLORS.orange }}>
+            Não foi possível salvar no histórico. Você pode baixar o PDF e tentar confirmar novamente.
+          </p>
         )}
       </div>
 

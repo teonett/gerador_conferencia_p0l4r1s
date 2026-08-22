@@ -5,28 +5,43 @@ import { COLORS, PHOTO, OBSERVATION } from '../../domain/constants';
 import { applyDefaultAnswer } from '../../domain/metrics';
 import { AnswerMetricsBar } from '../metrics/AnswerMetricsBar';
 import { BulkDefaultControl } from '../metrics/BulkDefaultControl';
+import { CameraCapture } from '../camera/CameraCapture';
 
 interface ChecklistRunnerProps {
   template: Template;
+  initialAnswers?: Record<string, string[]>;
+  initialMetadata?: Record<string, string>;
+  initialObservations?: string;
+  initialPhotos?: Record<string, File[]>;
   onFinish: (data: {
     answers: Record<string, string[]>;
     metadata: Record<string, string>;
     observations: string;
+    photos: Record<string, File[]>;
     signature: string;
     confirmedAt: string;
   }) => void;
   onBack: () => void;
 }
 
-export function ChecklistRunner({ template, onFinish, onBack }: ChecklistRunnerProps) {
-  const [answers, setAnswers] = useState<Record<string, string[]>>(() =>
-    buildInitialAnswers(template.items)
+export function ChecklistRunner({
+  template,
+  initialAnswers,
+  initialMetadata,
+  initialObservations,
+  initialPhotos,
+  onFinish,
+  onBack,
+}: ChecklistRunnerProps) {
+  const [answers, setAnswers] = useState(
+    () => initialAnswers || buildInitialAnswers(template.items)
   );
-  const [metadata, setMetadata] = useState<Record<string, string>>({});
-  const [observations, setObservations] = useState('');
-  const [photos, setPhotos] = useState<Record<string, File[]>>({});
+  const [metadata, setMetadata] = useState<Record<string, string>>(initialMetadata || {});
+  const [observations, setObservations] = useState(initialObservations || '');
+  const [photos, setPhotos] = useState<Record<string, File[]>>(initialPhotos || {});
   const [currentIndex, setCurrentIndex] = useState(0);
   const [validationError, setValidationError] = useState('');
+  const [cameraOpen, setCameraOpen] = useState(false);
 
   const currentItem: Item | null = template.items[currentIndex] || null;
   const isLast = currentIndex === template.items.length - 1;
@@ -74,6 +89,7 @@ export function ChecklistRunner({ template, onFinish, onBack }: ChecklistRunnerP
         answers,
         metadata,
         observations,
+        photos,
         signature: '',
         confirmedAt: '',
       });
@@ -244,30 +260,43 @@ export function ChecklistRunner({ template, onFinish, onBack }: ChecklistRunnerP
               ))}
             </div>
             {currentPhotos.length < PHOTO.maxPerQuestion && (
-              <label
-                style={{
-                  display: 'inline-block',
-                  padding: '8px 16px',
-                  borderRadius: 8,
-                  border: `1px dashed ${COLORS.line}`,
-                  cursor: 'pointer',
-                  fontSize: 13,
-                  color: '#666',
-                }}
-              >
-                + Adicionar foto
-                <input
-                  type="file"
-                  accept="image/*"
-                  capture="environment"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) handleAddPhoto(currentItem.id, file);
-                    e.target.value = '';
+              <div style={{ display: 'flex', gap: 8 }}>
+                <button
+                  className="secondary"
+                  onClick={() => setCameraOpen(true)}
+                  style={{
+                    padding: '8px 16px',
+                    borderRadius: 8,
+                    fontSize: 13,
+                    border: `1px dashed ${COLORS.line}`,
                   }}
-                  style={{ display: 'none' }}
-                />
-              </label>
+                >
+                  📷 Tirar foto
+                </button>
+                <label
+                  style={{
+                    display: 'inline-block',
+                    padding: '8px 16px',
+                    borderRadius: 8,
+                    border: `1px dashed ${COLORS.line}`,
+                    cursor: 'pointer',
+                    fontSize: 13,
+                    color: '#666',
+                  }}
+                >
+                  + Galeria
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) handleAddPhoto(currentItem.id, file);
+                      e.target.value = '';
+                    }}
+                    style={{ display: 'none' }}
+                  />
+                </label>
+              </div>
             )}
           </div>
         </div>
@@ -285,6 +314,16 @@ export function ChecklistRunner({ template, onFinish, onBack }: ChecklistRunnerP
           {isLast ? 'Revisar e assinar' : 'Próximo'}
         </button>
       </div>
+
+      {cameraOpen && currentItem && (
+        <CameraCapture
+          onCapture={(file) => {
+            handleAddPhoto(currentItem.id, file);
+            setCameraOpen(false);
+          }}
+          onClose={() => setCameraOpen(false)}
+        />
+      )}
     </div>
   );
 }
