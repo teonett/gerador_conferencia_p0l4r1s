@@ -23,6 +23,7 @@ Gerador de checklists genérico ("Checklist Fácil"): crie modelos de inspeção
   - [Métricas e barra de progresso](#4-métricas-e-barra-de-progresso)
   - [Compartilhar por link](#5-compartilhar-por-link)
   - [Revisão e PDF](#6-revisão-e-pdf)
+  - [Histórico](#7-histórico)
 - [Fluxos](#fluxos)
 - [API](#api)
 - [Modelo de dados](#modelo-de-dados)
@@ -39,7 +40,9 @@ Gerador de checklists genérico ("Checklist Fácil"): crie modelos de inspeção
 - **Resposta padrão em massa** — aplique/altere a mesma opção para **todas** as perguntas com um clique.
 - **Métricas ao vivo** — contadores por opção respondida, pendentes e percentual concluído, atualizados a cada etapa.
 - **Barra de progresso semântica** — 🟩 verde para *Sim*, 🟥 vermelho para *Não*, 🟨 amarelo para os demais, cinza para pendentes.
-- **Relatório + PDF** — revisão das respostas, assinatura e exportação A4.
+- **Relatório + PDF** — revisão das respostas, assinatura e exportação A4 com indicadores do preenchimento.
+- **Persistência + Histórico** — cada preenchimento confirmado é gravado no D1 (respostas, identificação e observações) com fotos no R2; consulte tudo depois em **Histórico**, com detalhe por pergunta e PDF do registro.
+- **Câmera in-app (PWA)** — tire fotos pela câmera do dispositivo ou escolha da galeria; app instalável via service worker.
 - **Compartilhamento** — link direto por *share token* (`?checklist=<token>`).
 - **Seed automático** — modelo CIPA (16 perguntas) inserido no primeiro acesso com banco vazio.
 
@@ -76,14 +79,14 @@ No card do modelo, clique em **Preencher**. O runner exibe uma pergunta por vez:
 ├──────────────────────────────────────────────────────────┤
 │ 3. Possui kit de primeiros socorros? *                   │
 │ [ Sim ]  [ Não ]  [ Não aplicável ]  [ Em partes ]       │
-│ Observações...          Fotos (máx. 4) [+ Adicionar]     │
+│ Observações...  Fotos (máx. 4) [📷 Tirar foto] [+ Galeria] │
 │                                     [Anterior] [Próximo] │
 └──────────────────────────────────────────────────────────┘
 ```
 
 ### 3. Resposta padrão em massa (metrics)
 
-Ideal quando a maioria das respostas é igual (ex.: quase tudo `Sim`). Disponível **durante o preenchimento** e também na tela de **revisão**:
+Ideal quando a maioria das respostas é igual (ex.: quase tudo `Sim`). Disponível **durante o preenchimento**:
 
 > **Defaults parametrizados no modelo:** ao criar/editar um modelo, cada pergunta pode ter uma *Resposta padrão* configurada no editor. Ela é pré-aplicada automaticamente no início da execução (`buildInitialAnswers`), e o seletor em massa continua disponível para alterar tudo depois.
 
@@ -132,14 +135,20 @@ Quem abrir já cai direto na tela de preenchimento daquele modelo.
 
 ### 6. Revisão e PDF
 
-Ao responder a última pergunta, clique em **Revisar e assinar**. A tela de revisão também é **editável**:
+Ao responder a última pergunta, clique em **Revisar e assinar**. A revisão é **somente leitura** — para corrigir algo, use **Voltar ao preenchimento**: todas as respostas, observações e fotos são preservadas.
 
-- **Resposta padrão em massa** — o mesmo seletor "Aplicar a todas as perguntas" está disponível para corrigir tudo de uma vez.
-- **Edição individual** — cada pergunta pode ser alterada na hora (botões de opção ou texto livre).
-- **Métricas ao vivo** — a barra verde/vermelha/amarela e os contadores refletem as edições.
-- **Alerta de obrigatórias** — perguntas obrigatórias sem resposta ficam com borda laranja.
+Depois, desenhe a assinatura e clique em **Confirmar e finalizar**:
 
-Depois, desenhe a assinatura e gere o PDF A4 (gerado localmente no navegador via jsPDF) já com as respostas editadas.
+- o registro é gravado no banco (respostas, identificação e observações no D1; fotos no R2);
+- o **PDF A4** é gerado localmente no navegador via jsPDF, com **título e descrição do modelo** no cabeçalho e os **indicadores da tela** (Sim / Não / Outros / Pendentes + % concluído) logo abaixo dos campos de identificação.
+
+### 7. Histórico
+
+No menu lateral, **Histórico** lista os últimos 100 preenchimentos gravados:
+
+- **Resumo** — modelo, categoria, data/hora, contadores 🟩/🟥/🟨, campos de identificação, observações e nº de fotos.
+- **Ver respostas** — expande o registro mostrando pergunta por pergunta com a resposta dada; se o modelo foi editado/excluído depois, exibe os valores registrados na época.
+- **📄 Baixar PDF** — regenera o relatório A4 do registro (a assinatura não é persistida e sai em branco).
 
 ---
 
@@ -154,7 +163,9 @@ stateDiagram-v2
     Templates --> Home: Salvar / Cancelar
     Home --> Run: Preencher checklist
     Run --> Report: Revisar e assinar
-    Report --> Run: Voltar
+    Report --> History: Confirmar e finalizar
+    Report --> Run: Voltar (estado preservado)
+    Home --> History: Histórico
     Home --> Run: link ?checklist=TOKEN
 ```
 
@@ -172,8 +183,8 @@ flowchart TD
     G -->|não| H["Exibir erro"] --> C
     G -->|sim| I{"Última pergunta?"}
     I -->|não| C
-    I -->|sim| J["Revisão + assinatura<br/>(edição individual ou resposta padrão)"]
-    J --> K["Gerar PDF"]
+    I -->|sim| J["Revisão somente leitura<br/>+ assinatura"]
+    J --> K["Confirmar e finalizar:<br/>grava D1/R2 + gera PDF"]
     J -->|voltar p/ editar| C
 ```
 
@@ -216,6 +227,29 @@ sequenceDiagram
     W->>DB: DELETE
 ```
 
+### Persistência do preenchimento
+
+```mermaid
+sequenceDiagram
+    actor U as Usuário
+    participant F as Frontend (React)
+    participant W as Worker (Hono)
+    participant DB as D1
+    participant R as R2
+
+    U->>F: desenha assinatura + Confirmar e finalizar
+    F->>W: POST /api/checklists/:id/responses (multipart)
+    W->>R: PUT das fotos por item (chave com uuid)
+    W->>DB: INSERT response (answers, metadata, observations, photos)
+    W-->>F: 201 { id }
+    F->>U: PDF A4 gerado localmente
+    U->>F: abre Histórico
+    F->>W: GET /api/responses
+    W->>DB: SELECT responses LEFT JOIN checklists
+    W-->>F: { responses }
+    F->>U: detalhe por pergunta + PDF do registro
+```
+
 ### Modelo de dados
 
 ```mermaid
@@ -237,6 +271,8 @@ erDiagram
         text id PK
         text checklist_id FK
         text answers "JSON: Record<itemId, string[]>"
+        text metadata "JSON: Record<fieldId, valor>"
+        text observations
         text photos "JSON: chaves R2"
         integer completed_at
     }
@@ -255,7 +291,8 @@ Base: `https://<seu-worker>.workers.dev`
 | `POST` | `/api/checklists` | cria modelo |
 | `PUT` | `/api/checklists/:id` | atualiza modelo |
 | `DELETE` | `/api/checklists/:id` | exclui modelo |
-| `POST` | `/api/checklists/:id/responses` | persiste resposta (+ fotos no R2) |
+| `POST` | `/api/checklists/:id/responses` | grava a resposta no D1 (+ fotos no R2) |
+| `GET` | `/api/responses` | lista os últimos 100 preenchimentos (histórico) |
 
 ### Exemplos
 
@@ -350,7 +387,10 @@ collectChoiceOptions(items)               // união das opções p/ o seletor
 - **Opções**: 3 a 6 por pergunta; `Outros` sempre presente e último.
 - **Resposta padrão por pergunta**: configurável no editor (`Item.defaultOption`); deve pertencer às opções da pergunta — renomear/remover a opção limpa o default automaticamente. Perguntas de texto livre não aceitam default.
 - **Seed CIPA**: inserido automaticamente no primeiro `GET /api/checklists` com banco vazio (id `cipa-areas-administrativas`, token `cipa-administrativas`).
-- **PDF** é gerado no cliente; o endpoint de `responses` existe para persistência futura (fotos → R2).
+- **PDF** é gerado no cliente. Ao confirmar, a resposta vai ao D1 (colunas `metadata` e `observations`) e cada foto ao R2 com chave única por item. A **assinatura não é persistida** — aparece apenas no PDF gerado na hora.
+- **Histórico**: os últimos 100 preenchimentos, com título/categoria resolvidos via LEFT JOIN (modelo excluído não quebra a listagem).
+- **Cabeçalho do PDF**: título e descrição do modelo + chips de métricas (Sim / Não / Outros / Pendentes) com % concluído.
+- **Marca visual**: azul institucional `#005ca9` (tema, favicon e cabeçalho do PDF); as cores de métrica 🟩🟥🟨 permanecem semânticas.
 
 ---
 
@@ -400,20 +440,23 @@ npm run deploy             # vite build + wrangler deploy
 gerador_conferencia_polaris/
 ├── app/
 │   ├── App.tsx                     # estado global + roteamento por view
-│   ├── main.tsx                    # entry point
+│   ├── main.tsx                    # entry point + registro do service worker
 │   ├── globals.css                 # estilos base
-│   └── api/checklists/             # handlers estilo file-routing (montados no Hono)
-│       ├── route.ts                # GET (lista/share) + POST
-│       └── [id]/
-│           ├── route.ts            # PUT + DELETE
-│           └── responses/route.ts  # POST resposta (D1 + R2)
+│   ├── api/checklists/             # handlers estilo file-routing (montados no Hono)
+│   │   ├── route.ts                # GET (lista/share) + POST
+│   │   └── [id]/
+│   │       ├── route.ts            # PUT + DELETE
+│   │       └── responses/route.ts  # POST resposta (D1 + R2)
+│   └── api/responses/route.ts      # GET histórico de preenchimentos
 ├── components/
+│   ├── camera/CameraCapture.tsx     # câmera in-app (getUserMedia) para fotos
 │   ├── dashboard/Dashboard.tsx     # home: hero + grid de modelos
+│   ├── history/ResponseHistory.tsx # histórico: resumo, detalhe e PDF por registro
 │   ├── layout/AppShell.tsx         # sidebar + layout
 │   ├── metrics/
 │   │   ├── AnswerMetricsBar.tsx    # barra segmentada + contadores (runner e revisão)
 │   │   └── BulkDefaultControl.tsx  # seletor "Resposta padrão" + aplicar em massa
-│   ├── report/ReportReview.tsx     # revisão editável + assinatura + PDF
+│   ├── report/ReportReview.tsx     # revisão somente leitura + persistência + PDF
 │   ├── runner/ChecklistRunner.tsx  # execução: etapas, resposta padrão, métricas
 │   └── templates/
 │       ├── TemplateCard.tsx        # card de modelo
@@ -430,8 +473,12 @@ gerador_conferencia_polaris/
 ├── worker/index.ts                 # Hono: rotas /api/* + fallback ASSETS
 ├── drizzle/                        # migrations SQL
 ├── tests/                          # node:test (domínio, métricas, HTML)
+├── public/
+│   ├── sw.js                       # service worker (PWA instalável)
+│   ├── manifest.webmanifest
+│   └── favicon.svg
 ├── vite.config.ts                  # Vite + plugin Cloudflare
-└── wrangler.jsonc                  # bindings D1 (DB) e R2 (BUCKET)
+└── wrangler.jsonc                  # bindings D1 (DB), R2 (BUCKET) e ASSETS
 ```
 
 ---

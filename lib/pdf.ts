@@ -1,6 +1,15 @@
 import { jsPDF } from 'jspdf';
 import type { Template } from '../domain/checklist';
-import { PDF, COLORS } from '../domain/constants';
+
+function hexToRgb(hex: string): [number, number, number] {
+  return [
+    parseInt(hex.slice(1, 3), 16),
+    parseInt(hex.slice(3, 5), 16),
+    parseInt(hex.slice(5, 7), 16),
+  ];
+}
+import { PDF, COLORS, METRIC_COLORS } from '../domain/constants';
+import { computeAnswerMetrics } from '../domain/metrics';
 
 export async function generatePdf(
   template: Template,
@@ -18,9 +27,11 @@ export async function generatePdf(
   doc.rect(0, 0, pageWidth, PDF.headerHeight, 'F');
   doc.setTextColor(255, 255, 255);
   doc.setFontSize(16);
-  doc.text('CHECKLIST FÁCIL', 14, 14);
-  doc.setFontSize(12);
-  doc.text(template.title, 14, 22);
+  doc.text(template.title, 14, 14, { maxWidth: pageWidth - 28 });
+  if (template.description) {
+    doc.setFontSize(9);
+    doc.text(template.description, 14, 21, { maxWidth: pageWidth - 28 });
+  }
 
   let y = PDF.headerHeight + 10;
 
@@ -31,7 +42,32 @@ export async function generatePdf(
     y += 6;
   }
 
-  y += 10;
+  y += 4;
+
+  const metrics = computeAnswerMetrics(template.items, answers);
+  const pct = metrics.total ? Math.round((metrics.answered / metrics.total) * 100) : 0;
+  const chips: Array<{ label: string; bg: string; fg: string }> = [
+    { label: `Sim: ${metrics.yes}`, bg: METRIC_COLORS.yes, fg: '#ffffff' },
+    { label: `Não: ${metrics.no}`, bg: METRIC_COLORS.no, fg: '#ffffff' },
+    { label: `Outros: ${metrics.other}`, bg: METRIC_COLORS.other, fg: COLORS.ink },
+    { label: `Pendentes: ${metrics.pending}`, bg: METRIC_COLORS.pending, fg: COLORS.ink },
+  ];
+
+  doc.setFontSize(8);
+  let cx = 14;
+  for (const chip of chips) {
+    const chipWidth = doc.getTextWidth(chip.label) + 6;
+    doc.setFillColor(...hexToRgb(chip.bg));
+    doc.roundedRect(cx, y - 5, chipWidth, 7, 2, 2, 'F');
+    doc.setTextColor(...hexToRgb(chip.fg));
+    doc.text(chip.label, cx + 3, y);
+    cx += chipWidth + 4;
+  }
+  doc.setTextColor(90, 90, 90);
+  doc.text(`Concluído: ${metrics.answered}/${metrics.total} (${pct}%)`, cx + 2, y);
+  doc.setTextColor(0, 0, 0);
+
+  y += 12;
 
   for (const item of template.items) {
     const answer = answers[item.id]?.join(', ') || '—';
