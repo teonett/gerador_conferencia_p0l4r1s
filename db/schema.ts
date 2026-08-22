@@ -20,3 +20,8 @@ export const responses = sqliteTable('responses', {
   photos: text('photos').notNull().default('{}'),
   completedAt: integer('completed_at').notNull(),
 });
+
+export const settings = sqliteTable('settings', {
+  key: text('key').primaryKey(),
+  value: text('value').notNull(),
+});

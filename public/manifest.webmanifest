@@ -1,6 +1,6 @@
 {
-  "name": "Checklist Fácil",
-  "short_name": "Checklist",
+  "name": "Gerador de Checklists",
+  "short_name": "Checklists",
   "description": "Crie e execute checklists com evidências fotográficas.",
   "start_url": "/",
   "display": "standalone",

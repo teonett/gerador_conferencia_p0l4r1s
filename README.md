@@ -1,15 +1,15 @@
 # Gerador de Conferência Polaris
 
-Gerador de checklists genérico ("Checklist Fácil"): crie modelos de inspeção com perguntas personalizadas, preencha em campo com métricas ao vivo e gere um relatório em PDF assinado.
+Gerador de checklists genérico ("Gerador de Checklists"): crie modelos de inspeção com perguntas personalizadas, preencha em campo com métricas ao vivo e gere um relatório em PDF assinado.
 
-| | |
-|---|---|
-| **Frontend** | React 19 + Vite 6 (SPA) |
-| **Backend** | Hono 4 em Cloudflare Workers |
-| **Banco** | Cloudflare D1 (SQLite) via Drizzle ORM |
-| **Arquivos** | Cloudflare R2 (fotos das respostas) |
-| **PDF** | jsPDF (gerado no cliente) |
-| **Testes** | `node:test` + tsx |
+|              |                                        |
+| ------------ | -------------------------------------- |
+| **Frontend** | React 19 + Vite 6 (SPA)                |
+| **Backend**  | Hono 4 em Cloudflare Workers           |
+| **Banco**    | Cloudflare D1 (SQLite) via Drizzle ORM |
+| **Arquivos** | Cloudflare R2 (fotos das respostas)    |
+| **PDF**      | jsPDF (gerado no cliente)              |
+| **Testes**   | `node:test` + tsx                      |
 
 ---
 
@@ -39,11 +39,11 @@ Gerador de checklists genérico ("Checklist Fácil"): crie modelos de inspeção
 - **Execução guiada** — uma pergunta por vez, com validação de obrigatórios, observações e até 4 fotos por pergunta.
 - **Resposta padrão em massa** — aplique/altere a mesma opção para **todas** as perguntas com um clique.
 - **Métricas ao vivo** — contadores por opção respondida, pendentes e percentual concluído, atualizados a cada etapa.
-- **Barra de progresso semântica** — 🟩 verde para *Sim*, 🟥 vermelho para *Não*, 🟨 amarelo para os demais, cinza para pendentes.
+- **Barra de progresso semântica** — 🟩 verde para _Sim_, 🟥 vermelho para _Não_, 🟨 amarelo para os demais, cinza para pendentes.
 - **Relatório + PDF** — revisão das respostas, assinatura e exportação A4 com indicadores do preenchimento.
 - **Persistência + Histórico** — cada preenchimento confirmado é gravado no D1 (respostas, identificação e observações) com fotos no R2; consulte tudo depois em **Histórico**, com detalhe por pergunta e PDF do registro.
 - **Câmera in-app (PWA)** — tire fotos pela câmera do dispositivo ou escolha da galeria; app instalável via service worker.
-- **Compartilhamento** — link direto por *share token* (`?checklist=<token>`).
+- **Compartilhamento** — link direto por _share token_ (`?checklist=<token>`).
 - **Seed automático** — modelo CIPA (16 perguntas) inserido no primeiro acesso com banco vazio.
 
 ---
@@ -59,7 +59,7 @@ Gerador de checklists genérico ("Checklist Fácil"): crie modelos de inspeção
    - **Escolha múltipla** — várias opções por pergunta.
    - **Texto livre** — resposta digitada.
 4. Marque perguntas como **obrigatórias** quando necessário.
-5. Opcionalmente, marque o checkbox **Padrão** na opção desejada da pergunta (dentro de *Editar*) — ela já vem pré-aplicada quando alguém iniciar o checklist; perguntas sem marcação são respondidas individualmente. Perguntas novas já nascem com `Sim` marcado.
+5. Opcionalmente, marque o checkbox **Padrão** na opção desejada da pergunta (dentro de _Editar_) — ela já vem pré-aplicada quando alguém iniciar o checklist; perguntas sem marcação são respondidas individualmente. Perguntas novas já nascem com `Sim` marcado.
 6. Opcionalmente adicione **campos de identificação** (ex.: Data da inspeção, Setor).
 7. **Salvar** — o modelo recebe um `shareToken` automático.
 
@@ -88,7 +88,7 @@ No card do modelo, clique em **Preencher**. O runner exibe uma pergunta por vez:
 
 Ideal quando a maioria das respostas é igual (ex.: quase tudo `Sim`). Disponível **durante o preenchimento**:
 
-> **Defaults parametrizados no modelo:** ao criar/editar um modelo, cada pergunta pode ter uma *Resposta padrão* configurada no editor. Ela é pré-aplicada automaticamente no início da execução (`buildInitialAnswers`), e o seletor em massa continua disponível para alterar tudo depois.
+> **Defaults parametrizados no modelo:** ao criar/editar um modelo, cada pergunta pode ter uma _Resposta padrão_ configurada no editor. Ela é pré-aplicada automaticamente no início da execução (`buildInitialAnswers`), e o seletor em massa continua disponível para alterar tudo depois.
 
 1. Selecione a opção desejada no seletor **Resposta padrão** (união das opções de todas as perguntas).
 2. Clique em **Aplicar a todas as perguntas** — todos os itens de escolha que possuírem aquela opção passam a ter essa resposta.
@@ -97,12 +97,12 @@ Ideal quando a maioria das respostas é igual (ex.: quase tudo `Sim`). Disponív
 
 Comportamento:
 
-| Situação | Resultado |
-|---|---|
-| Pergunta de escolha única | resposta substituída pela padrão |
+| Situação                     | Resultado                        |
+| ---------------------------- | -------------------------------- |
+| Pergunta de escolha única    | resposta substituída pela padrão |
 | Pergunta de escolha múltipla | resposta substituída pela padrão |
-| Pergunta sem aquela opção | permanece intocada |
-| Pergunta de texto livre | permanece intocada |
+| Pergunta sem aquela opção    | permanece intocada               |
+| Pergunta de texto livre      | permanece intocada               |
 
 ### 4. Métricas e barra de progresso
 
@@ -114,12 +114,12 @@ Os contadores são recalculados a cada resposta (`domain/metrics.ts`):
 
 Classificação de cores na barra segmentada:
 
-| Resposta (comparação exata, sem acento/caixa) | Classe | Cor |
-|---|---|---|
-| `Sim` | `yes` | 🟩 `#22c55e` |
-| `Não` / `nao` | `no` | 🟥 `#ef4444` |
-| `Não aplicável`, `Em partes`, `Outros`, ... | `other` | 🟨 `#eab308` |
-| sem resposta | `pending` | ⚪ `#e3e4dc` |
+| Resposta (comparação exata, sem acento/caixa) | Classe    | Cor          |
+| --------------------------------------------- | --------- | ------------ |
+| `Sim`                                         | `yes`     | 🟩 `#22c55e` |
+| `Não` / `nao`                                 | `no`      | 🟥 `#ef4444` |
+| `Não aplicável`, `Em partes`, `Outros`, ...   | `other`   | 🟨 `#eab308` |
+| sem resposta                                  | `pending` | ⚪ `#e3e4dc` |
 
 > Atenção: `Não aplicável` conta como **amarelo**, pois só o termo exato `Não` é vermelho.
 
@@ -284,15 +284,15 @@ erDiagram
 
 Base: `https://<seu-worker>.workers.dev`
 
-| Método | Rota | Descrição |
-|---|---|---|
-| `GET` | `/api/checklists` | lista os últimos 100 modelos (insere o seed CIPA se vazio) |
-| `GET` | `/api/checklists?share=<token>` | busca por share token **ou** id |
-| `POST` | `/api/checklists` | cria modelo |
-| `PUT` | `/api/checklists/:id` | atualiza modelo |
-| `DELETE` | `/api/checklists/:id` | exclui modelo |
-| `POST` | `/api/checklists/:id/responses` | grava a resposta no D1 (+ fotos no R2) |
-| `GET` | `/api/responses` | lista os últimos 100 preenchimentos (histórico) |
+| Método   | Rota                            | Descrição                                                  |
+| -------- | ------------------------------- | ---------------------------------------------------------- |
+| `GET`    | `/api/checklists`               | lista os últimos 100 modelos (insere o seed CIPA se vazio) |
+| `GET`    | `/api/checklists?share=<token>` | busca por share token **ou** id                            |
+| `POST`   | `/api/checklists`               | cria modelo                                                |
+| `PUT`    | `/api/checklists/:id`           | atualiza modelo                                            |
+| `DELETE` | `/api/checklists/:id`           | exclui modelo                                              |
+| `POST`   | `/api/checklists/:id/responses` | grava a resposta no D1 (+ fotos no R2)                     |
+| `GET`    | `/api/responses`                | lista os últimos 100 preenchimentos (histórico)            |
 
 ### Exemplos
 
@@ -351,30 +351,30 @@ interface Item {
   id: string;
   title: string;
   required: boolean;
-  options: string[];              // rótulos das opções
-  answerType: 'text' | 'choice';
-  selection: 'single' | 'multiple';
-  defaultOption?: string;         // resposta padrão (pré-aplicada na execução)
+  options: string[]; // rótulos das opções
+  answerType: "text" | "choice";
+  selection: "single" | "multiple";
+  defaultOption?: string; // resposta padrão (pré-aplicada na execução)
 }
 
-type Answers  = Record<string, string[]>; // itemId -> opções selecionadas
-type Metadata = Record<string, string>;   // fieldId -> valor digitado
+type Answers = Record<string, string[]>; // itemId -> opções selecionadas
+type Metadata = Record<string, string>; // fieldId -> valor digitado
 
-buildInitialAnswers(items) // Answers iniciais a partir dos defaults do modelo
+buildInitialAnswers(items); // Answers iniciais a partir dos defaults do modelo
 ```
 
 Funções puras de métricas (`domain/metrics.ts`):
 
 ```ts
-classifyAnswer('Sim')            // 'yes'
-classifyAnswer('Não')            // 'no'
-classifyAnswer('Não aplicável')  // 'other'
+classifyAnswer("Sim"); // 'yes'
+classifyAnswer("Não"); // 'no'
+classifyAnswer("Não aplicável"); // 'other'
 
-computeAnswerMetrics(items, answers)
+computeAnswerMetrics(items, answers);
 // { total, answered, pending, yes, no, other, byOption }
 
-applyDefaultAnswer(items, answers, 'Sim') // aplica/substitui em massa
-collectChoiceOptions(items)               // união das opções p/ o seletor
+applyDefaultAnswer(items, answers, "Sim"); // aplica/substitui em massa
+collectChoiceOptions(items); // união das opções p/ o seletor
 ```
 
 ---

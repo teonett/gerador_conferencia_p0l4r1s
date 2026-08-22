@@ -6,6 +6,7 @@ import { TemplateEditor } from '../components/templates/TemplateEditor';
 import { ChecklistRunner } from '../components/runner/ChecklistRunner';
 import { ReportReview } from '../components/report/ReportReview';
 import { ResponseHistory } from '../components/history/ResponseHistory';
+import { SettingsView } from '../components/settings/SettingsView';
 
 export function App() {
   const [view, setView] = useState<View>('home');
@@ -151,6 +152,7 @@ export function App() {
         />
       )}
       {view === 'history' && <ResponseHistory templates={templates} />}
+      {view === 'settings' && <SettingsView />}
     </AppShell>
   );
 }

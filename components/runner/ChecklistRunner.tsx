@@ -6,6 +6,7 @@ import { applyDefaultAnswer } from '../../domain/metrics';
 import { AnswerMetricsBar } from '../metrics/AnswerMetricsBar';
 import { BulkDefaultControl } from '../metrics/BulkDefaultControl';
 import { CameraCapture } from '../camera/CameraCapture';
+import { PageHero } from '../layout/PageHero';
 
 interface ChecklistRunnerProps {
   template: Template;
@@ -107,6 +108,8 @@ export function ChecklistRunner({
 
   return (
     <div>
+      <PageHero title={template.title} description={template.description} />
+
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
         <button className="secondary" onClick={onBack}>
           ← Voltar
@@ -189,9 +192,9 @@ export function ChecklistRunner({
                     style={{
                       padding: '8px 16px',
                       borderRadius: 8,
-                      border: `1px solid ${isSelected ? COLORS.green : COLORS.line}`,
+                      border: `1px solid ${isSelected ? COLORS.corPadrao : COLORS.line}`,
                       background: isSelected ? COLORS.mint : 'white',
-                      color: isSelected ? COLORS.green : COLORS.ink,
+                      color: isSelected ? COLORS.corPadrao : COLORS.ink,
                     }}
                   >
                     {option}

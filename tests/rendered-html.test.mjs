@@ -6,6 +6,9 @@ import { CIPA_SEED } from '../db/seed.js';
 import { ChecklistRunner } from '../components/runner/ChecklistRunner.tsx';
 import { ReportReview } from '../components/report/ReportReview.tsx';
 import { ResponseHistory } from '../components/history/ResponseHistory.tsx';
+import { Dashboard } from '../components/dashboard/Dashboard.tsx';
+import { TemplateEditor } from '../components/templates/TemplateEditor.tsx';
+import { SettingsView } from '../components/settings/SettingsView.tsx';
 
 describe('Renderização de telas (SSR)', () => {
   it('ChecklistRunner renderiza a primeira etapa sem erro', () => {
@@ -22,7 +25,10 @@ describe('Renderização de telas (SSR)', () => {
     );
     const text = html.replace(/<!-- -->/g, '');
     assert.ok(text.includes('Etapa 1 de 16'), 'deve exibir etapa inicial');
-    assert.ok(text.includes('CIPA - Áreas Administrativas') === false);
+    assert.ok(
+      text.includes('CIPA - Áreas Administrativas'),
+      'deve exibir o título do modelo no header'
+    );
   });
 
   it('ReportReview somente leitura renderiza respostas', () => {
@@ -41,10 +47,47 @@ describe('Renderização de telas (SSR)', () => {
     const text = html.replace(/<!-- -->/g, '');
     assert.ok(text.includes('Revisar e assinar'));
     assert.ok(text.includes('Resposta: Sim'));
+    assert.ok(
+      text.includes('CIPA - Áreas Administrativas'),
+      'deve exibir o título do modelo no header'
+    );
   });
 
-  it('ResponseHistory renderiza estado vazio', () => {
-    const html = renderToString(createElement(ResponseHistory));
-    assert.ok(typeof html === 'string');
+  it('ResponseHistory renderiza hero e estado de carregamento', () => {
+    const html = renderToString(createElement(ResponseHistory, { templates: [] }));
+    const text = html.replace(/<!-- -->/g, '');
+    assert.ok(text.includes('Histórico'));
+    assert.ok(text.includes('Carregando histórico...'));
+  });
+
+  it('Dashboard (página inicial) renderiza hero e grid', () => {
+    const html = renderToString(
+      createElement(Dashboard, {
+        templates: [CIPA_SEED],
+        onRun: () => {},
+        onEdit: () => {},
+        onDelete: () => {},
+        onNew: () => {},
+      })
+    );
+    const text = html.replace(/<!-- -->/g, '');
+    assert.ok(text.includes('Gerador de Checklists'));
+    assert.ok(text.includes('Crie, execute e gerencie seus checklists.'));
+    assert.ok(text.includes('CIPA - Áreas Administrativas'));
+  });
+
+  it('TemplateEditor renderiza hero contextual', () => {
+    const html = renderToString(
+      createElement(TemplateEditor, { onSave: () => {}, onCancel: () => {} })
+    );
+    const text = html.replace(/<!-- -->/g, '');
+    assert.ok(text.includes('Novo modelo'));
+    assert.ok(text.includes('Defina nome, categoria e perguntas do checklist.'));
+  });
+
+  it('SettingsView renderiza seção de logo', () => {
+    const html = renderToString(createElement(SettingsView));
+    assert.ok(html.includes('Configurações'));
+    assert.ok(html.includes('Logo'));
   });
 });

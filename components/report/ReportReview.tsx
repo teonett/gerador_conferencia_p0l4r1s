@@ -3,6 +3,7 @@ import type { Template } from '../../domain/checklist';
 import { COLORS } from '../../domain/constants';
 import { generatePdf } from '../../lib/pdf';
 import { AnswerMetricsBar } from '../metrics/AnswerMetricsBar';
+import { PageHero } from '../layout/PageHero';
 
 interface ReportReviewProps {
   template: Template;
@@ -75,6 +76,11 @@ export function ReportReview({
 
   return (
     <div>
+      <PageHero
+        title={template.title}
+        description={template.description}
+      />
+
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 24 }}>
         <button className="secondary" onClick={onBack}>
           ← Voltar ao preenchimento
@@ -116,7 +122,7 @@ export function ReportReview({
               {index + 1}. {item.title}
               {item.required && <span style={{ color: COLORS.orange }}> *</span>}
             </p>
-            <p style={{ marginTop: 8, color: COLORS.green }}>
+            <p style={{ marginTop: 8, color: COLORS.corPadrao }}>
               Resposta: {current.join(', ') || '—'}
             </p>
             {(photos[item.id]?.length || 0) > 0 && (
@@ -190,7 +196,7 @@ export function ReportReview({
           </button>
         )}
         {saveState === 'saved' && (
-          <p style={{ marginTop: 12, fontSize: 13, color: COLORS.green }}>
+          <p style={{ marginTop: 12, fontSize: 13, color: COLORS.corPadrao }}>
             ✓ Resposta registrada no histórico.
           </p>
         )}

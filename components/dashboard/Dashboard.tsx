@@ -1,6 +1,7 @@
-import type { Template } from '../../domain/checklist';
-import { COLORS } from '../../domain/constants';
-import { TemplateCard } from '../templates/TemplateCard';
+import type { Template } from "../../domain/checklist";
+import { COLORS } from "../../domain/constants";
+import { TemplateCard } from "../templates/TemplateCard";
+import { MainHero } from "../main/MainHero";
 
 interface DashboardProps {
   templates: Template[];
@@ -10,24 +11,17 @@ interface DashboardProps {
   onNew: () => void;
 }
 
-export function Dashboard({ templates, onRun, onEdit, onDelete, onNew }: DashboardProps) {
+export function Dashboard({
+  templates,
+  onRun,
+  onEdit,
+  onDelete,
+  onNew,
+}: DashboardProps) {
   return (
     <div>
-      <div
-        style={{
-          background: `linear-gradient(135deg, ${COLORS.green}, ${COLORS.mint})`,
-          borderRadius: 16,
-          padding: '32px',
-          marginBottom: 32,
-        }}
-      >
-        <h2 style={{ fontSize: 24, fontWeight: 700, color: 'white' }}>
-          Checklist Fácil
-        </h2>
-        <p style={{ color: 'rgba(255,255,255,0.9)', marginTop: 8 }}>
-          Crie, execute e gerencie seus checklists.
-        </p>
-        <div style={{ display: 'flex', gap: 12, marginTop: 20 }}>
+      <MainHero>
+        <div style={{ display: "flex", gap: 12, marginTop: 20 }}>
           <button className="primary" onClick={onNew}>
             Novo checklist
           </button>
@@ -40,21 +34,35 @@ export function Dashboard({ templates, onRun, onEdit, onDelete, onNew }: Dashboa
             Executar agora
           </button>
         </div>
-      </div>
+      </MainHero>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16, marginBottom: 32 }}>
-        <div style={{ background: 'white', borderRadius: 12, padding: 16, textAlign: 'center' }}>
-          <div style={{ fontSize: 24, fontWeight: 700, color: COLORS.green }}>
-            {templates.length}
-          </div>
-          <div style={{ fontSize: 14, color: '#666' }}>Modelos ativos</div>
-        </div>
+      <div
+        style={{ display: "flex", justifyContent: "flex-end", marginBottom: 5 }}
+      >
+        <span
+          style={{
+            backgroundColor: COLORS.mint,
+            color: COLORS.corPadrao,
+            fontWeight: 700,
+            fontSize: 11,
+            padding: "6px 14px",
+            borderRadius: 999,
+          }}
+        >
+          {templates.length} Modelos Ativos
+        </span>
       </div>
 
       <h3 style={{ fontSize: 18, fontWeight: 600, marginBottom: 16 }}>
         Modelos recentes
       </h3>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 16 }}>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+          gap: 16,
+        }}
+      >
         {templates.slice(0, 6).map((template) => (
           <TemplateCard
             key={template.id}

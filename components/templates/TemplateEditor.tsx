@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import type { Template, Item } from '../../domain/checklist';
 import { COLORS, OPTION } from '../../domain/constants';
+import { MainHero } from '../main/MainHero';
 
 interface TemplateEditorProps {
   onSave: (template: Template) => void;
@@ -210,7 +211,7 @@ export function TemplateEditor({ onSave, onCancel, initial }: TemplateEditorProp
       });
 
       if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
+        const data = (await res.json().catch(() => ({}))) as { error?: string };
         throw new Error(data.error || `Erro ${res.status}`);
       }
 
@@ -224,9 +225,14 @@ export function TemplateEditor({ onSave, onCancel, initial }: TemplateEditorProp
 
   return (
     <div>
-      <h2 style={{ fontSize: 20, fontWeight: 600, marginBottom: 24 }}>
-        {initial ? 'Editar modelo' : 'Novo modelo'}
-      </h2>
+      <MainHero
+        title={initial ? 'Editar modelo' : 'Novo modelo'}
+        description={
+          initial
+            ? [initial.title, initial.category].filter(Boolean).join(' · ')
+            : 'Defina nome, categoria e perguntas do checklist.'
+        }
+      />
 
       <div style={{ display: 'grid', gap: 16, marginBottom: 32 }}>
         <input
@@ -277,7 +283,7 @@ export function TemplateEditor({ onSave, onCancel, initial }: TemplateEditorProp
               background: 'white',
               borderRadius: 8,
               marginBottom: 8,
-              border: `1px solid ${isEditing ? COLORS.green : COLORS.line}`,
+              border: `1px solid ${isEditing ? COLORS.corPadrao : COLORS.line}`,
             }}
           >
             <div
@@ -350,7 +356,7 @@ export function TemplateEditor({ onSave, onCancel, initial }: TemplateEditorProp
                           alignItems: 'center',
                           gap: 4,
                           fontSize: 12,
-                          color: item.defaultOption === opt ? COLORS.green : '#666',
+                          color: item.defaultOption === opt ? COLORS.corPadrao : '#666',
                           cursor: canBeDefault ? 'pointer' : 'not-allowed',
                           opacity: canBeDefault ? 1 : 0.4,
                         }}

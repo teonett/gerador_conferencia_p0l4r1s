@@ -23,11 +23,48 @@ export async function generatePdf(
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
 
-  doc.setFillColor(COLORS.green);
-  doc.rect(0, 0, pageWidth, PDF.headerHeight, 'F');
+  let logoData: Uint8Array | null = null;
+  let logoFormat: "PNG" | "JPEG" = "PNG";
+  let logoBg = "transparent";
+  try {
+    const settingsRes = await fetch("/api/settings");
+    const settingsData = (await settingsRes.json()) as {
+      logoUrl?: string | null;
+      logoBg?: string;
+    };
+    if (settingsData.logoUrl) {
+      const imgRes = await fetch(settingsData.logoUrl);
+      if (imgRes.ok) {
+        logoData = new Uint8Array(await imgRes.arrayBuffer());
+        logoFormat = (imgRes.headers.get("content-type") || "").includes("jpeg")
+          ? "JPEG"
+          : "PNG";
+      }
+    }
+    if (settingsData.logoBg) logoBg = settingsData.logoBg;
+  } catch {
+    logoData = null;
+  }
+
+  doc.setFillColor(COLORS.corPadrao);
+  doc.rect(0, 0, pageWidth, PDF.headerHeight, "F");
+
+  if (logoData) {
+    try {
+      if (logoBg !== "transparent") {
+        doc.setFillColor(...hexToRgb(logoBg));
+        doc.roundedRect(pageWidth - 46, 7, 34, 20, 2, 2, "F");
+        doc.setFillColor(COLORS.corPadrao);
+      }
+      doc.addImage(logoData, logoFormat, pageWidth - 44, 9, 30, 16);
+    } catch {
+      logoData = null;
+    }
+  }
+
   doc.setTextColor(255, 255, 255);
   doc.setFontSize(16);
-  doc.text(template.title, 14, 14, { maxWidth: pageWidth - 28 });
+  doc.text(template.title, 14, 14, { maxWidth: pageWidth - (logoData ? 62 : 28) });
   if (template.description) {
     doc.setFontSize(9);
     doc.text(template.description, 14, 21, { maxWidth: pageWidth - 28 });

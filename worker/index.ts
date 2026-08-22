@@ -4,6 +4,9 @@ import { GET as getChecklists, POST as postChecklist } from '../app/api/checklis
 import { PUT as putChecklist, DELETE as deleteChecklist } from '../app/api/checklists/[id]/route';
 import { POST as postResponse } from '../app/api/checklists/[id]/responses/route';
 import { GET as getResponses } from '../app/api/responses/route';
+import { DELETE as deleteResponse } from '../app/api/responses/[id]/route';
+import { GET as getSettings, POST as postSettings } from '../app/api/settings/route';
+import { GET as getFile } from '../app/api/files/[...path]/route';
 
 type Bindings = {
   DB: D1Database;
@@ -23,6 +26,12 @@ app.post('/api/checklists/:id/responses', (c) =>
   postResponse(c.req.raw, c.env, { id: c.req.param('id') })
 );
 app.get('/api/responses', (c) => getResponses(c.req.raw, c.env));
+app.delete('/api/responses/:id', (c) =>
+  deleteResponse(c.req.raw, c.env, { id: c.req.param('id') })
+);
+app.get('/api/settings', (c) => getSettings(c.req.raw, c.env));
+app.post('/api/settings', (c) => postSettings(c.req.raw, c.env));
+app.get('/api/files/*', (c) => getFile(c.req.raw, c.env));
 
 app.get('*', (c) => {
   if (!c.env.ASSETS) {
