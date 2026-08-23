@@ -1,9 +1,9 @@
-import { useState } from 'react';
-import type { Template } from '../../domain/checklist';
-import { COLORS } from '../../domain/constants';
-import { generatePdf } from '../../lib/pdf';
-import { AnswerMetricsBar } from '../metrics/AnswerMetricsBar';
-import { PageHero } from '../layout/PageHero';
+import { useState } from "react";
+import type { Template } from "../../domain/checklist";
+import { COLORS } from "../../domain/constants";
+import { generatePdf } from "../../lib/pdf";
+import { AnswerMetricsBar } from "../metrics/AnswerMetricsBar";
+import { PageHero } from "../layout/PageHero";
 
 interface ReportReviewProps {
   template: Template;
@@ -16,7 +16,7 @@ interface ReportReviewProps {
   onBack: () => void;
 }
 
-type SaveState = 'idle' | 'saving' | 'saved' | 'error';
+type SaveState = "idle" | "saving" | "saved" | "error";
 
 export function ReportReview({
   template,
@@ -30,35 +30,36 @@ export function ReportReview({
 }: ReportReviewProps) {
   const [signature, setSignature] = useState(initialSignature);
   const [confirmed, setConfirmed] = useState(!!initialConfirmedAt);
+  const [accepted, setAccepted] = useState(false);
   const [confirmedAt, setConfirmedAt] = useState(initialConfirmedAt);
   const [generating, setGenerating] = useState(false);
-  const [saveState, setSaveState] = useState<SaveState>('idle');
+  const [saveState, setSaveState] = useState<SaveState>("idle");
 
   const persistResponse = async () => {
     try {
-      setSaveState('saving');
+      setSaveState("saving");
       const formData = new FormData();
-      formData.append('answers', JSON.stringify(answers));
-      formData.append('metadata', JSON.stringify(metadata));
-      formData.append('observations', observations);
+      formData.append("answers", JSON.stringify(answers));
+      formData.append("metadata", JSON.stringify(metadata));
+      formData.append("observations", observations);
       for (const [itemId, files] of Object.entries(photos)) {
         for (const file of files) {
           formData.append(`photo:${itemId}`, file);
         }
       }
       const res = await fetch(`/api/checklists/${template.id}/responses`, {
-        method: 'POST',
+        method: "POST",
         body: formData,
       });
       if (!res.ok) throw new Error();
-      setSaveState('saved');
+      setSaveState("saved");
     } catch {
-      setSaveState('error');
+      setSaveState("error");
     }
   };
 
   const handleConfirm = () => {
-    if (!signature) return;
+    if (!signature || !accepted) return;
     setConfirmedAt(new Date().toISOString());
     setConfirmed(true);
     persistResponse();
@@ -68,7 +69,15 @@ export function ReportReview({
     if (!confirmed) return;
     setGenerating(true);
     try {
-      await generatePdf(template, answers, metadata, observations, signature, confirmedAt);
+      await generatePdf(
+        template,
+        answers,
+        metadata,
+        observations,
+        signature,
+        confirmedAt,
+        photos,
+      );
     } finally {
       setGenerating(false);
     }
@@ -76,12 +85,15 @@ export function ReportReview({
 
   return (
     <div>
-      <PageHero
-        title={template.title}
-        description={template.description}
-      />
+      <PageHero title={template.title} description={template.description} />
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 24 }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          marginBottom: 24,
+        }}
+      >
         <button className="secondary" onClick={onBack}>
           ← Voltar ao preenchimento
         </button>
@@ -91,12 +103,28 @@ export function ReportReview({
         Revisar e assinar
       </h2>
 
-      <div style={{ background: 'white', borderRadius: 12, padding: 24, marginBottom: 24 }}>
+      <div
+        style={{
+          background: "white",
+          borderRadius: 12,
+          padding: 24,
+          marginBottom: 24,
+        }}
+      >
         <AnswerMetricsBar items={template.items} answers={answers} />
       </div>
 
-      <div style={{ background: 'white', borderRadius: 12, padding: 24, marginBottom: 24 }}>
-        <h3 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Identificação</h3>
+      <div
+        style={{
+          background: "white",
+          borderRadius: 12,
+          padding: 24,
+          marginBottom: 24,
+        }}
+      >
+        <h3 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>
+          Identificação
+        </h3>
         {Object.entries(metadata).map(([key, value]) => (
           <p key={key}>
             <strong>{key}:</strong> {value}
@@ -111,7 +139,7 @@ export function ReportReview({
           <div
             key={item.id}
             style={{
-              background: 'white',
+              background: index % 2 === 1 ? COLORS.cream : "white",
               borderRadius: 12,
               padding: 16,
               marginBottom: 12,
@@ -120,13 +148,15 @@ export function ReportReview({
           >
             <p style={{ fontWeight: 600 }}>
               {index + 1}. {item.title}
-              {item.required && <span style={{ color: COLORS.orange }}> *</span>}
+              {item.required && (
+                <span style={{ color: COLORS.orange }}> *</span>
+              )}
             </p>
             <p style={{ marginTop: 8, color: COLORS.corPadrao }}>
-              Resposta: {current.join(', ') || '—'}
+              Resposta: {current.join(", ") || "—"}
             </p>
             {(photos[item.id]?.length || 0) > 0 && (
-              <p style={{ marginTop: 4, fontSize: 13, color: '#666' }}>
+              <p style={{ marginTop: 4, fontSize: 13, color: "#666" }}>
                 📷 {photos[item.id].length} foto(s)
               </p>
             )}
@@ -142,7 +172,7 @@ export function ReportReview({
       {observations && (
         <div
           style={{
-            background: 'white',
+            background: "white",
             borderRadius: 12,
             padding: 16,
             marginBottom: 12,
@@ -156,29 +186,39 @@ export function ReportReview({
 
       <div
         style={{
-          background: 'white',
+          background: "white",
           borderRadius: 12,
           padding: 24,
           marginTop: 24,
           border: `1px solid ${COLORS.line}`,
         }}
       >
-        <h3 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Assinatura</h3>
+        <h3 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>
+          Assinatura
+        </h3>
         <input
           value={signature}
           onChange={(e) => setSignature(e.target.value)}
           placeholder="Nome completo"
           disabled={confirmed}
         />
-        <label style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 12 }}>
+        <label
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            marginTop: 12,
+          }}
+        >
           <input
             type="checkbox"
-            checked={confirmed}
+            checked={accepted}
             onChange={(e) => {
+              setAccepted(e.target.checked);
               if (!e.target.checked) {
                 setConfirmed(false);
-                setConfirmedAt('');
-                setSaveState('idle');
+                setConfirmedAt("");
+                setSaveState("idle");
               }
             }}
             style={{ width: 14, height: 14, margin: 0 }}
@@ -189,20 +229,21 @@ export function ReportReview({
           <button
             className="primary"
             onClick={handleConfirm}
-            disabled={!signature || saveState === 'saving'}
+            disabled={!signature || !accepted || saveState === "saving"}
             style={{ marginTop: 16 }}
           >
-            {saveState === 'saving' ? 'Salvando...' : 'Confirmar e finalizar'}
+            {saveState === "saving" ? "Salvando..." : "Confirmar e Finalizar"}
           </button>
         )}
-        {saveState === 'saved' && (
+        {saveState === "saved" && (
           <p style={{ marginTop: 12, fontSize: 13, color: COLORS.corPadrao }}>
             ✓ Resposta registrada no histórico.
           </p>
         )}
-        {saveState === 'error' && (
+        {saveState === "error" && (
           <p style={{ marginTop: 12, fontSize: 13, color: COLORS.orange }}>
-            Não foi possível salvar no histórico. Você pode baixar o PDF e tentar confirmar novamente.
+            Não foi possível salvar no histórico. Você pode baixar o PDF e
+            tentar confirmar novamente.
           </p>
         )}
       </div>
@@ -212,9 +253,9 @@ export function ReportReview({
           className="primary"
           onClick={handleDownload}
           disabled={generating}
-          style={{ marginTop: 24, width: '100%' }}
+          style={{ marginTop: 24, width: "100%" }}
         >
-          {generating ? 'Gerando PDF...' : 'Baixar relatório em PDF'}
+          {generating ? "Gerando PDF..." : "Baixar relatório em PDF"}
         </button>
       )}
     </div>

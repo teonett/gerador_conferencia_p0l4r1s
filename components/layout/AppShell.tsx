@@ -25,7 +25,8 @@ export function AppShell({
     const loadLogo = () =>
       fetch("/api/settings")
         .then((res) => res.json())
-        .then((data: { logoUrl?: string | null; logoBg?: string }) => {
+        .then((payload) => {
+          const data = payload as { logoUrl?: string | null; logoBg?: string };
           setLogoUrl(data.logoUrl || null);
           setLogoBg(data.logoBg || "transparent");
         })
@@ -97,7 +98,7 @@ export function AppShell({
               fontWeight: view === "templates" ? 600 : 400,
             }}
           >
-            Modelos
+            Novo Modelo
           </button>
           <button
             onClick={() => onNavigate("history")}

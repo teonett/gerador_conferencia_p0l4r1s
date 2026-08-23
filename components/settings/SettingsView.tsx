@@ -14,7 +14,8 @@ export function SettingsView() {
     const load = () =>
       fetch("/api/settings")
         .then((res) => res.json())
-        .then((data: { logoUrl?: string | null; logoBg?: string }) => {
+        .then((payload) => {
+          const data = payload as { logoUrl?: string | null; logoBg?: string };
           setLogoUrl(data.logoUrl || null);
           setLogoBg(data.logoBg || SETTINGS.logoBgDefault);
         })

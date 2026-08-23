@@ -7,6 +7,7 @@ import { AnswerMetricsBar } from '../metrics/AnswerMetricsBar';
 import { BulkDefaultControl } from '../metrics/BulkDefaultControl';
 import { CameraCapture } from '../camera/CameraCapture';
 import { PageHero } from '../layout/PageHero';
+import { normalizeImage } from '../../lib/images';
 
 interface ChecklistRunnerProps {
   template: Template;
@@ -52,10 +53,16 @@ export function ChecklistRunner({
     setValidationError('');
   };
 
-  const handleAddPhoto = (itemId: string, file: File) => {
+  const handleAddPhoto = async (itemId: string, file: File) => {
     const current = photos[itemId] || [];
     if (current.length >= PHOTO.maxPerQuestion) return;
-    setPhotos({ ...photos, [itemId]: [...current, file] });
+    const blob = await normalizeImage(file);
+    const normalized = new File(
+      [blob],
+      `${file.name.replace(/\.[^.]+$/, '') || 'foto'}.jpg`,
+      { type: 'image/jpeg' },
+    );
+    setPhotos({ ...photos, [itemId]: [...current, normalized] });
   };
 
   const handleRemovePhoto = (itemId: string, index: number) => {

@@ -8,6 +8,7 @@ export interface ResponseHistoryItem {
   answers: Answers;
   metadata: Metadata;
   observations: string;
+  photos: Record<string, string[]>;
   photoCount: number;
   completedAt: number;
 }
@@ -51,6 +52,7 @@ export async function GET(
     answers: parseJson<Answers>(row.answers, {}),
     metadata: parseJson<Metadata>(row.metadata, {}),
     observations: typeof row.observations === 'string' ? row.observations : '',
+    photos: parseJson<Record<string, string[]>>(row.photos, {}),
     photoCount: countPhotos(row.photos),
     completedAt: row.completed_at as number,
   }));

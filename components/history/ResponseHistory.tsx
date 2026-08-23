@@ -15,6 +15,7 @@ interface HistoryItem {
   answers: Record<string, string[]>;
   metadata: Record<string, string>;
   observations: string;
+  photos: Record<string, string[]>;
   photoCount: number;
   completedAt: number;
 }
@@ -63,16 +64,35 @@ export function ResponseHistory({ templates }: ResponseHistoryProps) {
 
   const templateById = new Map(templates.map((t) => [t.id, t]));
 
-  const handlePdf = (item: HistoryItem) => {
+  const handlePdf = async (item: HistoryItem) => {
     const template = templateById.get(item.checklistId);
     if (!template) return;
+
+    const photoBlobs: Record<string, Blob[]> = {};
+    for (const [itemId, keys] of Object.entries(item.photos || {})) {
+      const blobs = (
+        await Promise.all(
+          keys.map(async (key) => {
+            try {
+              const res = await fetch(`/api/files/${key}`);
+              return res.ok ? ((await res.blob()) as Blob) : null;
+            } catch {
+              return null;
+            }
+          })
+        )
+      ).filter((blob): blob is Blob => blob !== null);
+      if (blobs.length > 0) photoBlobs[itemId] = blobs;
+    }
+
     generatePdf(
       template,
       item.answers,
       item.metadata,
       item.observations,
       '',
-      new Date(item.completedAt).toISOString()
+      new Date(item.completedAt).toISOString(),
+      photoBlobs
     );
   };
 

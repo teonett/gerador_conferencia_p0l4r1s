@@ -1,12 +1,14 @@
+import { FILES } from "../../../../domain/constants";
+
 export async function GET(
   request: Request,
   env: { BUCKET: R2Bucket }
 ): Promise<Response> {
   const url = new URL(request.url);
-  const key = decodeURIComponent(url.pathname.replace('/api/files/', ''));
+  const key = decodeURIComponent(url.pathname.replace("/api/files/", ""));
 
-  if (!key.startsWith('settings/')) {
-    return Response.json({ error: 'Recurso não permitido.' }, { status: 403 });
+  if (!FILES.allowedPrefixes.some((prefix) => key.startsWith(prefix))) {
+    return Response.json({ error: "Recurso não permitido." }, { status: 403 });
   }
 
   const object = await env.BUCKET.get(key);

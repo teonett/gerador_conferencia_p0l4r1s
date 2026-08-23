@@ -22,10 +22,10 @@ export const PHOTO = {
     height: 68,
   },
   normalization: {
-    width: 960,
-    height: 540,
+    width: 800,
+    height: 450,
     format: "image/jpeg",
-    quality: 0.78,
+    quality: 0.6,
   },
   r2KeyPattern: "responses/{responseId}/{itemId}-{filename}",
   maxSizeBytes: 10 * 1024 * 1024,
@@ -54,6 +54,10 @@ export const LOGO_BG_LABELS: Record<string, string> = {
   "#005ca9": "Azul rgb(0, 92, 169)",
 };
 
+export const FILES = {
+  allowedPrefixes: ["settings/", "responses/"],
+};
+
 export const METRIC_COLORS = {
   yes: "#22c55e",
   no: "#ef4444",
@@ -79,6 +83,11 @@ export const PDF = {
     text: "Sem Imagens",
     fontSize: 13,
     angle: 24,
+  },
+  logo: {
+    slotWidth: 30,
+    slotHeight: 16,
+    scale: 0.65,
   },
   signature: {
     lineFromX: 42,
