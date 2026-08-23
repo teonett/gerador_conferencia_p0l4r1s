@@ -18,12 +18,13 @@ Gerador de checklists genérico ("Gerador de Checklists"): crie modelos de inspe
 - [Funcionalidades](#funcionalidades)
 - [Como usar](#como-usar)
   - [Criar um modelo](#1-criar-um-modelo)
-  - [Preencher um checklist](#2-preencher-um-checklist)
-  - [Resposta padrão em massa](#3-resposta-padrão-em-massa-metrics)
-  - [Métricas e barra de progresso](#4-métricas-e-barra-de-progresso)
-  - [Compartilhar por link](#5-compartilhar-por-link)
-  - [Revisão e PDF](#6-revisão-e-pdf)
-  - [Histórico](#7-histórico)
+  - [Headers de identificação](#2-headers-de-identificação)
+  - [Preencher um checklist](#3-preencher-um-checklist)
+  - [Resposta padrão em massa](#4-resposta-padrão-em-massa-metrics)
+  - [Métricas e barra de progresso](#5-métricas-e-barra-de-progresso)
+  - [Compartilhar por link](#6-compartilhar-por-link)
+  - [Revisão e PDF](#7-revisão-e-pdf)
+  - [Histórico](#8-histórico)
 - [Fluxos](#fluxos)
 - [API](#api)
 - [Modelo de dados](#modelo-de-dados)
@@ -36,6 +37,7 @@ Gerador de checklists genérico ("Gerador de Checklists"): crie modelos de inspe
 ## Funcionalidades
 
 - **Editor de modelos** — perguntas de escolha (única ou múltipla, 3–6 opções) ou texto livre, campos de identificação (data, setor, responsável...), importação via TXT/CSV.
+- **Headers de identificação reutilizáveis** — conjuntos de campos (Data, Hora, Unidade, Andar, Coordenador, Matrículas, Responsável...) criados uma vez e associados a vários modelos; alterar o header reflete em todos. Primeira etapa da execução e grade responsiva (4 colunas no desktop, 2 no mobile).
 - **Execução guiada** — uma pergunta por vez, com validação de obrigatórios, observações e até 4 fotos por pergunta.
 - **Resposta padrão em massa** — aplique/altere a mesma opção para **todas** as perguntas com um clique.
 - **Métricas ao vivo** — contadores por opção respondida, pendentes e percentual concluído, atualizados a cada etapa.
@@ -60,14 +62,29 @@ Gerador de checklists genérico ("Gerador de Checklists"): crie modelos de inspe
    - **Texto livre** — resposta digitada.
 4. Marque perguntas como **obrigatórias** quando necessário.
 5. Opcionalmente, marque o checkbox **Padrão** na opção desejada da pergunta (dentro de _Editar_) — ela já vem pré-aplicada quando alguém iniciar o checklist; perguntas sem marcação são respondidas individualmente. Perguntas novas já nascem com `Sim` marcado.
-6. Opcionalmente adicione **campos de identificação** (ex.: Data da inspeção, Setor).
-7. **Salvar** — o modelo recebe um `shareToken` automático.
+6. Opcionalmente adicione **campos de identificação** próprios (ex.: Data da inspeção, Setor).
+7. Opcionalmente selecione um **Header associado** no seletor do editor — a identificação passa a vir do header (veja a seção abaixo). Modelos sem header continuam usando os campos próprios.
+8. **Salvar** — o modelo recebe um `shareToken` automático.
 
 > Regras do editor: mínimo de 3 e máximo de 6 opções por pergunta; a opção `"Outros"` é obrigatória e sempre a última.
 
-### 2. Preencher um checklist
+### 2. Headers de identificação
 
-No card do modelo, clique em **Preencher**. O runner exibe uma pergunta por vez:
+No menu lateral, **Headers** gerencia conjuntos reutilizáveis de campos de identificação:
+
+- **Campos fixos** — todo header tem `Data` e `Hora` na primeira linha, auto-preenchidos com o momento da execução e editáveis.
+- **Campos adicionais** — ao criar, vêm pré-carregados: Unidade, Andar, Coordenador, Matrícula do Coordenador, Responsável pela Avaliação e Matrícula do Responsável. É possível renomear, remover e **+ Adicionar campo**.
+- **Vínculo compartilhado** — vários modelos podem apontar para o mesmo header; editar o header atualiza a identificação de todos eles na próxima execução.
+- **Coexistência** — modelos sem header associado seguem usando os campos próprios do editor (`Template.fields`).
+- **Exclusão protegida** — excluir exige digitar `APAGAR_REGISTRO>>SIM`; os modelos vinculados ficam com `header_id = NULL` (voltam aos campos próprios) sem quebrar nada.
+
+### 3. Preencher um checklist
+
+No card do modelo, clique em **Preencher**:
+
+- **Com header associado**, a execução abre na **etapa de Identificação**: data/hora + todos os campos em grade responsiva (**4 colunas** no desktop, **2 colunas** no mobile). Clique em **Iniciar perguntas →** para começar; "Anterior" na 1ª pergunta volta para cá.
+
+Depois, uma pergunta por vez:
 
 ```
 ┌──────────────────────────────────────────────────────────┐
@@ -84,7 +101,7 @@ No card do modelo, clique em **Preencher**. O runner exibe uma pergunta por vez:
 └──────────────────────────────────────────────────────────┘
 ```
 
-### 3. Resposta padrão em massa (metrics)
+### 4. Resposta padrão em massa (metrics)
 
 Ideal quando a maioria das respostas é igual (ex.: quase tudo `Sim`). Disponível **durante o preenchimento**:
 
@@ -104,7 +121,7 @@ Comportamento:
 | Pergunta sem aquela opção    | permanece intocada               |
 | Pergunta de texto livre      | permanece intocada               |
 
-### 4. Métricas e barra de progresso
+### 5. Métricas e barra de progresso
 
 Os contadores são recalculados a cada resposta (`domain/metrics.ts`):
 
@@ -123,7 +140,7 @@ Classificação de cores na barra segmentada:
 
 > Atenção: `Não aplicável` conta como **amarelo**, pois só o termo exato `Não` é vermelho.
 
-### 5. Compartilhar por link
+### 6. Compartilhar por link
 
 Cada modelo tem um token curto. Envie o link:
 
@@ -133,22 +150,23 @@ https://<seu-worker>.workers.dev/?checklist=cipa-administrativas
 
 Quem abrir já cai direto na tela de preenchimento daquele modelo.
 
-### 6. Revisão e PDF
+### 7. Revisão e PDF
 
-Ao responder a última pergunta, clique em **Revisar e assinar**. A revisão é **somente leitura** — para corrigir algo, use **Voltar ao preenchimento**: todas as respostas, observações e fotos são preservadas.
+Ao responder a última pergunta, clique em **Revisar e assinar**. A revisão é **somente leitura** — para corrigir algo, use **Voltar ao preenchimento**: todas as respostas, observações e fotos são preservadas. A identificação do header aparece preenchida (data/hora na primeira linha + campos em grade).
 
-Depois, desenhe a assinatura e clique em **Confirmar e finalizar**:
+Depois, digite o **nome de quem assina**, marque a confirmação e clique em **Confirmar e finalizar**:
 
-- o registro é gravado no banco (respostas, identificação e observações no D1; fotos no R2);
-- o **PDF A4** é gerado localmente no navegador via jsPDF, com **título e descrição do modelo** no cabeçalho e os **indicadores da tela** (Sim / Não / Outros / Pendentes + % concluído) logo abaixo dos campos de identificação.
+- o registro é gravado no banco (respostas, identificação, observações e nome no D1; fotos no R2);
+- o **PDF A4** é gerado localmente no navegador via jsPDF: cabeçalho com **título e descrição do modelo**, identificação (data/hora + campos), os **indicadores da tela** (Sim / Não / Outros / Pendentes + % concluído) e o rodapé com **nome centralizado** acima de "Checklist feito e finalizado em".
 
-### 7. Histórico
+### 8. Histórico
 
 No menu lateral, **Histórico** lista os últimos 100 preenchimentos gravados:
 
 - **Resumo** — modelo, categoria, data/hora, contadores 🟩/🟥/🟨, campos de identificação, observações e nº de fotos.
 - **Ver respostas** — expande o registro mostrando pergunta por pergunta com a resposta dada; se o modelo foi editado/excluído depois, exibe os valores registrados na época.
-- **📄 Baixar PDF** — regenera o relatório A4 do registro (a assinatura não é persistida e sai em branco).
+- **📄 Baixar PDF** — regenera o relatório A4 do registro com o **nome de quem assinou**, as fotos gravadas no R2 e o layout de identificação do header associado ao modelo.
+- **🗑 Excluir** — remove o registro (modal genérico com confirmação digitada `APAGAR_REGISTRO>>SIM`).
 
 ---
 
@@ -158,34 +176,88 @@ No menu lateral, **Histórico** lista os últimos 100 preenchimentos gravados:
 
 ```mermaid
 stateDiagram-v2
-    [*] --> Home: carrega templates (GET /api/checklists)
+    [*] --> Home: carrega templates (GET /api/checklists)<br/>e headers (GET /api/headers)
     Home --> Templates: Novo modelo / Editar
     Templates --> Home: Salvar / Cancelar
+    Templates --> Headers: seleciona header associado
+    Home --> Headers: Headers
+    Headers --> Templates: header disponível no seletor
     Home --> Run: Preencher checklist
     Run --> Report: Revisar e assinar
     Report --> History: Confirmar e finalizar
     Report --> Run: Voltar (estado preservado)
     Home --> History: Histórico
+    Home --> Settings: Configurações
     Home --> Run: link ?checklist=TOKEN
 ```
 
 ### Execução do checklist (runner)
 
+Com **header associado**, a identificação é a primeira etapa; sem header, o fluxo segue direto para as perguntas:
+
 ```mermaid
 flowchart TD
-    A(["Iniciar execução<br/>(defaults do modelo pré-aplicados)"]) --> B["Preencher identificação<br/>(data, setor, responsável...)"]
-    B --> C{"Pergunta atual"}
+    A(["Iniciar execução<br/>(defaults do modelo pré-aplicados)"]) --> H{"Modelo tem<br/>header associado?"}
+    H -->|sim| I["Etapa 1: Identificação<br/>Data + Hora auto-preenchidos<br/>campos em grade 4×/2×<br/>[Iniciar perguntas →]"]
+    H -->|não| B["Preencher campos próprios<br/>(data, setor, responsável...)"]
+    I --> C{"Pergunta atual"}
+    B --> C
     C -->|texto livre| D["Digitar resposta"]
     C -->|escolha| E["Selecionar opção(ões)<br/>ou aplicar resposta padrão a todas"]
     D --> F["Métricas ao vivo:<br/>contadores + barra verde/vermelha/amarela"]
     E --> F
     F --> G{"Validação OK?<br/>(obrigatória / obs. mín. 5)"}
-    G -->|não| H["Exibir erro"] --> C
-    G -->|sim| I{"Última pergunta?"}
-    I -->|não| C
-    I -->|sim| J["Revisão somente leitura<br/>+ assinatura"]
+    G -->|não| X["Exibir erro"] --> C
+    G -->|sim| Y{"Última pergunta?"}
+    Y -->|não| C
+    Y -->|sim| J["Revisão somente leitura<br/>identificação preenchida + assinatura"]
     J --> K["Confirmar e finalizar:<br/>grava D1/R2 + gera PDF"]
     J -->|voltar p/ editar| C
+    C -->|"Anterior (1ª pergunta)"| I
+```
+
+### Vínculo Header ↔ Modelos
+
+O header é **compartilhado**: vários modelos apontam para o mesmo registro, e edições nele refletem em todos. A exclusão limpa o vínculo sem apagar os modelos.
+
+```mermaid
+flowchart LR
+    subgraph Headers["HEADERS (D1)"]
+        H1["Header A<br/>Data · Hora<br/>+ N campos dinâmicos"]
+        H2["Header B"]
+    end
+    subgraph Checklists["CHECKLISTS (D1)"]
+        M1["Modelo 1"] -->|header_id| H1
+        M2["Modelo 2"] -->|header_id| H1
+        M3["Modelo 3"] -->|sem header<br/>usa campos próprios| M3
+    end
+    E["Editar Header A"] -.->|reflete na próxima<br/>execução de 1 e 2| H1
+    X["Excluir Header A<br/>(APAGAR_REGISTRO>>SIM)"] -.->|header_id = NULL<br/>modelos voltam aos campos próprios| M1
+```
+
+### Ciclo de vida de um header (CRUD + associação)
+
+```mermaid
+sequenceDiagram
+    actor U as Usuário
+    participant F as Frontend (React)
+    participant W as Worker (Hono)
+    participant DB as D1
+
+    U->>F: seção Headers → Novo header
+    F->>W: POST /api/headers { name, fields[] }
+    W->>DB: INSERT (id, name, fields JSON)
+    W-->>F: 201 { header }
+    U->>F: editor do modelo → seleciona "Header associado"
+    F->>W: PUT /api/checklists/:id (body.headerId)
+    W->>DB: UPDATE checklists SET header_id = ?
+    Note over F,DB: Vários modelos podem apontar para o mesmo header
+    U->>F: edita campos do header
+    F->>W: PUT /api/headers/:id
+    W->>DB: UPDATE headers SET fields = ? (reflete em todos os modelos)
+    U->>F: exclui header (digita APAGAR_REGISTRO>>SIM)
+    F->>W: DELETE /api/headers/:id
+    W->>DB: DELETE + UPDATE checklists SET header_id = NULL
 ```
 
 ### Leitura via link compartilhado
@@ -237,10 +309,10 @@ sequenceDiagram
     participant DB as D1
     participant R as R2
 
-    U->>F: desenha assinatura + Confirmar e finalizar
+    U->>F: digita nome + Confirmar e finalizar
     F->>W: POST /api/checklists/:id/responses (multipart)
     W->>R: PUT das fotos por item (chave com uuid)
-    W->>DB: INSERT response (answers, metadata, observations, photos)
+    W->>DB: INSERT response (answers, metadata, observations, signature_name, photos)
     W-->>F: 201 { id }
     F->>U: PDF A4 gerado localmente
     U->>F: abre Histórico
@@ -254,7 +326,16 @@ sequenceDiagram
 
 ```mermaid
 erDiagram
+    HEADERS ||--o{ CHECKLISTS : "header_id (opcional, compartilhado)"
     CHECKLISTS ||--o{ RESPONSES : checklist_id
+
+    HEADERS {
+        text id PK
+        text name
+        text fields "JSON: { id, label }[]"
+        integer created_at
+        integer updated_at
+    }
 
     CHECKLISTS {
         text id PK
@@ -262,6 +343,7 @@ erDiagram
         text description
         text category
         text items "JSON: Item[]"
+        text header_id FK "nullable; NULL = campos próprios"
         text share_token UK
         integer created_at
         integer updated_at
@@ -271,9 +353,10 @@ erDiagram
         text id PK
         text checklist_id FK
         text answers "JSON: Record<itemId, string[]>"
-        text metadata "JSON: Record<fieldId, valor>"
+        text metadata "JSON: Record<fieldId, valor> (inclui data e hora)"
         text observations
         text photos "JSON: chaves R2"
+        text signature_name "nome de quem assina"
         integer completed_at
     }
 ```
@@ -293,6 +376,13 @@ Base: `https://<seu-worker>.workers.dev`
 | `DELETE` | `/api/checklists/:id`           | exclui modelo                                              |
 | `POST`   | `/api/checklists/:id/responses` | grava a resposta no D1 (+ fotos no R2)                     |
 | `GET`    | `/api/responses`                | lista os últimos 100 preenchimentos (histórico)            |
+| `DELETE` | `/api/responses/:id`            | exclui um preenchimento (+ fotos no R2)                    |
+| `GET`    | `/api/headers`                  | lista os headers de identificação                          |
+| `POST`   | `/api/headers`                  | cria header (`{ name, fields[] }`)                         |
+| `PUT`    | `/api/headers/:id`              | atualiza header (reflete em todos os modelos vinculados)   |
+| `DELETE` | `/api/headers/:id`              | exclui header e limpa `header_id` dos modelos vinculados   |
+| `GET/POST` | `/api/settings`               | logo do app (R2) + cor de fundo                            |
+| `GET`    | `/api/files/*`                  | serve arquivos do R2 (`settings/`, `responses/`)           |
 
 ### Exemplos
 
@@ -341,6 +431,28 @@ curl https://<seu-worker>.workers.dev/api/checklists
 curl "https://<seu-worker>.workers.dev/api/checklists?share=cipa-administrativas"
 ```
 
+Criar um header de identificação e associá-lo a um modelo:
+
+```bash
+# 1. Criar o header (Data e Hora são fixas; fields[] são os campos adicionais)
+curl -X POST https://<seu-worker>.workers.dev/api/headers \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Inspeção Administrativa",
+    "fields": [
+      { "id": "unidade", "label": "Unidade" },
+      { "id": "andar", "label": "Andar" },
+      { "id": "coordenador", "label": "Coordenador" },
+      { "id": "responsavel", "label": "Responsável pela Avaliação" }
+    ]
+  }'
+
+# 2. Associar ao modelo (ou via seletor no editor)
+curl -X PUT https://<seu-worker>.workers.dev/api/checklists/<id> \
+  -H "Content-Type: application/json" \
+  -d '{ "title": "...", "items": [ ... ], "headerId": "<id-do-header>" }'
+```
+
 ---
 
 ## Modelo de dados (domínio)
@@ -357,10 +469,32 @@ interface Item {
   defaultOption?: string; // resposta padrão (pré-aplicada na execução)
 }
 
+interface Template {
+  ...
+  headerId?: string; // header de identificação associado (opcional)
+}
+
 type Answers = Record<string, string[]>; // itemId -> opções selecionadas
-type Metadata = Record<string, string>; // fieldId -> valor digitado
+type Metadata = Record<string, string>; // fieldId -> valor digitado (data, hora e campos do header)
 
 buildInitialAnswers(items); // Answers iniciais a partir dos defaults do modelo
+```
+
+```ts
+// domain/header.ts
+interface HeaderField {
+  id: string;
+  label: string;
+}
+
+interface HeaderModel {
+  id: string;
+  name: string;
+  fields: HeaderField[]; // campos dinâmicos; Data e Hora são fixas em todo header
+}
+
+HEADER_DEFAULT_FIELDS; // Unidade, Andar, Coordenador, Matrícula do Coordenador,
+                       // Responsável pela Avaliação, Matrícula do Responsável
 ```
 
 Funções puras de métricas (`domain/metrics.ts`):
@@ -387,7 +521,10 @@ collectChoiceOptions(items); // união das opções p/ o seletor
 - **Opções**: 3 a 6 por pergunta; `Outros` sempre presente e último.
 - **Resposta padrão por pergunta**: configurável no editor (`Item.defaultOption`); deve pertencer às opções da pergunta — renomear/remover a opção limpa o default automaticamente. Perguntas de texto livre não aceitam default.
 - **Seed CIPA**: inserido automaticamente no primeiro `GET /api/checklists` com banco vazio (id `cipa-areas-administrativas`, token `cipa-administrativas`).
-- **PDF** é gerado no cliente. Ao confirmar, a resposta vai ao D1 (colunas `metadata` e `observations`) e cada foto ao R2 com chave única por item. A **assinatura não é persistida** — aparece apenas no PDF gerado na hora.
+- **Headers**: Data e Hora são fixas em todo header (auto-preenchidas com o momento da execução, editáveis); os demais campos são dinâmicos. O vínculo é **compartilhado** — editar o header reflete em todos os modelos associados. Modelos sem header usam os campos próprios do editor. Excluir um header zera `header_id` dos modelos vinculados (nunca apaga modelos). Na execução, a identificação é a **primeira etapa**; na revisão e no PDF aparece preenchida (grade 4×/2× na web, 2 colunas no PDF).
+- **PDF** é gerado no cliente. Ao confirmar, a resposta vai ao D1 (colunas `metadata`, `observations` e `signature_name`) e cada foto ao R2 com chave única por item. Fotos são normalizadas para 800×450 JPEG (q=0.6) antes de entrar na memória/R2/PDF.
+- **Assinatura**: é o nome digitado ("Nome completo"), gravado em `signature_name` e impresso centralizado no rodapé do PDF, acima de "Checklist feito e finalizado em". Regenerações pelo Histórico reutilizam o nome salvo.
+- **Exclusões** (modelos e registros de histórico): sempre via modal genérico exigindo digitar `APAGAR_REGISTRO>>SIM`.
 - **Histórico**: os últimos 100 preenchimentos, com título/categoria resolvidos via LEFT JOIN (modelo excluído não quebra a listagem).
 - **Cabeçalho do PDF**: título e descrição do modelo + chips de métricas (Sim / Não / Outros / Pendentes) com % concluído.
 - **Marca visual**: azul institucional `#005ca9` (tema, favicon e cabeçalho do PDF); as cores de métrica 🟩🟥🟨 permanecem semânticas.
@@ -441,34 +578,43 @@ gerador_conferencia_polaris/
 ├── app/
 │   ├── App.tsx                     # estado global + roteamento por view
 │   ├── main.tsx                    # entry point + registro do service worker
-│   ├── globals.css                 # estilos base
+│   ├── globals.css                 # estilos base (.header-grid: 4×/2× responsivo)
 │   ├── api/checklists/             # handlers estilo file-routing (montados no Hono)
 │   │   ├── route.ts                # GET (lista/share) + POST
 │   │   └── [id]/
 │   │       ├── route.ts            # PUT + DELETE
 │   │       └── responses/route.ts  # POST resposta (D1 + R2)
-│   └── api/responses/route.ts      # GET histórico de preenchimentos
+│   ├── api/responses/route.ts      # GET histórico de preenchimentos
+│   └── api/headers/                # CRUD de headers de identificação
+│       ├── route.ts                # GET lista + POST cria
+│       └── [id]/route.ts           # PUT atualiza + DELETE (limpa vínculos)
 ├── components/
 │   ├── camera/CameraCapture.tsx     # câmera in-app (getUserMedia) para fotos
 │   ├── dashboard/Dashboard.tsx     # home: hero + grid de modelos
-│   ├── history/ResponseHistory.tsx # histórico: resumo, detalhe e PDF por registro
-│   ├── layout/AppShell.tsx         # sidebar + layout
+│   ├── headers/HeadersView.tsx     # CRUD de headers + modal de exclusão
+│   ├── history/ResponseHistory.tsx # histórico: resumo, detalhe, PDF e exclusão por registro
+│   ├── layout/AppShell.tsx         # sidebar + logo + layout
+│   ├── main/
+│   │   ├── ConfirmModal.tsx        # modal genérico (confirmação digitada)
+│   │   └── MainHero.tsx            # hero reutilizável da home
 │   ├── metrics/
 │   │   ├── AnswerMetricsBar.tsx    # barra segmentada + contadores (runner e revisão)
 │   │   └── BulkDefaultControl.tsx  # seletor "Resposta padrão" + aplicar em massa
 │   ├── report/ReportReview.tsx     # revisão somente leitura + persistência + PDF
-│   ├── runner/ChecklistRunner.tsx  # execução: etapas, resposta padrão, métricas
+│   ├── runner/ChecklistRunner.tsx  # execução: identificação (1ª etapa), etapas, métricas
+│   ├── settings/SettingsView.tsx   # logo do app (R2) + cor de fundo
 │   └── templates/
 │       ├── TemplateCard.tsx        # card de modelo
-│       └── TemplateEditor.tsx      # editor de perguntas/opções
+│       └── TemplateEditor.tsx      # editor de perguntas/opções + header associado
 ├── db/
-│   ├── schema.ts                   # tabelas checklists + responses (Drizzle)
+│   ├── schema.ts                   # tabelas checklists, responses, settings, headers
 │   ├── seed.ts                     # CIPA_SEED (16 perguntas)
 │   └── index.ts                    # createDb()
 ├── domain/
 │   ├── checklist.ts                # tipos: Template, Item, Answers...
+│   ├── header.ts                   # tipos: HeaderModel, HeaderField + campos default
 │   ├── metrics.ts                  # classificação, contadores, default em massa
-│   └── constants.ts                # cores, limites, config PDF/fotos
+│   └── constants.ts                # cores, limites, config PDF/fotos, frases de confirmação
 ├── lib/pdf.ts                      # geração de PDF (jsPDF)
 ├── worker/index.ts                 # Hono: rotas /api/* + fallback ASSETS
 ├── drizzle/                        # migrations SQL
