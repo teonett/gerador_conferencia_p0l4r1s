@@ -90,13 +90,13 @@ Depois, uma pergunta por vez:
 ┌──────────────────────────────────────────────────────────┐
 │ ← Voltar                        Etapa 3 de 16            │
 │ ██████░░░░░░░░░░░░░░░░░░░░░░░░  2 de 16 respondidas  12% │
-│ 🟩 Sim: 1  🟥 Não: 0  🟨 Outros: 1  ⚪ Pendentes: 14      │
+│ 🟩 Sim: 1  🟥 Não: 0  🟨 Outros: 1  ⚪ Pendentes: 14   │
 │                                                          │
 │ Resposta padrão [ Selecione... ▾ ] [Aplicar a todas]     │
 ├──────────────────────────────────────────────────────────┤
 │ 3. Possui kit de primeiros socorros? *                   │
 │ [ Sim ]  [ Não ]  [ Não aplicável ]  [ Em partes ]       │
-│ Observações...  Fotos (máx. 4) [📷 Tirar foto] [+ Galeria] │
+│ Observações...  Fotos (máx. 4) [Tirar foto] [+ Galeria]  │
 │                                     [Anterior] [Próximo] │
 └──────────────────────────────────────────────────────────┘
 ```
@@ -367,22 +367,22 @@ erDiagram
 
 Base: `https://<seu-worker>.workers.dev`
 
-| Método   | Rota                            | Descrição                                                  |
-| -------- | ------------------------------- | ---------------------------------------------------------- |
-| `GET`    | `/api/checklists`               | lista os últimos 100 modelos (insere o seed CIPA se vazio) |
-| `GET`    | `/api/checklists?share=<token>` | busca por share token **ou** id                            |
-| `POST`   | `/api/checklists`               | cria modelo                                                |
-| `PUT`    | `/api/checklists/:id`           | atualiza modelo                                            |
-| `DELETE` | `/api/checklists/:id`           | exclui modelo                                              |
-| `POST`   | `/api/checklists/:id/responses` | grava a resposta no D1 (+ fotos no R2)                     |
-| `GET`    | `/api/responses`                | lista os últimos 100 preenchimentos (histórico)            |
-| `DELETE` | `/api/responses/:id`            | exclui um preenchimento (+ fotos no R2)                    |
-| `GET`    | `/api/headers`                  | lista os headers de identificação                          |
-| `POST`   | `/api/headers`                  | cria header (`{ name, fields[] }`)                         |
-| `PUT`    | `/api/headers/:id`              | atualiza header (reflete em todos os modelos vinculados)   |
-| `DELETE` | `/api/headers/:id`              | exclui header e limpa `header_id` dos modelos vinculados   |
-| `GET/POST` | `/api/settings`               | logo do app (R2) + cor de fundo                            |
-| `GET`    | `/api/files/*`                  | serve arquivos do R2 (`settings/`, `responses/`)           |
+| Método     | Rota                            | Descrição                                                  |
+| ---------- | ------------------------------- | ---------------------------------------------------------- |
+| `GET`      | `/api/checklists`               | lista os últimos 100 modelos (insere o seed CIPA se vazio) |
+| `GET`      | `/api/checklists?share=<token>` | busca por share token **ou** id                            |
+| `POST`     | `/api/checklists`               | cria modelo                                                |
+| `PUT`      | `/api/checklists/:id`           | atualiza modelo                                            |
+| `DELETE`   | `/api/checklists/:id`           | exclui modelo                                              |
+| `POST`     | `/api/checklists/:id/responses` | grava a resposta no D1 (+ fotos no R2)                     |
+| `GET`      | `/api/responses`                | lista os últimos 100 preenchimentos (histórico)            |
+| `DELETE`   | `/api/responses/:id`            | exclui um preenchimento (+ fotos no R2)                    |
+| `GET`      | `/api/headers`                  | lista os headers de identificação                          |
+| `POST`     | `/api/headers`                  | cria header (`{ name, fields[] }`)                         |
+| `PUT`      | `/api/headers/:id`              | atualiza header (reflete em todos os modelos vinculados)   |
+| `DELETE`   | `/api/headers/:id`              | exclui header e limpa `header_id` dos modelos vinculados   |
+| `GET/POST` | `/api/settings`                 | logo do app (R2) + cor de fundo                            |
+| `GET`      | `/api/files/*`                  | serve arquivos do R2 (`settings/`, `responses/`)           |
 
 ### Exemplos
 
@@ -494,7 +494,7 @@ interface HeaderModel {
 }
 
 HEADER_DEFAULT_FIELDS; // Unidade, Andar, Coordenador, Matrícula do Coordenador,
-                       // Responsável pela Avaliação, Matrícula do Responsável
+// Responsável pela Avaliação, Matrícula do Responsável
 ```
 
 Funções puras de métricas (`domain/metrics.ts`):
