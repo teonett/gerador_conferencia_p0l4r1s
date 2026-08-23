@@ -12,6 +12,7 @@ export async function POST(
 
   const metadata = formData.get('metadata');
   const observations = formData.get('observations');
+  const signerName = formData.get('signerName');
 
   const responseId = crypto.randomUUID();
   const photos: Record<string, string[]> = {};
@@ -31,7 +32,7 @@ export async function POST(
   }
 
   await env.DB.prepare(
-    'INSERT INTO responses (id, checklist_id, answers, metadata, observations, photos, completed_at) VALUES (?, ?, ?, ?, ?, ?, ?)'
+    'INSERT INTO responses (id, checklist_id, answers, metadata, observations, photos, signature_name, completed_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
   )
     .bind(
       responseId,
@@ -40,6 +41,7 @@ export async function POST(
       typeof metadata === 'string' ? metadata : '{}',
       typeof observations === 'string' ? observations : '',
       JSON.stringify(photos),
+      typeof signerName === 'string' ? signerName : '',
       Date.now()
     )
     .run();

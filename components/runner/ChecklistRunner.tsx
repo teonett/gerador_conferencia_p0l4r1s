@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { Template, Item } from '../../domain/checklist';
+import type { HeaderModel } from '../../domain/header';
 import { buildInitialAnswers } from '../../domain/checklist';
 import { COLORS, PHOTO, OBSERVATION } from '../../domain/constants';
 import { applyDefaultAnswer } from '../../domain/metrics';
@@ -11,6 +12,7 @@ import { normalizeImage } from '../../lib/images';
 
 interface ChecklistRunnerProps {
   template: Template;
+  header?: HeaderModel;
   initialAnswers?: Record<string, string[]>;
   initialMetadata?: Record<string, string>;
   initialObservations?: string;
@@ -28,6 +30,7 @@ interface ChecklistRunnerProps {
 
 export function ChecklistRunner({
   template,
+  header,
   initialAnswers,
   initialMetadata,
   initialObservations,
@@ -44,6 +47,22 @@ export function ChecklistRunner({
   const [currentIndex, setCurrentIndex] = useState(0);
   const [validationError, setValidationError] = useState('');
   const [cameraOpen, setCameraOpen] = useState(false);
+  const [showIdentification, setShowIdentification] = useState(!!header);
+
+  useEffect(() => {
+    setShowIdentification(!!header);
+    if (!header) return;
+    setMetadata((prev) => {
+      if (prev.data && prev.hora) return prev;
+      const now = new Date();
+      const hhmm = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+      return {
+        ...prev,
+        data: prev.data || now.toISOString().slice(0, 10),
+        hora: prev.hora || hhmm,
+      };
+    });
+  }, [header]);
 
   const currentItem: Item | null = template.items[currentIndex] || null;
   const isLast = currentIndex === template.items.length - 1;
@@ -108,10 +127,13 @@ export function ChecklistRunner({
     if (currentIndex > 0) {
       setCurrentIndex(currentIndex - 1);
       setValidationError('');
+    } else if (header) {
+      setShowIdentification(true);
     }
   };
 
   const currentPhotos = currentItem ? (photos[currentItem.id] || []) : [];
+  const inIdentification = !!header && showIdentification;
 
   return (
     <div>
@@ -122,23 +144,78 @@ export function ChecklistRunner({
           ← Voltar
         </button>
         <span style={{ color: '#666', fontSize: 14 }}>
-          Etapa {currentIndex + 1} de {template.items.length}
+          {inIdentification
+            ? 'Identificação'
+            : `Etapa ${currentIndex + 1} de ${template.items.length}`}
         </span>
       </div>
 
-      <div style={{ marginBottom: 24 }}>
-        <AnswerMetricsBar items={template.items} answers={answers} />
-      </div>
+      {!inIdentification && (
+        <div style={{ marginBottom: 24 }}>
+          <AnswerMetricsBar items={template.items} answers={answers} />
+        </div>
+      )}
 
-      <BulkDefaultControl
-        items={template.items}
-        onApply={(option) => {
-          setAnswers(applyDefaultAnswer(template.items, answers, option));
-          setValidationError('');
-        }}
-      />
+      {!inIdentification && (
+        <BulkDefaultControl
+          items={template.items}
+          onApply={(option) => {
+            setAnswers(applyDefaultAnswer(template.items, answers, option));
+            setValidationError('');
+          }}
+        />
+      )}
 
-      {template.fields && (
+      {inIdentification && (
+        <div
+          style={{
+            background: 'white',
+            borderRadius: 12,
+            padding: 24,
+            border: `1px solid ${COLORS.line}`,
+          }}
+        >
+          <h3 style={{ fontSize: 16, fontWeight: 600, marginBottom: 12 }}>Identificação</h3>
+          <div className="header-datetime">
+            <div>
+              <label style={fieldLabelStyle}>Data</label>
+              <input
+                type="date"
+                value={metadata['data'] || ''}
+                onChange={(e) => setMetadata({ ...metadata, data: e.target.value })}
+              />
+            </div>
+            <div>
+              <label style={fieldLabelStyle}>Hora</label>
+              <input
+                type="time"
+                value={metadata['hora'] || ''}
+                onChange={(e) => setMetadata({ ...metadata, hora: e.target.value })}
+              />
+            </div>
+          </div>
+          <div className="header-grid">
+            {header?.fields.map((field) => (
+              <div key={field.id}>
+                <label style={fieldLabelStyle}>{field.label}</label>
+                <input
+                  value={metadata[field.id] || ''}
+                  onChange={(e) => setMetadata({ ...metadata, [field.id]: e.target.value })}
+                />
+              </div>
+            ))}
+          </div>
+          <button
+            className="primary"
+            style={{ marginTop: 20 }}
+            onClick={() => setShowIdentification(false)}
+          >
+            Iniciar perguntas →
+          </button>
+        </div>
+      )}
+
+      {!header && template.fields && (
         <div style={{ marginBottom: 32 }}>
           <h3 style={{ fontSize: 16, fontWeight: 600, marginBottom: 12 }}>Identificação</h3>
           {template.fields.map((field) => (
@@ -158,7 +235,7 @@ export function ChecklistRunner({
         </div>
       )}
 
-      {currentItem && (
+      {!inIdentification && currentItem && (
         <div
           style={{
             background: 'white',
@@ -312,18 +389,20 @@ export function ChecklistRunner({
         </div>
       )}
 
-      {validationError && (
+      {!inIdentification && validationError && (
         <p style={{ color: COLORS.orange, marginTop: 12, fontSize: 14 }}>{validationError}</p>
       )}
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 24 }}>
-        <button className="secondary" onClick={handlePrev} disabled={currentIndex === 0}>
-          Anterior
-        </button>
-        <button className="primary" onClick={handleNext}>
-          {isLast ? 'Revisar e assinar' : 'Próximo'}
-        </button>
-      </div>
+      {!inIdentification && (
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 24 }}>
+          <button className="secondary" onClick={handlePrev} disabled={currentIndex === 0 && !header}>
+            Anterior
+          </button>
+          <button className="primary" onClick={handleNext}>
+            {isLast ? 'Revisar e assinar' : 'Próximo'}
+          </button>
+        </div>
+      )}
 
       {cameraOpen && currentItem && (
         <CameraCapture
@@ -337,3 +416,9 @@ export function ChecklistRunner({
     </div>
   );
 }
+
+const fieldLabelStyle = {
+  display: 'block',
+  fontSize: 14,
+  marginBottom: 4,
+} as const;

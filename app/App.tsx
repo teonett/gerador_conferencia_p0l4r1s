@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import type { Template, View } from '../domain/checklist';
+import type { HeaderModel } from '../domain/header';
+import { CONFIRM_DELETE_PHRASE } from '../domain/constants';
 import { AppShell } from '../components/layout/AppShell';
 import { Dashboard } from '../components/dashboard/Dashboard';
 import { TemplateEditor } from '../components/templates/TemplateEditor';
@@ -7,6 +9,8 @@ import { ChecklistRunner } from '../components/runner/ChecklistRunner';
 import { ReportReview } from '../components/report/ReportReview';
 import { ResponseHistory } from '../components/history/ResponseHistory';
 import { SettingsView } from '../components/settings/SettingsView';
+import { ConfirmModal } from '../components/main/ConfirmModal';
+import { HeadersView } from '../components/headers/HeadersView';
 
 export function App() {
   const [view, setView] = useState<View>('home');
@@ -19,6 +23,22 @@ export function App() {
   const [photos, setPhotos] = useState<Record<string, File[]>>({});
   const [signature, setSignature] = useState('');
   const [confirmedAt, setConfirmedAt] = useState<string | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<Template | null>(null);
+  const [headers, setHeaders] = useState<HeaderModel[]>([]);
+
+  const loadHeaders = () => {
+    fetch('/api/headers')
+      .then((res) => res.json())
+      .then((payload) => {
+        const data = payload as { headers?: HeaderModel[] };
+        if (data.headers) setHeaders(data.headers);
+      })
+      .catch(() => {});
+  };
+
+  useEffect(() => {
+    loadHeaders();
+  }, []);
 
   useEffect(() => {
     fetch('/api/checklists')
@@ -69,8 +89,14 @@ export function App() {
     setView('templates');
   };
 
-  const handleDelete = async (template: Template) => {
-    if (!confirm(`Excluir modelo "${template.title}"?`)) return;
+  const handleDelete = (template: Template) => {
+    setDeleteTarget(template);
+  };
+
+  const confirmDeleteTemplate = async () => {
+    const template = deleteTarget;
+    setDeleteTarget(null);
+    if (!template) return;
 
     try {
       const res = await fetch(`/api/checklists/${template.id}`, { method: 'DELETE' });
@@ -103,6 +129,8 @@ export function App() {
     setView('report');
   };
 
+  const headerById = new Map(headers.map((h) => [h.id, h]));
+
   return (
     <AppShell
       view={view}
@@ -131,6 +159,7 @@ export function App() {
       {view === 'run' && selectedTemplate && (
         <ChecklistRunner
           template={selectedTemplate}
+          header={selectedTemplate.headerId ? headerById.get(selectedTemplate.headerId) : undefined}
           initialAnswers={answers}
           initialMetadata={metadata}
           initialObservations={observations}
@@ -142,6 +171,7 @@ export function App() {
       {view === 'report' && selectedTemplate && (
         <ReportReview
           template={selectedTemplate}
+          header={selectedTemplate.headerId ? headerById.get(selectedTemplate.headerId) : undefined}
           answers={answers}
           metadata={metadata}
           observations={observations}
@@ -151,8 +181,19 @@ export function App() {
           onBack={() => setView('run')}
         />
       )}
-      {view === 'history' && <ResponseHistory templates={templates} />}
+      {view === 'history' && <ResponseHistory templates={templates} headers={headers} />}
+      {view === 'headers' && <HeadersView headers={headers} onHeadersChanged={loadHeaders} />}
       {view === 'settings' && <SettingsView />}
+
+      <ConfirmModal
+        open={!!deleteTarget}
+        title="Excluir modelo"
+        description={`O modelo "${deleteTarget?.title || ''}" será removido permanentemente.`}
+        confirmPhrase={CONFIRM_DELETE_PHRASE}
+        confirmLabel="Excluir"
+        onConfirm={confirmDeleteTemplate}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </AppShell>
   );
 }

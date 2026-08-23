@@ -28,6 +28,7 @@ export async function GET(
       description: rows.description as string,
       category: rows.category as string,
       items: JSON.parse(rows.items as string),
+      headerId: (rows.header_id as string | null) || undefined,
       shareToken: rows.share_token as string,
     };
 
@@ -44,6 +45,7 @@ export async function GET(
     description: row.description as string,
     category: row.category as string,
     items: JSON.parse(row.items as string),
+    headerId: (row.header_id as string | null) || undefined,
     shareToken: row.share_token as string,
   }));
 
@@ -87,7 +89,7 @@ export async function POST(
   const now = Date.now();
 
   await env.DB.prepare(
-    "INSERT INTO checklists (id, title, description, category, items, share_token, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+    "INSERT INTO checklists (id, title, description, category, items, header_id, share_token, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
   )
     .bind(
       id,
@@ -95,6 +97,7 @@ export async function POST(
       body.description || "",
       body.category || "Geral",
       JSON.stringify(body.items),
+      typeof body.headerId === "string" && body.headerId ? body.headerId : null,
       shareToken,
       now,
       now,
@@ -107,6 +110,7 @@ export async function POST(
     description: body.description || "",
     category: body.category || "Geral",
     items: body.items,
+    headerId: typeof body.headerId === "string" && body.headerId ? body.headerId : undefined,
     shareToken,
   };
 

@@ -6,6 +6,7 @@ export const checklists = sqliteTable('checklists', {
   description: text('description').notNull().default(''),
   category: text('category').notNull().default('Geral'),
   items: text('items').notNull(),
+  headerId: text('header_id'),
   shareToken: text('share_token').notNull().unique(),
   createdAt: integer('created_at').notNull(),
   updatedAt: integer('updated_at').notNull(),
@@ -18,10 +19,19 @@ export const responses = sqliteTable('responses', {
   metadata: text('metadata').notNull().default('{}'),
   observations: text('observations').notNull().default(''),
   photos: text('photos').notNull().default('{}'),
+  signatureName: text('signature_name').notNull().default(''),
   completedAt: integer('completed_at').notNull(),
 });
 
 export const settings = sqliteTable('settings', {
   key: text('key').primaryKey(),
   value: text('value').notNull(),
+});
+
+export const headers = sqliteTable('headers', {
+  id: text('id').primaryKey(),
+  name: text('name').notNull(),
+  fields: text('fields').notNull().default('[]'),
+  createdAt: integer('created_at').notNull(),
+  updatedAt: integer('updated_at').notNull(),
 });

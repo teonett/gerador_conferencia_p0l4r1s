@@ -9,6 +9,7 @@ import { ResponseHistory } from '../components/history/ResponseHistory.tsx';
 import { Dashboard } from '../components/dashboard/Dashboard.tsx';
 import { TemplateEditor } from '../components/templates/TemplateEditor.tsx';
 import { SettingsView } from '../components/settings/SettingsView.tsx';
+import { HeadersView } from '../components/headers/HeadersView.tsx';
 
 describe('Renderização de telas (SSR)', () => {
   it('ChecklistRunner renderiza a primeira etapa sem erro', () => {
@@ -29,6 +30,33 @@ describe('Renderização de telas (SSR)', () => {
       text.includes('CIPA - Áreas Administrativas'),
       'deve exibir o título do modelo no header'
     );
+  });
+
+  it('ChecklistRunner com header exibe identificação como primeira etapa', () => {
+    const html = renderToString(
+      createElement(ChecklistRunner, {
+        template: CIPA_SEED,
+        header: {
+          id: 'h1',
+          name: 'Header Teste',
+          fields: [
+            { id: 'unidade', label: 'Unidade' },
+            { id: 'responsavel', label: 'Responsável pela Avaliação' },
+          ],
+        },
+        initialAnswers: {},
+        initialMetadata: {},
+        initialObservations: '',
+        initialPhotos: {},
+        onFinish: () => {},
+        onBack: () => {},
+      })
+    );
+    const text = html.replace(/<!-- -->/g, '');
+    assert.ok(text.includes('Identificação'), 'deve exibir a etapa de identificação');
+    assert.ok(text.includes('Responsável pela Avaliação'), 'deve listar os campos do header');
+    assert.ok(text.includes('Iniciar perguntas'));
+    assert.ok(!text.includes('Etapa 1 de 16'), 'perguntas só aparecem após a identificação');
   });
 
   it('ReportReview somente leitura renderiza respostas', () => {
@@ -89,5 +117,31 @@ describe('Renderização de telas (SSR)', () => {
     const html = renderToString(createElement(SettingsView));
     assert.ok(html.includes('Configurações'));
     assert.ok(html.includes('Logo'));
+  });
+
+  it('HeadersView renderiza header com data, hora e campos dinâmicos', () => {
+    const html = renderToString(
+      createElement(HeadersView, {
+        headers: [
+          {
+            id: 'h1',
+            name: 'Inspeção Administrativa',
+            fields: [
+              { id: 'unidade', label: 'Unidade' },
+              { id: 'andar', label: 'Andar' },
+              { id: 'coordenador', label: 'Coordenador' },
+              { id: 'matriculaCoordenador', label: 'Matrícula do Coordenador' },
+              { id: 'responsavel', label: 'Responsável pela Avaliação' },
+              { id: 'matriculaResponsavel', label: 'Matrícula do Responsável' },
+            ],
+          },
+        ],
+        onHeadersChanged: () => {},
+      })
+    );
+    const text = html.replace(/<!-- -->/g, '');
+    assert.ok(text.includes('Inspeção Administrativa'));
+    assert.ok(text.includes('Data · Hora + 6 campos'));
+    assert.ok(text.includes('Responsável pela Avaliação'));
   });
 });

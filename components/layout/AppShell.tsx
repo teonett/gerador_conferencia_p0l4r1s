@@ -82,7 +82,7 @@ export function AppShell({
               fontWeight: view === "home" ? 600 : 400,
             }}
           >
-            Visão geral
+            Início
           </button>
           <button
             onClick={() => onNavigate("templates")}
@@ -100,20 +100,21 @@ export function AppShell({
           >
             Novo Modelo
           </button>
+
           <button
-            onClick={() => onNavigate("history")}
+            onClick={() => onNavigate("headers")}
             style={{
               display: "block",
               width: "100%",
               textAlign: "left",
               padding: "12px 16px",
               borderRadius: 8,
-              backgroundColor: view === "history" ? COLORS.mint : "transparent",
+              backgroundColor: view === "headers" ? COLORS.mint : "transparent",
               color: COLORS.ink,
-              fontWeight: view === "history" ? 600 : 400,
+              fontWeight: view === "headers" ? 600 : 400,
             }}
           >
-            Histórico
+            Cabeçalho de Modelos
           </button>
           <button
             onClick={() => onNavigate("settings")}

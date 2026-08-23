@@ -5,11 +5,13 @@ export interface ResponseHistoryItem {
   checklistId: string;
   checklistTitle: string;
   category: string;
+  checklistHeaderId: string | null;
   answers: Answers;
   metadata: Metadata;
   observations: string;
   photos: Record<string, string[]>;
   photoCount: number;
+  signatureName: string;
   completedAt: number;
 }
 
@@ -35,9 +37,10 @@ export async function GET(
   env: { DB: D1Database }
 ): Promise<Response> {
   const { results } = await env.DB.prepare(
-    `SELECT r.id, r.checklist_id, r.answers, r.metadata, r.observations, r.photos, r.completed_at,
+    `SELECT r.id, r.checklist_id, r.answers, r.metadata, r.observations, r.photos, r.signature_name, r.completed_at,
             COALESCE(c.title, 'Modelo removido') AS checklist_title,
-            COALESCE(c.category, '') AS category
+            COALESCE(c.category, '') AS category,
+            c.header_id AS checklist_header_id
      FROM responses r
      LEFT JOIN checklists c ON c.id = r.checklist_id
      ORDER BY r.completed_at DESC
@@ -49,11 +52,13 @@ export async function GET(
     checklistId: row.checklist_id as string,
     checklistTitle: row.checklist_title as string,
     category: row.category as string,
+    checklistHeaderId: (row.checklist_header_id as string | null) || null,
     answers: parseJson<Answers>(row.answers, {}),
     metadata: parseJson<Metadata>(row.metadata, {}),
     observations: typeof row.observations === 'string' ? row.observations : '',
     photos: parseJson<Record<string, string[]>>(row.photos, {}),
     photoCount: countPhotos(row.photos),
+    signatureName: typeof row.signature_name === 'string' ? row.signature_name : '',
     completedAt: row.completed_at as number,
   }));
 

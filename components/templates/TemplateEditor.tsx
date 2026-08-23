@@ -1,5 +1,6 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import type { Template, Item } from '../../domain/checklist';
+import type { HeaderModel } from '../../domain/header';
 import { COLORS, OPTION } from '../../domain/constants';
 import { MainHero } from '../main/MainHero';
 
@@ -57,7 +58,19 @@ export function TemplateEditor({ onSave, onCancel, initial }: TemplateEditorProp
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [editingItemId, setEditingItemId] = useState<string | null>(null);
+  const [headerId, setHeaderId] = useState(initial?.headerId || '');
+  const [headers, setHeaders] = useState<HeaderModel[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    fetch('/api/headers')
+      .then((res) => res.json())
+      .then((payload) => {
+        const data = payload as { headers?: HeaderModel[] };
+        if (data.headers) setHeaders(data.headers);
+      })
+      .catch(() => {});
+  }, []);
 
   const handleAddItem = () => {
     if (!newItemTitle.trim()) return;
@@ -198,6 +211,7 @@ export function TemplateEditor({ onSave, onCancel, initial }: TemplateEditorProp
         description,
         category,
         items: items.map(sanitizeItem),
+        headerId: headerId || undefined,
         shareToken: initial?.shareToken || crypto.randomUUID().slice(0, 8),
       };
 
@@ -252,6 +266,16 @@ export function TemplateEditor({ onSave, onCancel, initial }: TemplateEditorProp
           <option>Manutenção</option>
           <option>CIPA · Segurança do Trabalho</option>
         </select>
+        {headers.length > 0 && (
+          <select value={headerId} onChange={(e) => setHeaderId(e.target.value)}>
+            <option value="">Sem header (usa campos próprios, se houver)</option>
+            {headers.map((h) => (
+              <option key={h.id} value={h.id}>
+                Header: {h.name}
+              </option>
+            ))}
+          </select>
+        )}
       </div>
 
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>

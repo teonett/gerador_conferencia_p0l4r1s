@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 import type { Template } from '../../domain/checklist';
+import type { HeaderModel } from '../../domain/header';
 import { COLORS, CONFIRM_DELETE_PHRASE } from '../../domain/constants';
 import { classifyAnswer } from '../../domain/metrics';
 import { generatePdf } from '../../lib/pdf';
@@ -12,16 +13,19 @@ interface HistoryItem {
   checklistId: string;
   checklistTitle: string;
   category: string;
+  checklistHeaderId: string | null;
   answers: Record<string, string[]>;
   metadata: Record<string, string>;
   observations: string;
   photos: Record<string, string[]>;
   photoCount: number;
+  signatureName: string;
   completedAt: number;
 }
 
 interface ResponseHistoryProps {
   templates: Template[];
+  headers: HeaderModel[];
 }
 
 function summarize(answers: Record<string, string[]>) {
@@ -39,7 +43,7 @@ function summarize(answers: Record<string, string[]>) {
   return { yes, no, other };
 }
 
-export function ResponseHistory({ templates }: ResponseHistoryProps) {
+export function ResponseHistory({ templates, headers }: ResponseHistoryProps) {
   const [items, setItems] = useState<HistoryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -90,9 +94,10 @@ export function ResponseHistory({ templates }: ResponseHistoryProps) {
       item.answers,
       item.metadata,
       item.observations,
-      '',
+      item.signatureName || '',
       new Date(item.completedAt).toISOString(),
-      photoBlobs
+      photoBlobs,
+      item.checklistHeaderId ? headers.find((h) => h.id === item.checklistHeaderId) : undefined
     );
   };
 

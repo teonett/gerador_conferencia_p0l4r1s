@@ -1,5 +1,6 @@
 import { jsPDF } from "jspdf";
 import type { Template } from "../domain/checklist";
+import type { HeaderModel } from "../domain/header";
 
 function hexToRgb(hex: string): [number, number, number] {
   return [
@@ -9,9 +10,7 @@ function hexToRgb(hex: string): [number, number, number] {
   ];
 }
 
-function blobToImage(
-  blob: Blob,
-): Promise<HTMLCanvasElement | null> {
+function blobToImage(blob: Blob): Promise<HTMLCanvasElement | null> {
   return new Promise((resolve) => {
     const url = URL.createObjectURL(blob);
     const img = new Image();
@@ -51,6 +50,12 @@ function blobToImage(
 import { PDF, COLORS, METRIC_COLORS, PHOTO } from "../domain/constants";
 import { computeAnswerMetrics } from "../domain/metrics";
 
+function formatHeaderDate(value?: string): string {
+  if (!value) return "—";
+  const [year, month, day] = value.split("-");
+  return day && month && year ? `${day}/${month}/${year}` : value;
+}
+
 export async function generatePdf(
   template: Template,
   answers: Record<string, string[]>,
@@ -59,6 +64,7 @@ export async function generatePdf(
   signature: string,
   confirmedAt: string,
   photos: Record<string, Blob[]> = {},
+  header?: HeaderModel,
 ): Promise<void> {
   const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
   const pageWidth = doc.internal.pageSize.getWidth();
@@ -133,9 +139,28 @@ export async function generatePdf(
 
   doc.setTextColor(0, 0, 0);
   doc.setFontSize(10);
-  for (const [key, value] of Object.entries(metadata)) {
-    doc.text(`${key}: ${value}`, 14, y);
-    y += 6;
+  if (header) {
+    doc.text(
+      `Data: ${formatHeaderDate(metadata.data)}      Hora: ${metadata.hora || "—"}`,
+      14,
+      y,
+    );
+    y += 7;
+    header.fields.forEach((field, i) => {
+      const col = i % 2;
+      if (col === 0 && i > 0) y += 7;
+      doc.text(
+        `${field.label}: ${metadata[field.id]?.trim() || "—"}`,
+        col === 0 ? 14 : pageWidth / 2,
+        y,
+      );
+    });
+    y += 10;
+  } else {
+    for (const [key, value] of Object.entries(metadata)) {
+      doc.text(`${key}: ${value}`, 14, y);
+      y += 6;
+    }
   }
 
   y += 4;
@@ -225,8 +250,7 @@ export async function generatePdf(
       const cellH = slotH / rows;
 
       images.forEach((canvas, index) => {
-        const ratio =
-          canvas.height > 0 ? canvas.width / canvas.height : 1;
+        const ratio = canvas.height > 0 ? canvas.width / canvas.height : 1;
         let drawW = cellW;
         let drawH = drawW / ratio;
         if (drawH > cellH) {
@@ -245,7 +269,12 @@ export async function generatePdf(
             drawH,
           );
         } catch {
-          /* ignora imagem ilegível */
+          doc.setFontSize(PDF.noImage.fontSize);
+          doc.setTextColor(150, 150, 150);
+          doc.text("Sem imagem - Não foi processada", cellX + cellW / 2, cellY + cellH / 2, {
+            align: "center",
+          });
+          doc.setTextColor(0, 0, 0);
         }
       });
     }
@@ -261,12 +290,18 @@ export async function generatePdf(
   y = pageHeight - 40;
   doc.setDrawColor(0);
   doc.line(PDF.signature.lineFromX, y, PDF.signature.lineToX, y);
+  doc.setFontSize(10);
+  doc.setFont("helvetica", "bold");
+  doc.text(signature.trim() || "-", pageWidth / 2, y + 6, {
+    align: "center",
+  });
+  doc.setFont("helvetica", "normal");
   doc.setFontSize(8);
   doc.text(
     `Checklist feito e finalizado em: ${new Date(confirmedAt).toLocaleString("pt-BR")}`,
-    pageWidth - 14,
-    y + 6,
-    { align: "right" },
+    pageWidth / 2,
+    y + 12,
+    { align: "center" },
   );
 
   const filename = `relatorio-${template.title.toLowerCase().replace(/\s+/g, "-")}.pdf`;

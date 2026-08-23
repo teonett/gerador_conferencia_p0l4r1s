@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { Template } from "../../domain/checklist";
+import type { HeaderModel } from "../../domain/header";
 import { COLORS } from "../../domain/constants";
 import { generatePdf } from "../../lib/pdf";
 import { AnswerMetricsBar } from "../metrics/AnswerMetricsBar";
@@ -7,6 +8,7 @@ import { PageHero } from "../layout/PageHero";
 
 interface ReportReviewProps {
   template: Template;
+  header?: HeaderModel;
   answers: Record<string, string[]>;
   metadata: Record<string, string>;
   observations: string;
@@ -18,8 +20,15 @@ interface ReportReviewProps {
 
 type SaveState = "idle" | "saving" | "saved" | "error";
 
+function formatDate(value?: string): string {
+  if (!value) return "—";
+  const [year, month, day] = value.split("-");
+  return day && month && year ? `${day}/${month}/${year}` : value;
+}
+
 export function ReportReview({
   template,
+  header,
   answers,
   metadata,
   observations,
@@ -42,6 +51,7 @@ export function ReportReview({
       formData.append("answers", JSON.stringify(answers));
       formData.append("metadata", JSON.stringify(metadata));
       formData.append("observations", observations);
+      formData.append("signerName", signature);
       for (const [itemId, files] of Object.entries(photos)) {
         for (const file of files) {
           formData.append(`photo:${itemId}`, file);
@@ -77,6 +87,7 @@ export function ReportReview({
         signature,
         confirmedAt,
         photos,
+        header,
       );
     } finally {
       setGenerating(false);
@@ -125,11 +136,31 @@ export function ReportReview({
         <h3 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>
           Identificação
         </h3>
-        {Object.entries(metadata).map(([key, value]) => (
-          <p key={key}>
-            <strong>{key}:</strong> {value}
-          </p>
-        ))}
+        {header ? (
+          <>
+            <div className="header-datetime">
+              <div>
+                <strong>Data:</strong> {formatDate(metadata.data)}
+              </div>
+              <div>
+                <strong>Hora:</strong> {metadata.hora || "—"}
+              </div>
+            </div>
+            <div className="header-grid">
+              {header.fields.map((field) => (
+                <div key={field.id}>
+                  <strong>{field.label}:</strong> {metadata[field.id] || "—"}
+                </div>
+              ))}
+            </div>
+          </>
+        ) : (
+          Object.entries(metadata).map(([key, value]) => (
+            <p key={key}>
+              <strong>{key}:</strong> {value}
+            </p>
+          ))
+        )}
       </div>
 
       {template.items.map((item, index) => {

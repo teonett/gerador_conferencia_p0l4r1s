@@ -6,6 +6,8 @@ import { POST as postResponse } from '../app/api/checklists/[id]/responses/route
 import { GET as getResponses } from '../app/api/responses/route';
 import { DELETE as deleteResponse } from '../app/api/responses/[id]/route';
 import { GET as getSettings, POST as postSettings } from '../app/api/settings/route';
+import { GET as getHeaders, POST as postHeader } from '../app/api/headers/route';
+import { PUT as putHeader, DELETE as deleteHeader } from '../app/api/headers/[id]/route';
 import { GET as getFile } from '../app/api/files/[...path]/route';
 
 type Bindings = {
@@ -31,6 +33,10 @@ app.delete('/api/responses/:id', (c) =>
 );
 app.get('/api/settings', (c) => getSettings(c.req.raw, c.env));
 app.post('/api/settings', (c) => postSettings(c.req.raw, c.env));
+app.get('/api/headers', (c) => getHeaders(c.req.raw, c.env));
+app.post('/api/headers', (c) => postHeader(c.req.raw, c.env));
+app.put('/api/headers/:id', (c) => putHeader(c.req.raw, c.env, { id: c.req.param('id') }));
+app.delete('/api/headers/:id', (c) => deleteHeader(c.req.raw, c.env, { id: c.req.param('id') }));
 app.get('/api/files/*', (c) => getFile(c.req.raw, c.env));
 
 app.get('*', (c) => {

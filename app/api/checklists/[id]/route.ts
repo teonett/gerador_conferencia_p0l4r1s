@@ -12,13 +12,14 @@ export async function PUT(
   const now = Date.now();
 
   await env.DB.prepare(
-    'UPDATE checklists SET title = ?, description = ?, category = ?, items = ?, updated_at = ? WHERE id = ?'
+    'UPDATE checklists SET title = ?, description = ?, category = ?, items = ?, header_id = ?, updated_at = ? WHERE id = ?'
   )
     .bind(
       body.title,
       body.description || '',
       body.category || 'Geral',
       JSON.stringify(body.items),
+      typeof body.headerId === 'string' && body.headerId ? body.headerId : null,
       now,
       params.id
     )
