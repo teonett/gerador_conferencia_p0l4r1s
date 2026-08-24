@@ -5,6 +5,7 @@ Gerador de checklists genérico ("Gerador de Checklists"): crie modelos de inspe
 |              |                                        |
 | ------------ | -------------------------------------- |
 | **Frontend** | React 19 + Vite 6 (SPA)                |
+| **Estilos**  | Tailwind CSS 4 (`@theme`) + constantes de classe |
 | **Backend**  | Hono 4 em Cloudflare Workers           |
 | **Banco**    | Cloudflare D1 (SQLite) via Drizzle ORM |
 | **Arquivos** | Cloudflare R2 (fotos das respostas)    |
@@ -45,6 +46,8 @@ Gerador de checklists genérico ("Gerador de Checklists"): crie modelos de inspe
 - **Relatório + PDF** — revisão das respostas, assinatura e exportação A4 com indicadores do preenchimento.
 - **Persistência + Histórico** — cada preenchimento confirmado é gravado no D1 (respostas, identificação e observações) com fotos no R2; consulte tudo depois em **Histórico**, com detalhe por pergunta e PDF do registro.
 - **Câmera in-app (PWA)** — tire fotos pela câmera do dispositivo ou escolha da galeria; app instalável via service worker.
+- **Tema claro/escuro** — alternância no menu lateral com ícone ☀️/🌙; a preferência fica salva no navegador e, sem escolha, segue o tema do sistema. O PDF é sempre gerado em tema claro.
+- **UI consistente via constantes** — botões e campos usam classes reutilizáveis (`BTN_PRIMARY`, `BTN_SUCCESS`, `BTN_WARNING`, `BTN_DANGER`, `INPUT`, `CARD`...): azul para navegação/ação primária, verde para adicionar/editar confirmar positivo, laranja para cancelar, vermelho para excluir — sempre com contraste adequado nos dois temas.
 - **Compartilhamento** — link direto por _share token_ (`?checklist=<token>`).
 - **Seed automático** — modelo CIPA (16 perguntas) inserido no primeiro acesso com banco vazio.
 
@@ -528,6 +531,10 @@ collectChoiceOptions(items); // união das opções p/ o seletor
 - **Histórico**: os últimos 100 preenchimentos, com título/categoria resolvidos via LEFT JOIN (modelo excluído não quebra a listagem).
 - **Cabeçalho do PDF**: título e descrição do modelo + chips de métricas (Sim / Não / Outros / Pendentes) com % concluído.
 - **Marca visual**: azul institucional `#005ca9` (tema, favicon e cabeçalho do PDF); as cores de métrica 🟩🟥🟨 permanecem semânticas.
+- **Estilos (Tailwind 4)**: paleta institucional declarada em `@theme` (`globals.css`) — `corPadrao`, `mint`, `orange`, `cream`, `line`, `ink`, `surface` e `metric-*`. Componentes usam classes utilitárias + constantes compartilhadas de `components/ui/classes.ts` em vez de estilos inline.
+- **Tema escuro**: a classe `.dark` no `<html>` apenas **troca os tokens** da paleta (superfícies escuras, azul/laranja mais claros) — todos os componentes mudam juntos, sem CSS duplicado. Preferência em `localStorage` (chave `theme`) + script anti-flash no `index.html`; sem preferência salva, segue `prefers-color-scheme`.
+- **PDF sempre claro**: o jsPDF usa os hexes fixos de `domain/constants.ts`, sem qualquer dependência do tema da interface.
+- **Service worker**: registrado somente em builds de produção (`import.meta.env.PROD`) para não interferir no HMR do Vite durante o desenvolvimento.
 
 ---
 
@@ -577,8 +584,8 @@ npm run deploy             # vite build + wrangler deploy
 gerador_conferencia_polaris/
 ├── app/
 │   ├── App.tsx                     # estado global + roteamento por view
-│   ├── main.tsx                    # entry point + registro do service worker
-│   ├── globals.css                 # estilos base (.header-grid: 4×/2× responsivo)
+│   ├── main.tsx                    # entry point + service worker (só em produção)
+│   ├── globals.css                 # Tailwind 4: @theme com a paleta + overrides .dark (tema escuro)
 │   ├── api/checklists/             # handlers estilo file-routing (montados no Hono)
 │   │   ├── route.ts                # GET (lista/share) + POST
 │   │   └── [id]/
@@ -593,7 +600,7 @@ gerador_conferencia_polaris/
 │   ├── dashboard/Dashboard.tsx     # home: hero + grid de modelos
 │   ├── headers/HeadersView.tsx     # CRUD de headers + modal de exclusão
 │   ├── history/ResponseHistory.tsx # histórico: resumo, detalhe, PDF e exclusão por registro
-│   ├── layout/AppShell.tsx         # sidebar + logo + layout
+│   ├── layout/AppShell.tsx         # sidebar + logo + layout + toggle de tema ☀️/🌙
 │   ├── main/
 │   │   ├── ConfirmModal.tsx        # modal genérico (confirmação digitada)
 │   │   └── MainHero.tsx            # hero reutilizável da home
@@ -603,6 +610,7 @@ gerador_conferencia_polaris/
 │   ├── report/ReportReview.tsx     # revisão somente leitura + persistência + PDF
 │   ├── runner/ChecklistRunner.tsx  # execução: identificação (1ª etapa), etapas, métricas
 │   ├── settings/SettingsView.tsx   # logo do app (R2) + cor de fundo
+│   ├── ui/classes.ts               # constantes de classes Tailwind (botões, inputs, cards...)
 │   └── templates/
 │       ├── TemplateCard.tsx        # card de modelo
 │       └── TemplateEditor.tsx      # editor de perguntas/opções + header associado
@@ -620,10 +628,10 @@ gerador_conferencia_polaris/
 ├── drizzle/                        # migrations SQL
 ├── tests/                          # node:test (domínio, métricas, HTML)
 ├── public/
-│   ├── sw.js                       # service worker (PWA instalável)
+│   ├── sw.js                       # service worker (PWA; registrado só em produção)
 │   ├── manifest.webmanifest
 │   └── favicon.svg
-├── vite.config.ts                  # Vite + plugin Cloudflare
+├── vite.config.ts                  # Vite + React + Cloudflare + Tailwind (watch ignora .wrangler/dist)
 └── wrangler.jsonc                  # bindings D1 (DB), R2 (BUCKET) e ASSETS
 ```
 

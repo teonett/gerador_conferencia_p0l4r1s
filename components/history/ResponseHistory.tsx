@@ -7,7 +7,7 @@ import { classifyAnswer } from '../../domain/metrics';
 import { generatePdf } from '../../lib/pdf';
 import { MainHero } from '../main/MainHero';
 import { ConfirmModal } from '../main/ConfirmModal';
-import { BTN_PRIMARY, BTN_SECONDARY } from '../ui/classes';
+import { BTN_DANGER, BTN_PRIMARY } from '../ui/classes';
 
 interface HistoryItem {
   id: string;
@@ -180,13 +180,13 @@ export function ResponseHistory({ templates, headers }: ResponseHistoryProps) {
 
           <div className="flex gap-2 mt-3.5">
             <button
-              className={`${BTN_SECONDARY} text-xs!`}
+              className={`${BTN_PRIMARY} text-xs!`}
               onClick={() => setExpandedId(isExpanded ? null : item.id)}
             >
               {isExpanded ? 'Ocultar respostas' : 'Ver respostas'}
             </button>
             <button
-              className={`${BTN_SECONDARY} text-xs! text-orange!`}
+              className={`${BTN_DANGER} text-xs!`}
               onClick={() => setDeleteTarget(item)}
             >
               🗑 Excluir

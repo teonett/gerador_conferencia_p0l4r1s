@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { INPUT } from '../ui/classes';
+import { BTN_DANGER, BTN_PRIMARY, INPUT } from '../ui/classes';
 
 interface ConfirmModalProps {
   open: boolean;
@@ -56,10 +56,7 @@ export function ConfirmModal({
           className={`${INPUT} mt-1.5 font-mono`}
         />
         <div className="flex justify-end gap-2 mt-5">
-          <button
-            className="cursor-pointer rounded-lg px-4 py-2.5 text-sm font-medium bg-surface text-corPadrao border border-line"
-            onClick={onCancel}
-          >
+          <button className={BTN_PRIMARY} onClick={onCancel}>
             Cancelar
           </button>
           <button
@@ -70,7 +67,7 @@ export function ConfirmModal({
             }}
             className={
               matches
-                ? 'cursor-pointer rounded-lg px-4 py-2.5 text-sm font-medium bg-orange text-white'
+                ? BTN_DANGER
                 : 'cursor-pointer rounded-lg px-4 py-2.5 text-sm font-medium bg-[#9aa7a2] text-white border border-[#9aa7a2]'
             }
           >

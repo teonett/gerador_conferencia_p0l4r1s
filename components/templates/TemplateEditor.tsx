@@ -3,7 +3,7 @@ import type { Template, Item } from '../../domain/checklist';
 import type { HeaderModel } from '../../domain/header';
 import { OPTION } from '../../domain/constants';
 import { MainHero } from '../main/MainHero';
-import { BTN_PRIMARY, BTN_SECONDARY, INPUT } from '../ui/classes';
+import { BTN_PRIMARY, BTN_SECONDARY, BTN_SUCCESS, BTN_WARNING, INPUT } from '../ui/classes';
 
 interface TemplateEditorProps {
   onSave: (template: Template) => void;
@@ -411,13 +411,13 @@ export function TemplateEditor({ onSave, onCancel, initial }: TemplateEditorProp
           onKeyDown={(e) => e.key === 'Enter' && handleAddItem()}
           className={INPUT}
         />
-        <button className={BTN_PRIMARY} onClick={handleAddItem}>
+        <button className={BTN_SUCCESS} onClick={handleAddItem}>
           Adicionar
         </button>
       </div>
 
       <div className="flex gap-3 mt-8">
-        <button className={BTN_SECONDARY} onClick={onCancel}>
+        <button className={BTN_WARNING} onClick={onCancel}>
           Cancelar
         </button>
         <button className={BTN_PRIMARY} onClick={handleSave} disabled={saving}>

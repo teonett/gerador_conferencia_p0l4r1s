@@ -11,10 +11,10 @@ export interface HeaderModel {
 }
 
 export const HEADER_DEFAULT_FIELDS: HeaderField[] = [
-  { id: 'unidade', label: 'Unidade' },
-  { id: 'andar', label: 'Andar' },
-  { id: 'coordenador', label: 'Coordenador' },
-  { id: 'matriculaCoordenador', label: 'Matrícula do Coordenador' },
-  { id: 'responsavel', label: 'Responsável pela Avaliação' },
-  { id: 'matriculaResponsavel', label: 'Matrícula do Responsável' },
+  { id: "unidade", label: "Unidade" },
+  { id: "andar", label: "Andar" },
+  { id: "coordenador", label: "Coordenador" },
+  { id: "matriculaCoordenador", label: "Matrícula" },
+  { id: "responsavel", label: "Responsável" },
+  { id: "matriculaResponsavel", label: "Matrícula" },
 ];

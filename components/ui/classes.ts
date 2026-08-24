@@ -5,6 +5,7 @@ const BTN_BASE = 'cursor-pointer rounded-lg px-4 py-2.5 text-sm font-medium';
 export const BTN_PRIMARY = `${BTN_BASE} bg-corPadrao text-white`;
 export const BTN_SECONDARY = `${BTN_BASE} bg-surface text-corPadrao border border-line`;
 export const BTN_SUCCESS = `${BTN_BASE} bg-metric-yes text-white`;
+export const BTN_WARNING = `${BTN_BASE} bg-orange text-white`;
 export const BTN_DANGER = `${BTN_BASE} bg-metric-no text-white`;
 
 export const INPUT =

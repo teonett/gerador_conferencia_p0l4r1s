@@ -8,8 +8,11 @@ export default defineConfig({
   plugins: [react(), cloudflare(), tailwindcss()],
   server: {
     watch: {
-      ignored: ['**/.wrangler/**', '**/dist/**'],
+      ignored: ['**/.wrangler/**', '**/dist/**', '**/tests/**'],
     },
+  },
+  optimizeDeps: {
+    include: ['react', 'react-dom', 'jspdf', 'html2canvas'],
   },
   resolve: {
     alias: {

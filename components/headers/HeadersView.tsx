@@ -5,7 +5,7 @@ import { HEADER_DEFAULT_FIELDS } from "../../domain/header";
 import { CONFIRM_DELETE_PHRASE } from "../../domain/constants";
 import { MainHero } from "../main/MainHero";
 import { ConfirmModal } from "../main/ConfirmModal";
-import { BTN_PRIMARY, BTN_SECONDARY, CARD, INPUT } from "../ui/classes";
+import { BTN_DANGER, BTN_PRIMARY, BTN_SECONDARY, CARD, INPUT } from "../ui/classes";
 
 type Draft = { key: string; id: string; label: string };
 
@@ -208,10 +208,10 @@ export function HeadersView({ headers, onHeadersChanged }: HeadersViewProps) {
               ))}
             </ul>
             <div className="flex gap-2 mt-3">
-              <button className={BTN_SECONDARY} onClick={() => startEdit(header)}>
+              <button className={BTN_PRIMARY} onClick={() => startEdit(header)}>
                 Editar
               </button>
-              <button className={BTN_SECONDARY} onClick={() => setDeleteTarget(header)}>
+              <button className={BTN_DANGER} onClick={() => setDeleteTarget(header)}>
                 🗑 Excluir
               </button>
             </div>
