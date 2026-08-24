@@ -563,18 +563,60 @@ npx tsc --noEmit           # checagem de tipos
 
 ### Deploy
 
+#### A. Primeira publicação (criação dos recursos)
+
 ```bash
-# 1. Criar recursos (uma única vez)
-wrangler d1 create checklist-facil-db
-wrangler r2 bucket create checklist-facil-photos
+# 1. Autenticar no Cloudflare (abre o navegador)
+npx wrangler login
 
-# 2. Colar o database_id retornado em wrangler.jsonc
-#    ("REPLACE_WITH_D1_DATABASE_ID")
+# 2. Criar o banco D1 e anotar o database_id retornado
+npx wrangler d1 create checklist-facil-db
 
-# 3. Migrar e publicar
+# 3. Colar o database_id em wrangler.jsonc
+#    (substitui o placeholder "REPLACE_WITH_D1_DATABASE_ID")
+
+# 4. Ativar o R2 no dashboard (uma vez por conta):
+#    https://dash.cloudflare.com/?to=/:account/r2 → "Enable R2"
+#    e então criar o bucket de fotos:
+npx wrangler r2 bucket create checklist-facil-photos
+
+# 5. Aplicar as migrations no banco remoto
 npm run db:migrate:remote
-npm run deploy             # vite build + wrangler deploy
+
+# 6. Publicar (vite build + wrangler deploy)
+npm run deploy
 ```
+
+> **Levar os dados locais junto (opcional):**
+>
+> ```bash
+> # exporta o D1 local
+> npx wrangler d1 export checklist-facil-db --local --output=backup-local.sql
+>
+> # remove do dump as linhas de d1_migrations, sqlite_sequence e CREATE TABLE/INDEX
+> # (o remoto já tem o schema aplicado pelo passo 5)
+>
+> # importa só os INSERTs de dados
+> npx wrangler d1 execute checklist-facil-db --remote --file=backup-data.sql -y
+> ```
+>
+> Fotos/logo do R2 local: para cada chave gravada no D1 (`responses.photos` e `settings.logo_r2_key`),
+> baixe do bucket local e envie ao remoto:
+>
+> ```bash
+> npx wrangler r2 object get checklist-facil-photos/<chave> --file=<tmp> --local
+> npx wrangler r2 object put checklist-facil-photos/<chave> --file=<tmp> --remote --content-type=image/jpeg
+> ```
+
+#### B. Deploy rotineiro (dia a dia)
+
+```bash
+npm run lint && npm test     # sanity check
+npm run deploy               # build + publicação
+```
+
+A URL fica em `https://checklist-facil.<seu-subdominio>.workers.dev` (mostrada ao final do deploy).
+Migrations novas, quando houver: `npm run db:migrate:remote` antes do deploy.
 
 ---
 
