@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { SETTINGS, LOGO_BG_LABELS } from "../../domain/constants";
 import { MainHero } from "../main/MainHero";
+import { BTN_PRIMARY, CARD, INPUT } from "../ui/classes";
 
 export function SettingsView() {
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
@@ -62,27 +63,24 @@ export function SettingsView() {
         description="Personalize a identidade visual exibida no menu lateral e no PDF."
       />
 
-      <div style={{ background: "white", borderRadius: 12, padding: 24 }}>
-        <h3 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Logo</h3>
+      <div className={`${CARD} p-6`}>
+        <h3 className="text-base font-semibold mb-4">Logo</h3>
 
         {logoUrl ? (
           <div
-            style={{
-              display: "inline-block",
-              backgroundColor: logoBg === "transparent" ? undefined : logoBg,
-              padding: logoBg === "transparent" ? 0 : "8px 12px",
-              borderRadius: 8,
-              marginBottom: 16,
-            }}
+            className={`inline-block rounded-lg mb-4 ${
+              logoBg === "transparent" ? "" : "px-3 py-2"
+            }`}
+            style={logoBg === "transparent" ? undefined : { backgroundColor: logoBg }}
           >
             <img
               src={logoUrl}
               alt="Logo atual"
-              style={{ maxHeight: 64, maxWidth: 240, display: "block" }}
+              className="max-h-16 max-w-60 block"
             />
           </div>
         ) : (
-          <p style={{ fontSize: 13, color: "#666", marginBottom: 16 }}>
+          <p className="text-[13px] text-gray-600 mb-4">
             Nenhum logo definido.
           </p>
         )}
@@ -95,51 +93,39 @@ export function SettingsView() {
             setFile(e.target.files?.[0] || null);
             setMessage("");
           }}
+          className={INPUT}
         />
-        <p style={{ fontSize: 12, color: "#666", marginTop: 6 }}>
+        <p className="text-xs text-gray-600 mt-1.5">
           PNG ou JPEG, até {Math.round(SETTINGS.logoMaxBytes / (1024 * 1024))} MB.
         </p>
 
-        <h4 style={{ fontSize: 14, fontWeight: 600, marginTop: 20, marginBottom: 8 }}>
+        <h4 className="text-sm font-semibold mt-5 mb-2">
           Cor de fundo do logo
         </h4>
         {SETTINGS.logoBgOptions.map((option) => (
-          <label
-            key={option}
-            style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}
-          >
+          <label key={option} className="flex items-center gap-2 mb-1.5">
             <input
               type="radio"
               name="logo-bg"
               checked={logoBg === option}
               onChange={() => setLogoBg(option)}
-              style={{ width: 14, height: 14, margin: 0 }}
+              className="w-3.5 h-3.5 m-0"
             />
-            <span style={{ fontSize: 14 }}>{LOGO_BG_LABELS[option]}</span>
+            <span className="text-sm">{LOGO_BG_LABELS[option]}</span>
             {option !== "transparent" && (
               <span
-                style={{
-                  width: 16,
-                  height: 16,
-                  borderRadius: 4,
-                  backgroundColor: option,
-                  border: `1px solid #ccc`,
-                }}
+                className="w-4 h-4 rounded border border-gray-300 inline-block"
+                style={{ backgroundColor: option }}
               />
             )}
           </label>
         ))}
 
-        <button
-          className="primary"
-          onClick={handleSave}
-          disabled={saving}
-          style={{ marginTop: 16 }}
-        >
+        <button className={`${BTN_PRIMARY} mt-4`} onClick={handleSave} disabled={saving}>
           {saving ? "Salvando..." : file ? "Salvar logo" : "Salvar cor de fundo"}
         </button>
 
-        {message && <p style={{ marginTop: 12, fontSize: 13 }}>{message}</p>}
+        {message && <p className="mt-3 text-[13px]">{message}</p>}
       </div>
     </div>
   );

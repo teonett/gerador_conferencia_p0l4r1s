@@ -2,9 +2,10 @@ import { useState } from "react";
 import type { ReactNode } from "react";
 import type { HeaderModel, HeaderField } from "../../domain/header";
 import { HEADER_DEFAULT_FIELDS } from "../../domain/header";
-import { COLORS, CONFIRM_DELETE_PHRASE } from "../../domain/constants";
+import { CONFIRM_DELETE_PHRASE } from "../../domain/constants";
 import { MainHero } from "../main/MainHero";
 import { ConfirmModal } from "../main/ConfirmModal";
+import { BTN_PRIMARY, BTN_SECONDARY, CARD, INPUT } from "../ui/classes";
 
 type Draft = { key: string; id: string; label: string };
 
@@ -128,65 +129,53 @@ export function HeadersView({ headers, onHeadersChanged }: HeadersViewProps) {
 
   if (editing) {
     content = (
-      <div
-        style={{
-          background: "white",
-          borderRadius: 12,
-          padding: 24,
-          border: `1px solid ${COLORS.line}`,
-        }}
-      >
-        <h3 style={{ fontSize: 16, fontWeight: 600 }}>
+      <div className="bg-surface rounded-xl p-6 border border-line">
+        <h3 className="text-base font-semibold">
           {editing.id ? "Editar header" : "Novo Cabeçalho"}
         </h3>
-        <p style={{ fontSize: 13, color: "#666", marginTop: 4 }}>
+        <p className="text-[13px] text-gray-600 mt-1">
           Data e hora fazem parte de todo header e aparecem na primeira linha.
         </p>
 
-        <label style={labelStyle}>Nome do header</label>
+        <label className="block text-[13px] font-semibold mt-4 mb-1.5">Nome do header</label>
         <input
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="Ex.: Inspeção Administrativa"
+          className={INPUT}
         />
 
-        <label style={{ ...labelStyle, marginTop: 20 }}>
+        <label className="block text-[13px] font-semibold mt-5 mb-1.5">
           Campos adicionais
         </label>
         {drafts.map((draft, index) => (
-          <div
-            key={draft.key}
-            style={{ display: "flex", gap: 8, marginBottom: 8 }}
-          >
+          <div key={draft.key} className="flex gap-2 mb-2">
             <input
               value={draft.label}
               onChange={(e) => updateLabel(draft.key, e.target.value)}
               placeholder={`Campo ${index + 1}`}
+              className={INPUT}
             />
-            <button
-              className="secondary"
-              onClick={() => removeField(draft.key)}
-              title="Remover campo"
-            >
+            <button className={BTN_SECONDARY} onClick={() => removeField(draft.key)} title="Remover campo">
               🗑
             </button>
           </div>
         ))}
-        <button className="secondary" onClick={addField}>
+        <button className={BTN_SECONDARY} onClick={addField}>
           + Adicionar campo
         </button>
 
         {error && (
-          <p style={{ marginTop: 12, color: COLORS.orange, fontSize: 13 }}>
+          <p className="mt-3 text-orange text-[13px]">
             {error}
           </p>
         )}
 
-        <div style={{ display: "flex", gap: 12, marginTop: 20 }}>
-          <button className="primary" onClick={save} disabled={saving}>
+        <div className="flex gap-3 mt-5">
+          <button className={BTN_PRIMARY} onClick={save} disabled={saving}>
             {saving ? "Salvando..." : "Salvar header"}
           </button>
-          <button className="secondary" onClick={cancel} disabled={saving}>
+          <button className={BTN_SECONDARY} onClick={cancel} disabled={saving}>
             Cancelar
           </button>
         </div>
@@ -194,73 +183,41 @@ export function HeadersView({ headers, onHeadersChanged }: HeadersViewProps) {
     );
   } else if (headers.length === 0) {
     content = (
-      <div style={{ textAlign: "center", padding: "40px 16px" }}>
-        <p style={{ color: "#666" }}>Nenhum header cadastrado ainda.</p>
-        <button
-          className="primary"
-          onClick={startNew}
-          style={{ marginTop: 16 }}
-        >
+      <div className="text-center py-10 px-4">
+        <p className="text-gray-600">Nenhum header cadastrado ainda.</p>
+        <button className={`${BTN_PRIMARY} mt-4`} onClick={startNew}>
           Criar Novo Cabeçalho
         </button>
       </div>
     );
   } else {
     content = (
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
-          gap: 16,
-        }}
-      >
+      <div className="grid gap-4 [grid-template-columns:repeat(auto-fill,minmax(300px,1fr))]">
         {headers.map((header) => (
-          <div
-            key={header.id}
-            style={{
-              background: "white",
-              borderRadius: 12,
-              padding: 16,
-              border: `1px solid ${COLORS.line}`,
-            }}
-          >
-            <p style={{ fontWeight: 600 }}>{header.name}</p>
-            <p style={{ fontSize: 13, color: "#666", marginTop: 4 }}>
+          <div key={header.id} className="bg-surface rounded-xl p-4 border border-line">
+            <p className="font-semibold">{header.name}</p>
+            <p className="text-[13px] text-gray-600 mt-1">
               Data · Hora
               {header.fields.length > 0
                 ? ` + ${header.fields.length} campos`
                 : ""}
             </p>
-            <ul
-              style={{
-                marginTop: 8,
-                paddingLeft: 18,
-                fontSize: 13,
-                color: "#555",
-              }}
-            >
+            <ul className="mt-2 pl-[18px] text-[13px] text-gray-500">
               {header.fields.map((field) => (
                 <li key={field.id}>{field.label}</li>
               ))}
             </ul>
-            <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
-              <button className="secondary" onClick={() => startEdit(header)}>
+            <div className="flex gap-2 mt-3">
+              <button className={BTN_SECONDARY} onClick={() => startEdit(header)}>
                 Editar
               </button>
-              <button
-                className="secondary"
-                onClick={() => setDeleteTarget(header)}
-              >
+              <button className={BTN_SECONDARY} onClick={() => setDeleteTarget(header)}>
                 🗑 Excluir
               </button>
             </div>
           </div>
         ))}
-        <button
-          className="secondary"
-          onClick={startNew}
-          style={{ padding: 24, borderRadius: 12 }}
-        >
+        <button className={`${BTN_SECONDARY} p-6 rounded-xl`} onClick={startNew}>
           + Novo Cabeçalho
         </button>
       </div>
@@ -273,14 +230,7 @@ export function HeadersView({ headers, onHeadersChanged }: HeadersViewProps) {
         title="Cabeçalho de Modelos"
         description="Campos de identificação reutilizáveis pelos modelos de checklist."
       />
-      <div
-        style={{
-          background: "white",
-          borderRadius: 12,
-          padding: 24,
-          marginBottom: 24,
-        }}
-      >
+      <div className={`${CARD} p-6 mb-6`}>
         {content}
       </div>
 
@@ -296,13 +246,6 @@ export function HeadersView({ headers, onHeadersChanged }: HeadersViewProps) {
     </div>
   );
 }
-
-const labelStyle = {
-  display: "block",
-  fontSize: 13,
-  fontWeight: 600,
-  margin: "16px 0 6px",
-} as const;
 
 function slugify(value: string): string {
   return value

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { COLORS } from '../../domain/constants';
+import { INPUT } from '../ui/classes';
 
 interface ConfirmModalProps {
   open: boolean;
@@ -33,35 +33,19 @@ export function ConfirmModal({
   return (
     <div
       onClick={onCancel}
-      style={{
-        position: 'fixed',
-        inset: 0,
-        background: 'rgba(24, 54, 47, 0.55)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        zIndex: 1000,
-        padding: 16,
-      }}
+      className="fixed inset-0 bg-black/55 flex items-center justify-center z-[1000] p-4"
     >
       <div
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
-        style={{
-          background: 'white',
-          borderRadius: 12,
-          padding: 24,
-          width: '100%',
-          maxWidth: 420,
-          boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
-        }}
+        className="bg-surface rounded-xl p-6 w-full max-w-[420px] shadow-[0_20px_60px_rgba(0,0,0,0.3)]"
       >
-        <h3 style={{ fontSize: 18, fontWeight: 600 }}>{title}</h3>
+        <h3 className="text-lg font-semibold">{title}</h3>
         {description && (
-          <p style={{ marginTop: 8, fontSize: 14, color: '#555' }}>{description}</p>
+          <p className="mt-2 text-sm text-gray-500">{description}</p>
         )}
-        <p style={{ marginTop: 12, fontSize: 13 }}>
+        <p className="mt-3 text-[13px]">
           Para confirmar, digite <strong>{confirmPhrase}</strong>:
         </p>
         <input
@@ -69,20 +53,26 @@ export function ConfirmModal({
           onChange={(e) => setTyped(e.target.value)}
           placeholder={confirmPhrase}
           autoFocus
-          style={{ marginTop: 6, fontFamily: 'monospace' }}
+          className={`${INPUT} mt-1.5 font-mono`}
         />
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, marginTop: 20 }}>
-          <button className="secondary" onClick={onCancel}>
+        <div className="flex justify-end gap-2 mt-5">
+          <button
+            className="cursor-pointer rounded-lg px-4 py-2.5 text-sm font-medium bg-surface text-corPadrao border border-line"
+            onClick={onCancel}
+          >
             Cancelar
           </button>
           <button
-            className="primary"
             disabled={!matches}
             onClick={() => {
               onConfirm();
               setTyped('');
             }}
-            style={!matches ? { background: '#9aa7a2', borderColor: '#9aa7a2' } : { background: COLORS.orange, borderColor: COLORS.orange }}
+            className={
+              matches
+                ? 'cursor-pointer rounded-lg px-4 py-2.5 text-sm font-medium bg-orange text-white'
+                : 'cursor-pointer rounded-lg px-4 py-2.5 text-sm font-medium bg-[#9aa7a2] text-white border border-[#9aa7a2]'
+            }
           >
             {confirmLabel}
           </button>

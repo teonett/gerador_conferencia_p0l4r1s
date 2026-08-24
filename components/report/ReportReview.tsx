@@ -1,10 +1,18 @@
 import { useState } from "react";
 import type { Template } from "../../domain/checklist";
 import type { HeaderModel } from "../../domain/header";
-import { COLORS } from "../../domain/constants";
 import { generatePdf } from "../../lib/pdf";
 import { AnswerMetricsBar } from "../metrics/AnswerMetricsBar";
 import { PageHero } from "../layout/PageHero";
+import {
+  BTN_PRIMARY,
+  BTN_SECONDARY,
+  CARD,
+  HEADER_DATETIME,
+  HEADER_GRID,
+  INPUT,
+  zebraRow,
+} from "../ui/classes";
 
 interface ReportReviewProps {
   template: Template;
@@ -98,47 +106,27 @@ export function ReportReview({
     <div>
       <PageHero title={template.title} description={template.description} />
 
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          marginBottom: 24,
-        }}
-      >
-        <button className="secondary" onClick={onBack}>
+      <div className="flex justify-between mb-6">
+        <button className={BTN_SECONDARY} onClick={onBack}>
           ← Voltar ao preenchimento
         </button>
       </div>
 
-      <h2 style={{ fontSize: 20, fontWeight: 600, marginBottom: 24 }}>
+      <h2 className="text-xl font-semibold mb-6">
         Revisar e assinar
       </h2>
 
-      <div
-        style={{
-          background: "white",
-          borderRadius: 12,
-          padding: 24,
-          marginBottom: 24,
-        }}
-      >
+      <div className={`${CARD} p-6 mb-6`}>
         <AnswerMetricsBar items={template.items} answers={answers} />
       </div>
 
-      <div
-        style={{
-          background: "white",
-          borderRadius: 12,
-          padding: 24,
-          marginBottom: 24,
-        }}
-      >
-        <h3 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>
+      <div className={`${CARD} p-6 mb-6`}>
+        <h3 className="text-base font-semibold mb-4">
           Identificação
         </h3>
         {header ? (
           <>
-            <div className="header-datetime">
+            <div className={HEADER_DATETIME}>
               <div>
                 <strong>Data:</strong> {formatDate(metadata.data)}
               </div>
@@ -146,7 +134,7 @@ export function ReportReview({
                 <strong>Hora:</strong> {metadata.hora || "—"}
               </div>
             </div>
-            <div className="header-grid">
+            <div className={HEADER_GRID}>
               {header.fields.map((field) => (
                 <div key={field.id}>
                   <strong>{field.label}:</strong> {metadata[field.id] || "—"}
@@ -169,30 +157,26 @@ export function ReportReview({
         return (
           <div
             key={item.id}
-            style={{
-              background: index % 2 === 1 ? COLORS.cream : "white",
-              borderRadius: 12,
-              padding: 16,
-              marginBottom: 12,
-              border: `1px solid ${missingRequired ? COLORS.orange : COLORS.line}`,
-            }}
+            className={`${zebraRow(index)} rounded-xl p-4 mb-3 border ${
+              missingRequired ? "border-orange" : "border-line"
+            }`}
           >
-            <p style={{ fontWeight: 600 }}>
+            <p className="font-semibold">
               {index + 1}. {item.title}
               {item.required && (
-                <span style={{ color: COLORS.orange }}> *</span>
+                <span className="text-orange"> *</span>
               )}
             </p>
-            <p style={{ marginTop: 8, color: COLORS.corPadrao }}>
+            <p className="mt-2 text-corPadrao">
               Resposta: {current.join(", ") || "—"}
             </p>
             {(photos[item.id]?.length || 0) > 0 && (
-              <p style={{ marginTop: 4, fontSize: 13, color: "#666" }}>
+              <p className="mt-1 text-[13px] text-gray-600">
                 📷 {photos[item.id].length} foto(s)
               </p>
             )}
             {missingRequired && (
-              <p style={{ marginTop: 8, fontSize: 13, color: COLORS.orange }}>
+              <p className="mt-2 text-[13px] text-orange">
                 Pergunta obrigatória sem resposta.
               </p>
             )}
@@ -201,30 +185,14 @@ export function ReportReview({
       })}
 
       {observations && (
-        <div
-          style={{
-            background: "white",
-            borderRadius: 12,
-            padding: 16,
-            marginBottom: 12,
-            border: `1px solid ${COLORS.line}`,
-          }}
-        >
-          <p style={{ fontWeight: 600 }}>Observações</p>
-          <p style={{ marginTop: 8 }}>{observations}</p>
+        <div className="bg-surface rounded-xl p-4 mb-3 border border-line">
+          <p className="font-semibold">Observações</p>
+          <p className="mt-2">{observations}</p>
         </div>
       )}
 
-      <div
-        style={{
-          background: "white",
-          borderRadius: 12,
-          padding: 24,
-          marginTop: 24,
-          border: `1px solid ${COLORS.line}`,
-        }}
-      >
-        <h3 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>
+      <div className="bg-surface rounded-xl p-6 mt-6 border border-line">
+        <h3 className="text-base font-semibold mb-4">
           Assinatura
         </h3>
         <input
@@ -232,15 +200,9 @@ export function ReportReview({
           onChange={(e) => setSignature(e.target.value)}
           placeholder="Nome completo"
           disabled={confirmed}
+          className={INPUT}
         />
-        <label
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
-            marginTop: 12,
-          }}
-        >
+        <label className="flex items-center gap-2 mt-3">
           <input
             type="checkbox"
             checked={accepted}
@@ -252,27 +214,26 @@ export function ReportReview({
                 setSaveState("idle");
               }
             }}
-            style={{ width: 14, height: 14, margin: 0 }}
+            className="w-3.5 h-3.5 m-0"
           />
           Confirmo que as informações são verdadeiras.
         </label>
         {!confirmed && (
           <button
-            className="primary"
+            className={`${BTN_PRIMARY} mt-4 disabled:opacity-60`}
             onClick={handleConfirm}
             disabled={!signature || !accepted || saveState === "saving"}
-            style={{ marginTop: 16 }}
           >
             {saveState === "saving" ? "Salvando..." : "Confirmar e Finalizar"}
           </button>
         )}
         {saveState === "saved" && (
-          <p style={{ marginTop: 12, fontSize: 13, color: COLORS.corPadrao }}>
+          <p className="mt-3 text-[13px] text-corPadrao">
             ✓ Resposta registrada no histórico.
           </p>
         )}
         {saveState === "error" && (
-          <p style={{ marginTop: 12, fontSize: 13, color: COLORS.orange }}>
+          <p className="mt-3 text-[13px] text-orange">
             Não foi possível salvar no histórico. Você pode baixar o PDF e
             tentar confirmar novamente.
           </p>
@@ -281,10 +242,9 @@ export function ReportReview({
 
       {confirmed && (
         <button
-          className="primary"
+          className={`${BTN_PRIMARY} mt-6 w-full`}
           onClick={handleDownload}
           disabled={generating}
-          style={{ marginTop: 24, width: "100%" }}
         >
           {generating ? "Gerando PDF..." : "Baixar relatório em PDF"}
         </button>

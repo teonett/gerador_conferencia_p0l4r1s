@@ -11,7 +11,7 @@
     {
       "binding": "DB",
       "database_name": "checklist-facil-db",
-      "database_id": "REPLACE_WITH_D1_DATABASE_ID",
+      "database_id": "3a856c39-b002-43b0-b1cb-f6896602ffd4",
       "migrations_dir": "drizzle"
     }
   ],

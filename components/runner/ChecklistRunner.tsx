@@ -2,13 +2,24 @@ import { useEffect, useState } from 'react';
 import type { Template, Item } from '../../domain/checklist';
 import type { HeaderModel } from '../../domain/header';
 import { buildInitialAnswers } from '../../domain/checklist';
-import { COLORS, PHOTO, OBSERVATION } from '../../domain/constants';
+import { PHOTO, OBSERVATION } from '../../domain/constants';
 import { applyDefaultAnswer } from '../../domain/metrics';
 import { AnswerMetricsBar } from '../metrics/AnswerMetricsBar';
 import { BulkDefaultControl } from '../metrics/BulkDefaultControl';
 import { CameraCapture } from '../camera/CameraCapture';
 import { PageHero } from '../layout/PageHero';
 import { normalizeImage } from '../../lib/images';
+import {
+  BTN_PRIMARY,
+  BTN_SECONDARY,
+  CARD,
+  FIELD_LABEL,
+  HEADER_DATE_INPUT,
+  HEADER_DATETIME,
+  HEADER_GRID,
+  HEADER_TIME_INPUT,
+  INPUT,
+} from '../ui/classes';
 
 interface ChecklistRunnerProps {
   template: Template;
@@ -139,11 +150,11 @@ export function ChecklistRunner({
     <div>
       <PageHero title={template.title} description={template.description} />
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-        <button className="secondary" onClick={onBack}>
+      <div className="flex justify-between items-center mb-4">
+        <button className={BTN_SECONDARY} onClick={onBack}>
           ← Voltar
         </button>
-        <span style={{ color: '#666', fontSize: 14 }}>
+        <span className="text-gray-600 text-sm">
           {inIdentification
             ? 'Identificação'
             : `Etapa ${currentIndex + 1} de ${template.items.length}`}
@@ -151,7 +162,7 @@ export function ChecklistRunner({
       </div>
 
       {!inIdentification && (
-        <div style={{ marginBottom: 24 }}>
+        <div className="mb-6">
           <AnswerMetricsBar items={template.items} answers={answers} />
         </div>
       )}
@@ -167,68 +178,61 @@ export function ChecklistRunner({
       )}
 
       {inIdentification && (
-        <div
-          style={{
-            background: 'white',
-            borderRadius: 12,
-            padding: 24,
-            border: `1px solid ${COLORS.line}`,
-          }}
-        >
-          <h3 style={{ fontSize: 16, fontWeight: 600, marginBottom: 12 }}>Identificação</h3>
-          <div className="header-datetime">
+        <div className={`${CARD} p-6 border border-line`}>
+          <h3 className="text-base font-semibold mb-3">Identificação</h3>
+          <div className={HEADER_DATETIME}>
             <div>
-              <label style={fieldLabelStyle}>Data</label>
+              <label className={FIELD_LABEL}>Data</label>
               <input
                 type="date"
                 value={metadata['data'] || ''}
                 onChange={(e) => setMetadata({ ...metadata, data: e.target.value })}
+                className={`${INPUT} ${HEADER_DATE_INPUT}`}
               />
             </div>
             <div>
-              <label style={fieldLabelStyle}>Hora</label>
+              <label className={FIELD_LABEL}>Hora</label>
               <input
                 type="time"
                 value={metadata['hora'] || ''}
                 onChange={(e) => setMetadata({ ...metadata, hora: e.target.value })}
+                className={`${INPUT} ${HEADER_TIME_INPUT}`}
               />
             </div>
           </div>
-          <div className="header-grid">
+          <div className={HEADER_GRID}>
             {header?.fields.map((field) => (
               <div key={field.id}>
-                <label style={fieldLabelStyle}>{field.label}</label>
+                <label className={FIELD_LABEL}>{field.label}</label>
                 <input
                   value={metadata[field.id] || ''}
                   onChange={(e) => setMetadata({ ...metadata, [field.id]: e.target.value })}
+                  className={INPUT}
                 />
               </div>
             ))}
           </div>
-          <button
-            className="primary"
-            style={{ marginTop: 20 }}
-            onClick={() => setShowIdentification(false)}
-          >
+          <button className={`${BTN_PRIMARY} mt-5`} onClick={() => setShowIdentification(false)}>
             Iniciar perguntas →
           </button>
         </div>
       )}
 
       {!header && template.fields && (
-        <div style={{ marginBottom: 32 }}>
-          <h3 style={{ fontSize: 16, fontWeight: 600, marginBottom: 12 }}>Identificação</h3>
+        <div className="mb-8">
+          <h3 className="text-base font-semibold mb-3">Identificação</h3>
           {template.fields.map((field) => (
-            <div key={field.id} style={{ marginBottom: 12 }}>
-              <label style={{ display: 'block', fontSize: 14, marginBottom: 4 }}>
+            <div key={field.id} className="mb-3">
+              <label className={FIELD_LABEL}>
                 {field.label}
-                {field.required && <span style={{ color: COLORS.orange }}>*</span>}
+                {field.required && <span className="text-orange">*</span>}
               </label>
               <input
                 type={field.type}
                 value={metadata[field.id] || ''}
                 onChange={(e) => setMetadata({ ...metadata, [field.id]: e.target.value })}
                 required={field.required}
+                className={INPUT}
               />
             </div>
           ))}
@@ -236,17 +240,10 @@ export function ChecklistRunner({
       )}
 
       {!inIdentification && currentItem && (
-        <div
-          style={{
-            background: 'white',
-            borderRadius: 12,
-            padding: 24,
-            border: `1px solid ${COLORS.line}`,
-          }}
-        >
-          <h3 style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>
+        <div className={`${CARD} p-6 border border-line`}>
+          <h3 className="text-base font-semibold mb-4">
             {currentIndex + 1}. {currentItem.title}
-            {currentItem.required && <span style={{ color: COLORS.orange }}> *</span>}
+            {currentItem.required && <span className="text-orange"> *</span>}
           </h3>
 
           {currentItem.answerType === 'text' ? (
@@ -254,9 +251,10 @@ export function ChecklistRunner({
               value={answers[currentItem.id]?.[0] || ''}
               onChange={(e) => handleAnswer(currentItem.id, [e.target.value])}
               placeholder="Digite sua resposta"
+              className={INPUT}
             />
           ) : (
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+            <div className="flex flex-wrap gap-2">
               {currentItem.options.map((option) => {
                 const isSelected = answers[currentItem.id]?.includes(option);
                 return (
@@ -273,13 +271,11 @@ export function ChecklistRunner({
                         );
                       }
                     }}
-                    style={{
-                      padding: '8px 16px',
-                      borderRadius: 8,
-                      border: `1px solid ${isSelected ? COLORS.corPadrao : COLORS.line}`,
-                      background: isSelected ? COLORS.mint : 'white',
-                      color: isSelected ? COLORS.corPadrao : COLORS.ink,
-                    }}
+                    className={`px-4 py-2 rounded-lg border ${
+                      isSelected
+                        ? 'border-corPadrao bg-mint text-corPadrao'
+                        : 'border-line bg-surface text-ink'
+                    }`}
                   >
                     {option}
                   </button>
@@ -288,58 +284,37 @@ export function ChecklistRunner({
             </div>
           )}
 
-          <div style={{ marginTop: 20 }}>
-            <label style={{ display: 'block', fontSize: 14, marginBottom: 4 }}>
-              Observações{isLast && <span style={{ color: COLORS.orange }}> (mínimo {OBSERVATION.minLength} caracteres)</span>}
+          <div className="mt-5">
+            <label className={FIELD_LABEL}>
+              Observações{isLast && <span className="text-orange"> (mínimo {OBSERVATION.minLength} caracteres)</span>}
             </label>
             <textarea
               value={observations}
               onChange={(e) => { setObservations(e.target.value); setValidationError(''); }}
               placeholder="Observações adicionais"
               rows={2}
+              className={INPUT}
             />
           </div>
 
-          <div style={{ marginTop: 16 }}>
-            <label style={{ display: 'block', fontSize: 14, marginBottom: 4 }}>
+          <div className="mt-4">
+            <label className={FIELD_LABEL}>
               Fotos (opcional, máx. {PHOTO.maxPerQuestion})
             </label>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 8 }}>
+            <div className="flex flex-wrap gap-2 mb-2">
               {currentPhotos.map((file, pi) => (
                 <div
                   key={pi}
-                  style={{
-                    position: 'relative',
-                    width: 80,
-                    height: 80,
-                    borderRadius: 8,
-                    overflow: 'hidden',
-                    border: `1px solid ${COLORS.line}`,
-                  }}
+                  className="relative w-20 h-20 rounded-lg overflow-hidden border border-line"
                 >
                   <img
                     src={URL.createObjectURL(file)}
                     alt={`Foto ${pi + 1}`}
-                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    className="w-full h-full object-cover"
                   />
                   <button
                     onClick={() => handleRemovePhoto(currentItem.id, pi)}
-                    style={{
-                      position: 'absolute',
-                      top: 2,
-                      right: 2,
-                      background: 'rgba(0,0,0,0.6)',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '50%',
-                      width: 20,
-                      height: 20,
-                      fontSize: 12,
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}
+                    className="absolute top-0.5 right-0.5 bg-black/60 text-white rounded-full w-5 h-5 text-xs cursor-pointer flex items-center justify-center"
                   >
                     ✕
                   </button>
@@ -347,29 +322,15 @@ export function ChecklistRunner({
               ))}
             </div>
             {currentPhotos.length < PHOTO.maxPerQuestion && (
-              <div style={{ display: 'flex', gap: 8 }}>
+              <div className="flex gap-2">
                 <button
-                  className="secondary"
+                  className={`${BTN_SECONDARY} px-4 py-2 text-[13px] border-dashed`}
                   onClick={() => setCameraOpen(true)}
-                  style={{
-                    padding: '8px 16px',
-                    borderRadius: 8,
-                    fontSize: 13,
-                    border: `1px dashed ${COLORS.line}`,
-                  }}
                 >
                   📷 Tirar foto
                 </button>
                 <label
-                  style={{
-                    display: 'inline-block',
-                    padding: '8px 16px',
-                    borderRadius: 8,
-                    border: `1px dashed ${COLORS.line}`,
-                    cursor: 'pointer',
-                    fontSize: 13,
-                    color: '#666',
-                  }}
+                  className="inline-block px-4 py-2 rounded-lg border border-dashed border-line cursor-pointer text-[13px] text-gray-600"
                 >
                   + Galeria
                   <input
@@ -380,7 +341,7 @@ export function ChecklistRunner({
                       if (file) handleAddPhoto(currentItem.id, file);
                       e.target.value = '';
                     }}
-                    style={{ display: 'none' }}
+                    className="hidden"
                   />
                 </label>
               </div>
@@ -390,15 +351,19 @@ export function ChecklistRunner({
       )}
 
       {!inIdentification && validationError && (
-        <p style={{ color: COLORS.orange, marginTop: 12, fontSize: 14 }}>{validationError}</p>
+        <p className="text-orange mt-3 text-sm">{validationError}</p>
       )}
 
       {!inIdentification && (
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 24 }}>
-          <button className="secondary" onClick={handlePrev} disabled={currentIndex === 0 && !header}>
+        <div className="flex justify-between mt-6">
+          <button
+            className={BTN_SECONDARY}
+            onClick={handlePrev}
+            disabled={currentIndex === 0 && !header}
+          >
             Anterior
           </button>
-          <button className="primary" onClick={handleNext}>
+          <button className={BTN_PRIMARY} onClick={handleNext}>
             {isLast ? 'Revisar e assinar' : 'Próximo'}
           </button>
         </div>
@@ -416,9 +381,3 @@ export function ChecklistRunner({
     </div>
   );
 }
-
-const fieldLabelStyle = {
-  display: 'block',
-  fontSize: 14,
-  marginBottom: 4,
-} as const;

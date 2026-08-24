@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import type { Answers, Item } from '../../domain/checklist';
-import { COLORS, METRIC_COLORS } from '../../domain/constants';
+import { METRIC_BG } from '../ui/classes';
 import {
   classifyAnswer,
   collectChoiceOptions,
@@ -8,28 +8,17 @@ import {
   type AnswerClass,
 } from '../../domain/metrics';
 
-const CLASS_COLORS: Record<AnswerClass | 'pending', string> = {
-  yes: METRIC_COLORS.yes,
-  no: METRIC_COLORS.no,
-  other: METRIC_COLORS.other,
-  pending: '#9ca3af',
+const CLASS_DOT: Record<AnswerClass | 'pending', string> = {
+  yes: METRIC_BG.yes,
+  no: METRIC_BG.no,
+  other: METRIC_BG.other,
+  pending: 'bg-[#9ca3af]',
 };
 
-function MetricChip({ label, value, color }: { label: string; value: number; color: string }) {
+function MetricChip({ label, value, dotClass }: { label: string; value: number; dotClass: string }) {
   return (
-    <span
-      style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: 6,
-        padding: '4px 10px',
-        borderRadius: 999,
-        border: `1px solid ${COLORS.line}`,
-        background: 'white',
-        fontSize: 13,
-      }}
-    >
-      <span style={{ width: 8, height: 8, borderRadius: '50%', background: color }} />
+    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-line bg-surface text-[13px]">
+      <span className={`w-2 h-2 rounded-full ${dotClass}`} />
       {label}: <strong>{value}</strong>
     </span>
   );
@@ -46,58 +35,45 @@ export function AnswerMetricsBar({ items, answers }: AnswerMetricsBarProps) {
 
   return (
     <div>
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          marginBottom: 6,
-          fontSize: 13,
-          color: '#666',
-        }}
-      >
+      <div className="flex justify-between mb-1.5 text-[13px] text-gray-600">
         <span>
           {metrics.answered} de {metrics.total} respondidas
         </span>
         <span>{metrics.total > 0 ? Math.round((metrics.answered / metrics.total) * 100) : 0}%</span>
       </div>
-      <div
-        style={{
-          display: 'flex',
-          height: 10,
-          borderRadius: 5,
-          overflow: 'hidden',
-          background: METRIC_COLORS.pending,
-        }}
-      >
+      <div className="flex h-2.5 rounded-[5px] overflow-hidden bg-metric-pending">
         {metrics.yes > 0 && (
           <div
             title={`Sim: ${metrics.yes}`}
-            style={{ flexGrow: metrics.yes, background: METRIC_COLORS.yes, transition: 'flex-grow 0.3s' }}
+            style={{ flexGrow: metrics.yes }}
+            className={`${METRIC_BG.yes} transition-[flex-grow] duration-300`}
           />
         )}
         {metrics.no > 0 && (
           <div
             title={`Não: ${metrics.no}`}
-            style={{ flexGrow: metrics.no, background: METRIC_COLORS.no, transition: 'flex-grow 0.3s' }}
+            style={{ flexGrow: metrics.no }}
+            className={`${METRIC_BG.no} transition-[flex-grow] duration-300`}
           />
         )}
         {metrics.other > 0 && (
           <div
             title={`Outros: ${metrics.other}`}
-            style={{ flexGrow: metrics.other, background: METRIC_COLORS.other, transition: 'flex-grow 0.3s' }}
+            style={{ flexGrow: metrics.other }}
+            className={`${METRIC_BG.other} transition-[flex-grow] duration-300`}
           />
         )}
       </div>
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 10 }}>
+      <div className="flex flex-wrap gap-2 mt-2.5">
         {options.map((option) => (
           <MetricChip
             key={option}
             label={option}
             value={metrics.byOption[option] || 0}
-            color={CLASS_COLORS[classifyAnswer(option)]}
+            dotClass={CLASS_DOT[classifyAnswer(option)]}
           />
         ))}
-        <MetricChip label="Pendentes" value={metrics.pending} color={CLASS_COLORS.pending} />
+        <MetricChip label="Pendentes" value={metrics.pending} dotClass={CLASS_DOT.pending} />
       </div>
     </div>
   );

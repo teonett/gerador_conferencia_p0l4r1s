@@ -1,7 +1,7 @@
 import type { Template } from "../../domain/checklist";
-import { COLORS } from "../../domain/constants";
 import { TemplateCard } from "../templates/TemplateCard";
 import { MainHero } from "../main/MainHero";
+import { BTN_PRIMARY, BTN_SECONDARY } from "../ui/classes";
 
 interface DashboardProps {
   templates: Template[];
@@ -21,12 +21,12 @@ export function Dashboard({
   return (
     <div>
       <MainHero>
-        <div style={{ display: "flex", gap: 12, marginTop: 20 }}>
-          <button className="primary" onClick={onNew}>
+        <div className="flex gap-3 mt-5">
+          <button className={BTN_PRIMARY} onClick={onNew}>
             Novo checklist
           </button>
           <button
-            className="secondary"
+            className={BTN_SECONDARY}
             onClick={() => {
               if (templates.length > 0) onRun(templates[0]);
             }}
@@ -36,33 +36,16 @@ export function Dashboard({
         </div>
       </MainHero>
 
-      <div
-        style={{ display: "flex", justifyContent: "flex-end", marginBottom: 5 }}
-      >
-        <span
-          style={{
-            backgroundColor: COLORS.mint,
-            color: COLORS.corPadrao,
-            fontWeight: 700,
-            fontSize: 11,
-            padding: "6px 14px",
-            borderRadius: 999,
-          }}
-        >
+      <div className="flex justify-end mb-[5px]">
+        <span className="bg-mint text-corPadrao font-bold text-[11px] px-3.5 py-1.5 rounded-full">
           {templates.length} Modelos Ativos
         </span>
       </div>
 
-      <h3 style={{ fontSize: 18, fontWeight: 600, marginBottom: 16 }}>
+      <h3 className="text-lg font-semibold mb-4">
         Modelos recentes
       </h3>
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
-          gap: 16,
-        }}
-      >
+      <div className="grid gap-4 [grid-template-columns:repeat(auto-fill,minmax(300px,1fr))]">
         {templates.slice(0, 6).map((template) => (
           <TemplateCard
             key={template.id}

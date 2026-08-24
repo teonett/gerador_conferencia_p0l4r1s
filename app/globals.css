@@ -1,87 +1,46 @@
-:root {
-  --ink: #18362f;
-  --corPadrao: #005ca9;
-  --mint: #d9e8f6;
-  --orange: #ff774c;
-  --cream: #f7f5ef;
-  --line: #e3e4dc;
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  /* Paleta institucional (mesma de domain/constants.ts) */
+  --color-corPadrao: #005ca9;
+  --color-mint: #d9e8f6;
+  --color-orange: #ff774c;
+  --color-cream: #f7f5ef;
+  --color-line: #e3e4dc;
+  --color-ink: #18362f;
+
+  /* Superfície de cards/botões (branco no claro, verde-escuro no tema escuro) */
+  --color-surface: #ffffff;
+
+  /* Cores semânticas de métrica (espelham METRIC_COLORS; PDF continua lendo constants) */
+  --color-metric-yes: #22c55e;
+  --color-metric-no: #ef4444;
+  --color-metric-other: #eab308;
+  --color-metric-pending: #e3e4dc;
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+/* Tema escuro: troca os tokens semânticos — todos os componentes mudam juntos */
+.dark {
+  --color-cream: #0e1512;
+  --color-surface: #18211c;
+  --color-line: #2b3831;
+  --color-ink: #dce5df;
+  --color-corPadrao: #6cb8f5;
+  --color-mint: #14304a;
+  --color-orange: #ff9068;
+  --color-metric-pending: #2b3831;
+
+  --color-gray-400: #7f8a84;
+  --color-gray-500: #96a19a;
+  --color-gray-600: #aab4ad;
 }
 
-html, body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background-color: var(--cream);
-  color: var(--ink);
-  line-height: 1.5;
-}
-
-button {
-  cursor: pointer;
-  border: none;
-  border-radius: 8px;
-  padding: 10px 16px;
-  font-size: 14px;
-  font-weight: 500;
-}
-
-button.primary {
-  background-color: var(--corPadrao);
-  color: white;
-}
-
-button.secondary {
-  background-color: white;
-  color: var(--corPadrao);
-  border: 1px solid var(--line);
-}
-
-input, textarea, select {
-  width: 100%;
-  padding: 10px 12px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  font-size: 14px;
-}
-
-input:focus, textarea:focus, select:focus {
-  outline: none;
-  border-color: var(--corPadrao);
-}
-
-.header-datetime {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.header-datetime input[type="date"] {
-  width: 170px;
-}
-
-.header-datetime input[type="time"] {
-  width: 110px;
-}
-
-.header-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-  margin-top: 12px;
-}
-
-@media (min-width: 720px) {
-  .header-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 600px) {
-  .sidebar {
-    display: none;
+@layer base {
+  body {
+    @apply bg-cream text-ink font-sans leading-normal;
   }
 }

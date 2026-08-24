@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import type { Item } from '../../domain/checklist';
 import { collectChoiceOptions } from '../../domain/metrics';
+import { BTN_SECONDARY, FIELD_LABEL, INPUT } from '../ui/classes';
 
 interface BulkDefaultControlProps {
   items: Item[];
@@ -14,20 +15,12 @@ export function BulkDefaultControl({ items, onApply }: BulkDefaultControlProps) 
   if (options.length === 0) return null;
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexWrap: 'wrap',
-        gap: 8,
-        alignItems: 'center',
-        marginBottom: 24,
-      }}
-    >
-      <label style={{ fontSize: 14, fontWeight: 500 }}>Resposta padrão</label>
+    <div className="flex flex-wrap gap-2 items-center mb-6">
+      <label className={`${FIELD_LABEL} font-medium`}>Resposta padrão</label>
       <select
         value={defaultOption}
         onChange={(e) => setDefaultOption(e.target.value)}
-        style={{ width: 220 }}
+        className={`${INPUT} w-55`}
       >
         <option value="">Selecione uma opção</option>
         {options.map((option) => (
@@ -37,13 +30,9 @@ export function BulkDefaultControl({ items, onApply }: BulkDefaultControlProps) 
         ))}
       </select>
       <button
-        className="secondary"
+        className={`${BTN_SECONDARY} disabled:opacity-50 disabled:cursor-not-allowed`}
         onClick={() => onApply(defaultOption)}
         disabled={!defaultOption}
-        style={{
-          opacity: defaultOption ? 1 : 0.5,
-          cursor: defaultOption ? 'pointer' : 'not-allowed',
-        }}
       >
         Aplicar a todas as perguntas
       </button>

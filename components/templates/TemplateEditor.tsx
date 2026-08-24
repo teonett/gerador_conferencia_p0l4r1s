@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
 import type { Template, Item } from '../../domain/checklist';
 import type { HeaderModel } from '../../domain/header';
-import { COLORS, OPTION } from '../../domain/constants';
+import { OPTION } from '../../domain/constants';
 import { MainHero } from '../main/MainHero';
+import { BTN_PRIMARY, BTN_SECONDARY, INPUT } from '../ui/classes';
 
 interface TemplateEditorProps {
   onSave: (template: Template) => void;
@@ -248,26 +249,28 @@ export function TemplateEditor({ onSave, onCancel, initial }: TemplateEditorProp
         }
       />
 
-      <div style={{ display: 'grid', gap: 16, marginBottom: 32 }}>
+      <div className="grid gap-4 mb-8">
         <input
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Nome do modelo"
           required
+          className={INPUT}
         />
         <input
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           placeholder="Descrição (opcional)"
+          className={INPUT}
         />
-        <select value={category} onChange={(e) => setCategory(e.target.value)}>
+        <select value={category} onChange={(e) => setCategory(e.target.value)} className={INPUT}>
           <option>Segurança</option>
           <option>Operação</option>
           <option>Manutenção</option>
           <option>CIPA · Segurança do Trabalho</option>
         </select>
         {headers.length > 0 && (
-          <select value={headerId} onChange={(e) => setHeaderId(e.target.value)}>
+          <select value={headerId} onChange={(e) => setHeaderId(e.target.value)} className={INPUT}>
             <option value="">Sem header (usa campos próprios, se houver)</option>
             {headers.map((h) => (
               <option key={h.id} value={h.id}>
@@ -278,13 +281,12 @@ export function TemplateEditor({ onSave, onCancel, initial }: TemplateEditorProp
         )}
       </div>
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-        <h3 style={{ fontSize: 16, fontWeight: 600 }}>Perguntas ({items.length})</h3>
-        <div style={{ display: 'flex', gap: 8 }}>
+      <div className="flex justify-between items-center mb-3">
+        <h3 className="text-base font-semibold">Perguntas ({items.length})</h3>
+        <div className="flex gap-2">
           <button
-            className="secondary"
+            className={`${BTN_SECONDARY} text-xs!`}
             onClick={() => fileInputRef.current?.click()}
-            style={{ fontSize: 12 }}
           >
             Importar TXT/CSV
           </button>
@@ -293,7 +295,7 @@ export function TemplateEditor({ onSave, onCancel, initial }: TemplateEditorProp
             type="file"
             accept=".txt,.csv"
             onChange={handleImportTxt}
-            style={{ display: 'none' }}
+            className="hidden"
           />
         </div>
       </div>
@@ -303,61 +305,49 @@ export function TemplateEditor({ onSave, onCancel, initial }: TemplateEditorProp
         return (
           <div
             key={item.id}
-            style={{
-              background: 'white',
-              borderRadius: 8,
-              marginBottom: 8,
-              border: `1px solid ${isEditing ? COLORS.corPadrao : COLORS.line}`,
-            }}
+            className={`bg-surface rounded-lg mb-2 border ${
+              isEditing ? 'border-corPadrao' : 'border-line'
+            }`}
           >
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 12,
-                padding: '12px 12px',
-              }}
-            >
-              <span style={{ color: '#666', minWidth: 24 }}>{index + 1}.</span>
+            <div className="flex items-center gap-3 px-3 py-3">
+              <span className="text-gray-600 min-w-6">{index + 1}.</span>
               {isEditing ? (
                 <input
                   value={item.title}
                   onChange={(e) => handleUpdateItemTitle(item.id, e.target.value)}
-                  style={{ flex: 1, fontWeight: 600 }}
+                  className={`${INPUT} flex-1 font-semibold`}
                   autoFocus
                 />
               ) : (
                 <span
-                  style={{ flex: 1, fontWeight: 600, cursor: 'pointer' }}
+                  className="flex-1 font-semibold cursor-pointer"
                   onClick={() => setEditingItemId(item.id)}
                 >
                   {item.title || '(sem título)'}
                   {item.defaultOption && (
-                    <span style={{ fontSize: 12, fontWeight: 400, color: '#666' }}>
+                    <span className="text-xs font-normal text-gray-600">
                       {' '}· padrão: {item.defaultOption}
                     </span>
                   )}
                 </span>
               )}
               <button
-                className="secondary"
+                className={`${BTN_SECONDARY} text-xs!`}
                 onClick={() => setEditingItemId(isEditing ? null : item.id)}
-                style={{ fontSize: 12 }}
               >
                 {isEditing ? 'Fechar' : 'Editar'}
               </button>
               <button
-                className="secondary"
+                className={`${BTN_SECONDARY} text-xs! text-orange!`}
                 onClick={() => handleRemoveItem(item.id)}
-                style={{ fontSize: 12, color: COLORS.orange }}
               >
                 Remover
               </button>
             </div>
 
             {isEditing && (
-              <div style={{ padding: '0 12px 12px' }}>
-                <p style={{ fontSize: 12, color: '#666', marginBottom: 8 }}>
+              <div className="px-3 pb-3">
+                <p className="text-xs text-gray-600 mb-2">
                   Opções ({item.options.length}/{OPTION.max}) — "Outros" é obrigatório e sempre o último.
                   Marque <strong>Padrão</strong> na opção que já deve vir pré-selecionada; sem marcação, a resposta é individual:
                 </p>
@@ -365,40 +355,33 @@ export function TemplateEditor({ onSave, onCancel, initial }: TemplateEditorProp
                   const isOutros = opt === OPTION.outrosLabel;
                   const canBeDefault = Boolean(opt.trim());
                   return (
-                    <div key={oi} style={{ display: 'flex', gap: 8, marginBottom: 6, alignItems: 'center' }}>
-                      <span style={{ color: '#999', fontSize: 12, minWidth: 18 }}>{oi + 1}.</span>
+                    <div key={oi} className="flex gap-2 mb-1.5 items-center">
+                      <span className="text-gray-400 text-xs min-w-[18px]">{oi + 1}.</span>
                       <input
                         value={opt}
                         onChange={(e) => handleUpdateOption(item.id, oi, e.target.value)}
                         disabled={isOutros}
-                        style={{ flex: 1, fontSize: 13 }}
+                        className={`${INPUT} flex-1! text-[13px]`}
                       />
                       <label
                         title="Resposta padrão desta pergunta"
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: 4,
-                          fontSize: 12,
-                          color: item.defaultOption === opt ? COLORS.corPadrao : '#666',
-                          cursor: canBeDefault ? 'pointer' : 'not-allowed',
-                          opacity: canBeDefault ? 1 : 0.4,
-                        }}
+                        className={`flex items-center gap-1 text-xs ${
+                          item.defaultOption === opt ? 'text-corPadrao' : 'text-gray-600'
+                        } ${canBeDefault ? 'cursor-pointer' : 'cursor-not-allowed opacity-40'}`}
                       >
                         <input
                           type="checkbox"
                           checked={item.defaultOption === opt}
                           disabled={!canBeDefault}
                           onChange={() => handleToggleDefault(item.id, opt)}
-                          style={{ width: 14, height: 14, margin: 0 }}
+                          className="w-3.5 h-3.5 m-0"
                         />
                         Padrão
                       </label>
                       {!isOutros && item.options.length > OPTION.min && (
                         <button
-                          className="secondary"
+                          className={`${BTN_SECONDARY} px-2! py-1! text-[11px]`}
                           onClick={() => handleRemoveOption(item.id, oi)}
-                          style={{ fontSize: 11, padding: '4px 8px' }}
                         >
                           ✕
                         </button>
@@ -408,9 +391,8 @@ export function TemplateEditor({ onSave, onCancel, initial }: TemplateEditorProp
                 })}
                 {item.options.length < OPTION.max && (
                   <button
-                    className="secondary"
+                    className={`${BTN_SECONDARY} text-xs! mt-1`}
                     onClick={() => handleAddOption(item.id)}
-                    style={{ fontSize: 12, marginTop: 4 }}
                   >
                     + Adicionar opção
                   </button>
@@ -421,28 +403,29 @@ export function TemplateEditor({ onSave, onCancel, initial }: TemplateEditorProp
         );
       })}
 
-      <div style={{ display: 'flex', gap: 8, marginTop: 16 }}>
+      <div className="flex gap-2 mt-4">
         <input
           value={newItemTitle}
           onChange={(e) => setNewItemTitle(e.target.value)}
           placeholder="Nova pergunta"
           onKeyDown={(e) => e.key === 'Enter' && handleAddItem()}
+          className={INPUT}
         />
-        <button className="primary" onClick={handleAddItem}>
+        <button className={BTN_PRIMARY} onClick={handleAddItem}>
           Adicionar
         </button>
       </div>
 
-      <div style={{ display: 'flex', gap: 12, marginTop: 32 }}>
-        <button className="secondary" onClick={onCancel}>
+      <div className="flex gap-3 mt-8">
+        <button className={BTN_SECONDARY} onClick={onCancel}>
           Cancelar
         </button>
-        <button className="primary" onClick={handleSave} disabled={saving}>
+        <button className={BTN_PRIMARY} onClick={handleSave} disabled={saving}>
           {saving ? 'Salvando...' : 'Salvar modelo'}
         </button>
       </div>
       {error && (
-        <p style={{ color: COLORS.orange, marginTop: 12, fontSize: 14 }}>{error}</p>
+        <p className="text-orange mt-3 text-sm">{error}</p>
       )}
     </div>
   );

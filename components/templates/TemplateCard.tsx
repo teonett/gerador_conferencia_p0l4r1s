@@ -1,5 +1,5 @@
 import type { Template } from "../../domain/checklist";
-import { COLORS } from "../../domain/constants";
+import { BTN_DANGER, BTN_PRIMARY, BTN_SUCCESS } from "../ui/classes";
 
 interface TemplateCardProps {
   template: Template;
@@ -15,59 +15,32 @@ export function TemplateCard({
   onDelete,
 }: TemplateCardProps) {
   return (
-    <div
-      style={{
-        background: "white",
-        borderRadius: 999,
-        fontWeight: 500,
-        padding: 20,
-        border: `1px solid ${COLORS.line}`,
-        boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "start",
-        }}
-      >
+    <div className="bg-surface rounded-[88px] font-medium p-5 border border-line shadow-[0_2px_8px_rgba(0,0,0,0.05)]">
+      <div className="flex justify-between items-start">
         <div>
-          <span
-            style={{
-              fontSize: 12,
-              color: COLORS.corPadrao,
-              backgroundColor: COLORS.mint,
-              padding: "2px 8px",
-              borderRadius: 4,
-            }}
-          >
+          <span className="text-xs text-corPadrao bg-mint px-2 py-0.5 rounded">
             {template.category}
           </span>
-          <h4 style={{ fontSize: 16, fontWeight: 600, marginTop: 8 }}>
+          <h4 className="text-base font-semibold mt-5">
             {template.title}
           </h4>
-          <p style={{ fontSize: 14, color: "#666", marginTop: 4 }}>
+          <p className="text-sm text-gray-600 mt-5">
             {template.description}
           </p>
-          <p style={{ fontSize: 12, color: "#999", marginTop: 4 }}>
+          <p className="text-xs text-gray-400 mt-5">
             {template.items.length} pergunta
             {template.items.length !== 1 ? "s" : ""}
           </p>
         </div>
       </div>
-      <div style={{ display: "flex", gap: 8, marginTop: 16 }}>
-        <button className="primary" onClick={onRun}>
+      <div className="flex gap-2 mt-4 justify-center">
+        <button className={BTN_PRIMARY} onClick={onRun}>
           Executar
         </button>
-        <button className="secondary" onClick={onEdit}>
+        <button className={BTN_SUCCESS} onClick={onEdit}>
           Editar
         </button>
-        <button
-          className="secondary"
-          onClick={onDelete}
-          style={{ color: COLORS.orange }}
-        >
+        <button className={BTN_DANGER} onClick={onDelete}>
           Excluir
         </button>
       </div>

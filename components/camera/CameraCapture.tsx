@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { COLORS } from '../../domain/constants';
+import { BTN_PRIMARY, BTN_SECONDARY } from '../ui/classes';
 
 interface CameraCaptureProps {
   onCapture: (file: File) => void;
@@ -68,52 +68,34 @@ export function CameraCapture({ onCapture, onClose }: CameraCaptureProps) {
     );
   };
 
-  const actionButtonStyle = {
-    padding: '10px 20px',
-    borderRadius: 8,
-    border: `1px solid ${COLORS.line}`,
-  } as const;
+  const actionButtonClass = 'px-5 py-2.5';
 
   return (
-    <div
-      style={{
-        position: 'fixed',
-        inset: 0,
-        zIndex: 1000,
-        background: 'rgba(0,0,0,0.92)',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: 16,
-        padding: 16,
-      }}
-    >
+    <div className="fixed inset-0 z-[1000] bg-black/[0.92] flex flex-col items-center justify-center gap-4 p-4">
       {error ? (
-        <p style={{ color: 'white', fontSize: 14, textAlign: 'center', maxWidth: 320 }}>{error}</p>
+        <p className="text-white text-sm text-center max-w-80">{error}</p>
       ) : (
         <video
           ref={videoRef}
           playsInline
           muted
-          style={{ maxWidth: '100%', maxHeight: '70vh', borderRadius: 12, background: 'black' }}
+          className="max-w-full max-h-[70vh] rounded-xl bg-black"
         />
       )}
-      <div style={{ display: 'flex', gap: 16 }}>
-        <button className="secondary" onClick={onClose} style={actionButtonStyle}>
+      <div className="flex gap-4">
+        <button className={`${BTN_SECONDARY} ${actionButtonClass}`} onClick={onClose}>
           ✕ Fechar
         </button>
         {!error && (
           <>
-            <button className="primary" onClick={handleShoot} style={actionButtonStyle}>
+            <button className={`${BTN_PRIMARY} ${actionButtonClass}`} onClick={handleShoot}>
               📷 Capturar
             </button>
             <button
-              className="secondary"
+              className={`${BTN_SECONDARY} ${actionButtonClass}`}
               onClick={() =>
                 setFacingMode((mode) => (mode === 'environment' ? 'user' : 'environment'))
               }
-              style={actionButtonStyle}
             >
               🔄
             </button>
