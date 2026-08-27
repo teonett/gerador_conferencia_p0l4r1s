@@ -15,7 +15,7 @@ export function TemplateCard({
   onDelete,
 }: TemplateCardProps) {
   return (
-    <div className="bg-surface rounded-[88px] font-medium p-5 border border-line shadow-[0_2px_8px_rgba(0,0,0,0.05)]">
+    <div className="bg-surface rounded-xl font-medium p-5 border border-line shadow-[0_2px_8px_rgba(0,0,0,0.05)]">
       <div className="flex justify-between items-start">
         <div>
           <span className="text-xs text-corPadrao bg-mint px-2 py-0.5 rounded">

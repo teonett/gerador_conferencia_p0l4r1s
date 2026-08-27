@@ -42,6 +42,7 @@ function sanitizeItem(it: Item): Item {
     answerType: it.answerType,
     selection: it.selection,
     ...(validDefault ? { defaultOption: it.defaultOption } : {}),
+    ...(it.hint ? { hint: it.hint } : {}),
   };
 }
 
@@ -92,6 +93,10 @@ export function TemplateEditor({ onSave, onCancel, initial }: TemplateEditorProp
 
   const handleUpdateItemTitle = (id: string, title: string) => {
     setItems(items.map((it) => (it.id === id ? { ...it, title } : it)));
+  };
+
+  const handleUpdateItemHint = (id: string, hint: string) => {
+    setItems(items.map((it) => (it.id === id ? { ...it, hint } : it)));
   };
 
   const handleToggleDefault = (itemId: string, option: string) => {
@@ -397,6 +402,16 @@ export function TemplateEditor({ onSave, onCancel, initial }: TemplateEditorProp
                     + Adicionar opção
                   </button>
                 )}
+                <div className="mt-3">
+                  <label className="text-xs text-gray-600">Dica / Observação (opcional — aparece como tooltip na execução)</label>
+                  <textarea
+                    value={item.hint || ''}
+                    onChange={(e) => handleUpdateItemHint(item.id, e.target.value)}
+                    placeholder="Ex.: Verificar se o equipamento está dentro da validade"
+                    rows={2}
+                    className={`${INPUT} mt-1`}
+                  />
+                </div>
               </div>
             )}
           </div>

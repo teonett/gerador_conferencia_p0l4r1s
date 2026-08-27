@@ -10,6 +10,7 @@ export interface Item {
   answerType: AnswerType;
   selection: SelectionType;
   defaultOption?: string;
+  hint?: string;
 }
 
 export interface Field {

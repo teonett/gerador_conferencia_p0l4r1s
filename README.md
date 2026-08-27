@@ -32,6 +32,7 @@ Gerador de checklists genérico ("Gerador de Checklists"): crie modelos de inspe
 - [Regras de negócio](#regras-de-negócio)
 - [Primeiros passos](#primeiros-passos)
 - [Estrutura do projeto](#estrutura-do-projeto)
+- [Arquitetura](#arquitetura)
 
 ---
 
@@ -617,6 +618,134 @@ npm run deploy               # build + publicação
 
 A URL fica em `https://checklist-facil.<seu-subdominio>.workers.dev` (mostrada ao final do deploy).
 Migrations novas, quando houver: `npm run db:migrate:remote` antes do deploy.
+
+---
+
+## Arquitetura
+
+> Grafo interativo completo: [graph.html](graphify-out/graph.html)
+
+```mermaid
+flowchart TB
+    subgraph DOMAIN["🎯 Domínio (core)"]
+        T["Template"]
+        I["Item"]
+        HM["HeaderModel"]
+        ANS["Answers"]
+        MET["Metrics"]
+    end
+
+    subgraph API["🌐 API Layer"]
+        HA["Headers API<br/>GET/POST/PUT/DELETE"]
+        CA["Checklists API<br/>GET/POST/PUT/DELETE"]
+        RA["Responses API<br/>GET/POST/DELETE"]
+    end
+
+    subgraph UI["🖼 UI Components"]
+        DASH["Dashboard"]
+        TE["TemplateEditor"]
+        HV["HeadersView"]
+        RH["ResponseHistory"]
+        CC["CameraCapture"]
+    end
+
+    subgraph RUNNER["▶ Runner & Report"]
+        CLR["ChecklistRunner"]
+        RR["ReportReview"]
+        AMB["AnswerMetricsBar"]
+        BDC["BulkDefaultControl"]
+    end
+
+    subgraph INFRA["☁ Infra Cloudflare"]
+        W["Workers (Hono)"]
+        D1["D1 (SQLite)"]
+        R2["R2 (Fotos)"]
+    end
+
+    subgraph SUPPORT["⚙ Supporting"]
+        SD["Seed Data (CIPA)"]
+        CONST["Constants"]
+        AS["App Shell"]
+        SW["Service Worker"]
+        PDF["jsPDF (cliente)"]
+    end
+
+    %% Domain ↔ API
+    T --> CA
+    HM --> HA
+    I --> RA
+    ANS --> RA
+
+    %% Domain ↔ UI
+    T --> DASH
+    T --> TE
+    HM --> HV
+    T --> RH
+
+    %% UI ↔ Runner
+    DASH --> CLR
+    TE --> CLR
+    HV --> HA
+    RH --> RA
+    CC --> CLR
+
+    %% Runner internals
+    CLR --> AMB
+    CLR --> BDC
+    CLR --> RR
+    AMB --> MET
+    BDC --> ANS
+    RR --> PDF
+
+    %% API ↔ Infra
+    W --> HA
+    W --> CA
+    W --> RA
+    HA --> D1
+    CA --> D1
+    RA --> D1
+    RA --> R2
+
+    %% Supporting connections
+    SD --> CA
+    CONST --> MET
+    CONST --> PDF
+    AS --> DASH
+    AS --> HV
+    AS --> RH
+    SW --> W
+    PDF --> RH
+
+    %% Styling
+    classDef domain fill:#1e40af,color:#fff,stroke:#1e3a8a
+    classDef api fill:#059669,color:#fff,stroke:#047857
+    classDef ui fill:#7c3aed,color:#fff,stroke:#6d28d9
+    classDef runner fill:#d97706,color:#fff,stroke:#b45309
+    classDef infra fill:#dc2626,color:#fff,stroke:#b91c1c
+    classDef support fill:#6b7280,color:#fff,stroke:#4b5563
+
+    class T,I,HR,ANS,MET domain
+    class HA,CA,RA api
+    class DASH,TE,HV,RH,CC ui
+    class CLR,RR,AMB,BDC runner
+    class W,D1,R2 infra
+    class SD,CONST,AS,SW,PDF support
+```
+
+**Comunidades detectadas** (graphify — 16 comunidades, 285 nós, 563 arestas):
+
+| Comunidade | Cohesion | Nó central |
+|------------|----------|------------|
+| Headers API Layer | 0.11 | `HeaderModel` |
+| UI Components | 0.13 | `Template` |
+| Checklists API Layer | 0.11 | `Template` |
+| Metrics & Progress UI | 0.12 | `Template` |
+| Seed Data & Constants | 0.12 | `CIPA_SEED` |
+| App Shell & Navigation | 0.36 | `AppShell` |
+| Database Schema | 0.25 | `DB` |
+| Documentation & Assets | 0.24 | `index.html` |
+
+`Template` é o **god node** (20 arestas, betweenness 0.039) — ponte entre UI, API, Metrics, Seed e App Shell.
 
 ---
 

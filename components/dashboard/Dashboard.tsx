@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 import type { Template } from "../../domain/checklist";
 import { TemplateCard } from "../templates/TemplateCard";
 import { MainHero } from "../main/MainHero";
@@ -18,6 +19,13 @@ export function Dashboard({
   onDelete,
   onNew,
 }: DashboardProps) {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const scroll = (dir: 'left' | 'right') => {
+    const el = scrollRef.current;
+    if (!el) return;
+    el.scrollBy({ left: dir === 'left' ? -395 : 395, behavior: 'smooth' });
+  };
+
   return (
     <div>
       <MainHero>
@@ -45,16 +53,31 @@ export function Dashboard({
       <h3 className="text-lg font-semibold mb-4">
         Modelos recentes
       </h3>
-      <div className="grid gap-4 [grid-template-columns:repeat(auto-fill,minmax(300px,1fr))]">
-        {templates.slice(0, 6).map((template) => (
-          <TemplateCard
-            key={template.id}
-            template={template}
-            onRun={() => onRun(template)}
-            onEdit={() => onEdit(template)}
-            onDelete={() => onDelete(template)}
-          />
-        ))}
+      <div className="flex items-center gap-3">
+        <button
+          onClick={() => scroll('left')}
+          className="shrink-0 bg-surface border border-line shadow-md rounded-full w-9 h-9 flex items-center justify-center text-ink cursor-pointer"
+        >
+          ‹
+        </button>
+        <div ref={scrollRef} className="flex gap-4 overflow-x-hidden scroll-smooth flex-1 min-w-0">
+          {templates.slice(0, 6).map((template) => (
+            <div key={template.id} className="shrink-0 w-[375px] h-[375px]">
+              <TemplateCard
+                template={template}
+                onRun={() => onRun(template)}
+                onEdit={() => onEdit(template)}
+                onDelete={() => onDelete(template)}
+              />
+            </div>
+          ))}
+        </div>
+        <button
+          onClick={() => scroll('right')}
+          className="shrink-0 bg-surface border border-line shadow-md rounded-full w-9 h-9 flex items-center justify-center text-ink cursor-pointer"
+        >
+          ›
+        </button>
       </div>
     </div>
   );

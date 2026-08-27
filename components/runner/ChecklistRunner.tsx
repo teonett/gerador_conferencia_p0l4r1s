@@ -244,6 +244,16 @@ export function ChecklistRunner({
           <h3 className="text-base font-semibold mb-4">
             {currentIndex + 1}. {currentItem.title}
             {currentItem.required && <span className="text-orange"> *</span>}
+            {currentItem.hint ? (
+              <span className="relative group inline-block ml-2 align-middle">
+                <span className="text-xs text-corPadrao cursor-help">ℹ️</span>
+                <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-56 rounded-lg bg-ink text-white text-xs p-2 leading-tight opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50">
+                  {currentItem.hint}
+                </span>
+              </span>
+            ) : (
+              <span className="inline-block ml-2 align-middle opacity-20 text-xs cursor-default" title="">ℹ️</span>
+            )}
           </h3>
 
           {currentItem.answerType === 'text' ? (
