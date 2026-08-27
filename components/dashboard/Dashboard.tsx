@@ -23,7 +23,8 @@ export function Dashboard({
   const scroll = (dir: 'left' | 'right') => {
     const el = scrollRef.current;
     if (!el) return;
-    el.scrollBy({ left: dir === 'left' ? -395 : 395, behavior: 'smooth' });
+    const cardWidth = el.offsetWidth / 2;
+    el.scrollBy({ left: dir === 'left' ? -cardWidth : cardWidth, behavior: 'smooth' });
   };
 
   return (
@@ -62,7 +63,7 @@ export function Dashboard({
         </button>
         <div ref={scrollRef} className="flex gap-4 overflow-x-hidden scroll-smooth flex-1 min-w-0">
           {templates.slice(0, 6).map((template) => (
-            <div key={template.id} className="shrink-0 w-[375px] h-[375px]">
+            <div key={template.id} className="shrink-0 w-[calc(50%-8px)]">
               <TemplateCard
                 template={template}
                 onRun={() => onRun(template)}
