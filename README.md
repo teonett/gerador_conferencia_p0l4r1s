@@ -49,12 +49,15 @@ Gerador de checklists genérico ("Gerador de Checklists"): crie modelos de inspe
 - **Câmera in-app (PWA)** — tire fotos pela câmera do dispositivo ou escolha da galeria; app instalável via service worker.
 - **Tema claro/escuro** — alternância no menu lateral com ícone ☀️/🌙; a preferência fica salva no navegador e, sem escolha, segue o tema do sistema. O PDF é sempre gerado em tema claro.
 - **UI consistente via constantes** — botões e campos usam classes reutilizáveis (`BTN_PRIMARY`, `BTN_SUCCESS`, `BTN_WARNING`, `BTN_DANGER`, `INPUT`, `CARD`...): azul para navegação/ação primária, verde para adicionar/editar confirmar positivo, laranja para cancelar, vermelho para excluir — sempre com contraste adequado nos dois temas.
+- **Layout responsivo (mobile)** — abaixo de 600px a sidebar lateral dá lugar a uma **top bar fixa com menu hambúrguer** que abre um drawer; os cards de modelo ocupam 100% da largura em lista vertical (em vez do carrossel de 50% do desktop), e paddings de hero/cards se ajustam automaticamente. Breakpoints centralizados em `domain/constants.ts` (`MOBILE_BREAKPOINT`, `DRAWER_WIDTH`).
 - **Compartilhamento** — link direto por _share token_ (`?checklist=<token>`).
 - **Seed automático** — modelo CIPA (16 perguntas) inserido no primeiro acesso com banco vazio.
 
 ---
 
 ## Como usar
+
+> **Navegação:** no desktop, o menu fica na **sidebar lateral**. No mobile (<600px), abra o menu pelo **hambúrguer no topo** (drawer), com o nome da tela atual exibido à direita da top bar.
 
 ### 1. Criar um modelo
 
@@ -533,6 +536,7 @@ collectChoiceOptions(items); // união das opções p/ o seletor
 - **Cabeçalho do PDF**: título e descrição do modelo + chips de métricas (Sim / Não / Outros / Pendentes) com % concluído.
 - **Marca visual**: azul institucional `#005ca9` (tema, favicon e cabeçalho do PDF); as cores de métrica 🟩🟥🟨 permanecem semânticas.
 - **Estilos (Tailwind 4)**: paleta institucional declarada em `@theme` (`globals.css`) — `corPadrao`, `mint`, `orange`, `cream`, `line`, `ink`, `surface` e `metric-*`. Componentes usam classes utilitárias + constantes compartilhadas de `components/ui/classes.ts` em vez de estilos inline.
+- **Responsividade**: breakpoint mobile em 600px. Abaixo dele a sidebar é substituída por top bar fixa + drawer (`AppShell` com hambúrguer, backdrop e fechamento ao navegar/ao ultrapassar o breakpoint); cards do Dashboard viram lista vertical de 100%. Acima de 600px, sidebar + carrossel de cards (50%).
 - **Tema escuro**: a classe `.dark` no `<html>` apenas **troca os tokens** da paleta (superfícies escuras, azul/laranja mais claros) — todos os componentes mudam juntos, sem CSS duplicado. Preferência em `localStorage` (chave `theme`) + script anti-flash no `index.html`; sem preferência salva, segue `prefers-color-scheme`.
 - **PDF sempre claro**: o jsPDF usa os hexes fixos de `domain/constants.ts`, sem qualquer dependência do tema da interface.
 - **Service worker**: registrado somente em builds de produção (`import.meta.env.PROD`) para não interferir no HMR do Vite durante o desenvolvimento.
@@ -768,10 +772,10 @@ gerador_conferencia_polaris/
 │       └── [id]/route.ts           # PUT atualiza + DELETE (limpa vínculos)
 ├── components/
 │   ├── camera/CameraCapture.tsx     # câmera in-app (getUserMedia) para fotos
-│   ├── dashboard/Dashboard.tsx     # home: hero + grid de modelos
+│   ├── dashboard/Dashboard.tsx     # home: hero + grid de modelos (carrossel 50% desktop / lista 100% mobile)
 │   ├── headers/HeadersView.tsx     # CRUD de headers + modal de exclusão
 │   ├── history/ResponseHistory.tsx # histórico: resumo, detalhe, PDF e exclusão por registro
-│   ├── layout/AppShell.tsx         # sidebar + logo + layout + toggle de tema ☀️/🌙
+│   ├── layout/AppShell.tsx         # layout: sidebar (desktop) + top bar/drawer (mobile) + logo + tema ☀️/🌙
 │   ├── main/
 │   │   ├── ConfirmModal.tsx        # modal genérico (confirmação digitada)
 │   │   └── MainHero.tsx            # hero reutilizável da home
