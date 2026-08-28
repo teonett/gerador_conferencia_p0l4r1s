@@ -12,6 +12,12 @@ import { SettingsView } from '../components/settings/SettingsView';
 import { ConfirmModal } from '../components/main/ConfirmModal';
 import { HeadersView } from '../components/headers/HeadersView';
 
+function applyPrimaryColor(hex: string) {
+  const root = document.documentElement;
+  root.style.setProperty('--color-corPadrao', hex);
+  root.style.setProperty('--color-mint', hex + '22');
+}
+
 export function App() {
   const [view, setView] = useState<View>('home');
   const [templates, setTemplates] = useState<Template[]>([]);
@@ -38,6 +44,21 @@ export function App() {
 
   useEffect(() => {
     loadHeaders();
+  }, []);
+
+  useEffect(() => {
+    const loadSettings = () =>
+      fetch('/api/settings')
+        .then((res) => res.json())
+        .then((payload) => {
+          const data = payload as { primaryColor?: string };
+          if (data.primaryColor) applyPrimaryColor(data.primaryColor);
+        })
+        .catch(() => {});
+
+    loadSettings();
+    window.addEventListener('logo-updated', loadSettings);
+    return () => window.removeEventListener('logo-updated', loadSettings);
   }, []);
 
   useEffect(() => {

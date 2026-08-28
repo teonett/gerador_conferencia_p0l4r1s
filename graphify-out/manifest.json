@@ -1,13 +1,13 @@
 {
   ".wrangler/deploy/config.json": {
     "mtime": 1787537353.3738918,
-    "ast_hash": "cd32689f652d81e942ff0d027ad7da90",
-    "semantic_hash": "cd32689f652d81e942ff0d027ad7da90"
+    "ast_hash": "",
+    "semantic_hash": ""
   },
   "app/App.tsx": {
-    "mtime": 1787452649.846396,
-    "ast_hash": "970c06f7a0d93e53a914871233076c48",
-    "semantic_hash": "970c06f7a0d93e53a914871233076c48"
+    "mtime": 1787794824.1807723,
+    "ast_hash": "be26f4a4cd08312691665fc687b43bb0",
+    "semantic_hash": ""
   },
   "app/api/checklists/[id]/responses/route.ts": {
     "mtime": 1787449813.5614586,
@@ -50,9 +50,9 @@
     "semantic_hash": "297e572c02892200a84bf03965be87c7"
   },
   "app/api/settings/route.ts": {
-    "mtime": 1787442087.840185,
-    "ast_hash": "37421a309bdca2ab796a6a93745c723a",
-    "semantic_hash": "37421a309bdca2ab796a6a93745c723a"
+    "mtime": 1787794635.187534,
+    "ast_hash": "f608de9ce873ba91fe59a53105146c78",
+    "semantic_hash": ""
   },
   "app/main.tsx": {
     "mtime": 1787535545.5911477,
@@ -61,13 +61,13 @@
   },
   "backup-data.sql": {
     "mtime": 1787456840.5021727,
-    "ast_hash": "a6ff563c5f500f67cc935b41810417f0",
-    "semantic_hash": "a6ff563c5f500f67cc935b41810417f0"
+    "ast_hash": "",
+    "semantic_hash": ""
   },
   "backup-local.sql": {
     "mtime": 1787537155.5698981,
-    "ast_hash": "cb7e2bef937ac1e8da4512cc2e71577e",
-    "semantic_hash": "cb7e2bef937ac1e8da4512cc2e71577e"
+    "ast_hash": "",
+    "semantic_hash": ""
   },
   "components/camera/CameraCapture.tsx": {
     "mtime": 1787516965.5142705,
@@ -75,9 +75,9 @@
     "semantic_hash": "4925860dc772cddb560ef69a06eb082c"
   },
   "components/dashboard/Dashboard.tsx": {
-    "mtime": 1787516929.1889362,
-    "ast_hash": "34b4770fece26e5ae50f02d2ce9cce49",
-    "semantic_hash": "34b4770fece26e5ae50f02d2ce9cce49"
+    "mtime": 1787958068.4795527,
+    "ast_hash": "ffaecca5450160cc122f2339c134a643",
+    "semantic_hash": ""
   },
   "components/headers/HeadersView.tsx": {
     "mtime": 1787536182.8233726,
@@ -90,14 +90,14 @@
     "semantic_hash": "f81688e3f410385bb6f11f9731428598"
   },
   "components/layout/AppShell.tsx": {
-    "mtime": 1787534022.2289026,
-    "ast_hash": "0b75ec7fff7b944ddd048be03c9a5341",
-    "semantic_hash": "0b75ec7fff7b944ddd048be03c9a5341"
+    "mtime": 1787958123.8548536,
+    "ast_hash": "8878c531e9747d952a32b4d6fc636f7f",
+    "semantic_hash": ""
   },
   "components/layout/PageHero.tsx": {
-    "mtime": 1787516918.089248,
-    "ast_hash": "1ddf6eac5b26f7ec63bb70098317a345",
-    "semantic_hash": "1ddf6eac5b26f7ec63bb70098317a345"
+    "mtime": 1787958093.762987,
+    "ast_hash": "4cad53b96e74b259a6ed109e10cce278",
+    "semantic_hash": ""
   },
   "components/main/ConfirmModal.tsx": {
     "mtime": 1787536208.5559108,
@@ -125,24 +125,24 @@
     "semantic_hash": "9c9e328d8987ac053ae2a329dc09d774"
   },
   "components/runner/ChecklistRunner.tsx": {
-    "mtime": 1787517862.5270567,
-    "ast_hash": "f23a439063a6e1c279aeb9a61038bc88",
-    "semantic_hash": "f23a439063a6e1c279aeb9a61038bc88"
+    "mtime": 1787792748.786091,
+    "ast_hash": "c85dcb737507df40a7d834a58914dfcf",
+    "semantic_hash": ""
   },
   "components/settings/SettingsView.tsx": {
-    "mtime": 1787517094.3922763,
-    "ast_hash": "421969b063407fa245c54dfaf365e138",
-    "semantic_hash": "421969b063407fa245c54dfaf365e138"
+    "mtime": 1787794704.5116196,
+    "ast_hash": "52e71dca858d760bdd7f76be6f458422",
+    "semantic_hash": ""
   },
   "components/templates/TemplateCard.tsx": {
-    "mtime": 1787518301.2556322,
-    "ast_hash": "ac6098f7bd694226f6cdce0b60a76c55",
-    "semantic_hash": "ac6098f7bd694226f6cdce0b60a76c55"
+    "mtime": 1787958087.1330132,
+    "ast_hash": "3869662fcbe6fac6dc6230434aa6eca5",
+    "semantic_hash": ""
   },
   "components/templates/TemplateEditor.tsx": {
-    "mtime": 1787536172.0839815,
-    "ast_hash": "7a4ea1e8f99ac01b54f6e782d4aa7b24",
-    "semantic_hash": "7a4ea1e8f99ac01b54f6e782d4aa7b24"
+    "mtime": 1787792735.4398713,
+    "ast_hash": "2863bff003eafec5df5d6615e6fc5ce9",
+    "semantic_hash": ""
   },
   "components/ui/classes.ts": {
     "mtime": 1787536161.0125682,
@@ -165,14 +165,14 @@
     "semantic_hash": "cea50f9c1367ebd6da615d374ca67275"
   },
   "domain/checklist.ts": {
-    "mtime": 1787452352.403134,
-    "ast_hash": "3d4741416878e0cfa2b35747b655a6ac",
-    "semantic_hash": "3d4741416878e0cfa2b35747b655a6ac"
+    "mtime": 1787792697.7814126,
+    "ast_hash": "26657d5b8f921fc6b0462052f3c14311",
+    "semantic_hash": ""
   },
   "domain/constants.ts": {
-    "mtime": 1787446473.1424139,
-    "ast_hash": "7931723a4d33a91cbc12056548f92683",
-    "semantic_hash": "7931723a4d33a91cbc12056548f92683"
+    "mtime": 1787958027.955125,
+    "ast_hash": "77a256c8810bfd7426d826dfba13f9f3",
+    "semantic_hash": ""
   },
   "domain/header.ts": {
     "mtime": 1787537136.3865814,
@@ -191,28 +191,28 @@
   },
   "drizzle/0000_initial.sql": {
     "mtime": 1787098691.656658,
-    "ast_hash": "350cd0f2ff96d2be2a24b5a78012e1ab",
-    "semantic_hash": "350cd0f2ff96d2be2a24b5a78012e1ab"
+    "ast_hash": "",
+    "semantic_hash": ""
   },
   "drizzle/0001_response_context.sql": {
     "mtime": 1787363490.758037,
-    "ast_hash": "ee10dffd01fbd29b15550b6cfd278403",
-    "semantic_hash": "ee10dffd01fbd29b15550b6cfd278403"
+    "ast_hash": "",
+    "semantic_hash": ""
   },
   "drizzle/0002_settings.sql": {
     "mtime": 1787441012.5235035,
-    "ast_hash": "d7df62ea4a5f63b6d9b23ab8f23e87bb",
-    "semantic_hash": "d7df62ea4a5f63b6d9b23ab8f23e87bb"
+    "ast_hash": "",
+    "semantic_hash": ""
   },
   "drizzle/0003_signature_name.sql": {
     "mtime": 1787449794.5315144,
-    "ast_hash": "a980c6f68a8d1d299233494633b21f91",
-    "semantic_hash": "a980c6f68a8d1d299233494633b21f91"
+    "ast_hash": "",
+    "semantic_hash": ""
   },
   "drizzle/0004_headers.sql": {
     "mtime": 1787452235.9867449,
-    "ast_hash": "300ec830c2755d02f0f3d3b6d7cd1df1",
-    "semantic_hash": "300ec830c2755d02f0f3d3b6d7cd1df1"
+    "ast_hash": "",
+    "semantic_hash": ""
   },
   "eslint.config.mjs": {
     "mtime": 1787269020.3976088,
@@ -280,9 +280,9 @@
     "semantic_hash": "3d3a65a80d392907c83955ebd35c8e45"
   },
   "README.md": {
-    "mtime": 1787537327.3454206,
-    "ast_hash": "ce28363451407ea0d588d95c1062a815",
-    "semantic_hash": "ce28363451407ea0d588d95c1062a815"
+    "mtime": 1787790822.701626,
+    "ast_hash": "c82528ba5fd003dae612c0bfe60e6c9b",
+    "semantic_hash": ""
   },
   "index.html": {
     "mtime": 1787517812.7483265,

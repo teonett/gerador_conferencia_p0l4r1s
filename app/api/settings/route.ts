@@ -2,6 +2,7 @@ import { SETTINGS } from "../../../domain/constants";
 
 const LOGO_KEY = "logo_r2_key";
 const BG_KEY = "logo_bg";
+const COLOR_KEY = "primary_color";
 
 interface SettingsRow {
   key: string;
@@ -10,19 +11,21 @@ interface SettingsRow {
 
 async function readSettings(env: { DB: D1Database }) {
   const { results } = await env.DB.prepare(
-    "SELECT key, value FROM settings WHERE key IN (?, ?)"
+    "SELECT key, value FROM settings WHERE key IN (?, ?, ?)"
   )
-    .bind(LOGO_KEY, BG_KEY)
+    .bind(LOGO_KEY, BG_KEY, COLOR_KEY)
     .all<SettingsRow>();
 
   const map = new Map(results.map((row) => [row.key, row.value]));
   const logoKey = map.get(LOGO_KEY) || null;
   const logoBg = map.get(BG_KEY) || SETTINGS.logoBgDefault;
+  const primaryColor = map.get(COLOR_KEY) || SETTINGS.primaryColorDefault;
 
   return {
     logoUrl: logoKey ? `/api/files/${logoKey}` : null,
     logoKey,
     logoBg,
+    primaryColor,
   };
 }
 
@@ -30,8 +33,8 @@ export async function GET(
   _request: Request,
   env: { DB: D1Database }
 ): Promise<Response> {
-  const { logoUrl, logoBg } = await readSettings(env);
-  return Response.json({ logoUrl, logoBg });
+  const { logoUrl, logoBg, primaryColor } = await readSettings(env);
+  return Response.json({ logoUrl, logoBg, primaryColor });
 }
 
 export async function POST(
@@ -41,9 +44,14 @@ export async function POST(
   const formData = await request.formData();
   const logo = formData.get("logo");
   const bgRaw = formData.get("bg");
+  const colorRaw = formData.get("primaryColor");
   const bg =
     typeof bgRaw === "string" && SETTINGS.logoBgOptions.includes(bgRaw)
       ? bgRaw
+      : null;
+  const primaryColor =
+    typeof colorRaw === "string" && /^#[0-9a-fA-F]{6}$/.test(colorRaw)
+      ? colorRaw
       : null;
 
   const upsertBg = async () => {
@@ -55,16 +63,26 @@ export async function POST(
       .run();
   };
 
+  const upsertColor = async () => {
+    if (!primaryColor) return;
+    await env.DB.prepare(
+      "INSERT INTO settings (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value"
+    )
+      .bind(COLOR_KEY, primaryColor)
+      .run();
+  };
+
   if (!logo || !(logo instanceof File)) {
-    if (!bg) {
+    if (!bg && !primaryColor) {
       return Response.json(
-        { error: "Envie o arquivo de imagem ou a cor de fundo." },
+        { error: "Envie o arquivo de imagem, a cor de fundo ou a cor primária." },
         { status: 400 }
       );
     }
     await upsertBg();
-    const { logoUrl } = await readSettings(env);
-    return Response.json({ logoUrl, logoBg: bg });
+    await upsertColor();
+    const { logoUrl, primaryColor: savedColor } = await readSettings(env);
+    return Response.json({ logoUrl, logoBg: bg || SETTINGS.logoBgDefault, primaryColor: savedColor });
   }
 
   if (!["image/png", "image/jpeg"].includes(logo.type)) {
@@ -100,6 +118,7 @@ export async function POST(
     .run();
 
   await upsertBg();
+  await upsertColor();
 
-  return Response.json({ logoUrl: `/api/files/${r2Key}`, logoBg: bg || previous.logoBg }, { status: 201 });
+  return Response.json({ logoUrl: `/api/files/${r2Key}`, logoBg: bg || previous.logoBg, primaryColor: primaryColor || previous.primaryColor }, { status: 201 });
 }

@@ -13,6 +13,8 @@ export const BREAKPOINTS = {
 };
 
 export const SIDEBAR_WIDTH = 240;
+export const DRAWER_WIDTH = 260;
+export const MOBILE_BREAKPOINT = 600;
 export const WORKSPACE_MAX_WIDTH = 1500;
 
 export const PHOTO = {
@@ -47,6 +49,7 @@ export const SETTINGS = {
   logoMaxBytes: 2 * 1024 * 1024,
   logoBgDefault: "transparent",
   logoBgOptions: ["transparent", "#005ca9"],
+  primaryColorDefault: "#005ca9",
 };
 
 export const LOGO_BG_LABELS: Record<string, string> = {

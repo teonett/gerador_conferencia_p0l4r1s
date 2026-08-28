@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import type { Template, View } from "../../domain/checklist";
-import { SIDEBAR_WIDTH } from "../../domain/constants";
+import { DRAWER_WIDTH, MOBILE_BREAKPOINT, SIDEBAR_WIDTH } from "../../domain/constants";
 
 interface AppShellProps {
   children: React.ReactNode;
@@ -28,6 +28,24 @@ function getInitialTheme(): Theme {
   return "light";
 }
 
+const NAV_ITEMS: { view: View; label: string }[] = [
+  { view: "home", label: "Início" },
+  { view: "templates", label: "Novo Modelo" },
+  { view: "headers", label: "Cabeçalho de Modelos" },
+  { view: "history", label: "Histórico" },
+  { view: "settings", label: "Configurações" },
+];
+
+const VIEW_LABELS: Record<View, string> = {
+  home: "Início",
+  templates: "Novo Modelo",
+  headers: "Cabeçalho de Modelos",
+  history: "Histórico",
+  settings: "Configurações",
+  report: "Relatório",
+  run: "Executando",
+};
+
 export function AppShell({
   children,
   view,
@@ -38,6 +56,23 @@ export function AppShell({
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
   const [logoBg, setLogoBg] = useState<string>("transparent");
   const [theme, setTheme] = useState<Theme>(getInitialTheme);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  useEffect(() => {
+    const mql = window.matchMedia(`(min-width: ${MOBILE_BREAKPOINT}px)`);
+    const update = (e: MediaQueryListEvent) => {
+      if (e.matches) setDrawerOpen(false);
+    };
+    mql.addEventListener("change", update);
+    return () => mql.removeEventListener("change", update);
+  }, []);
+
+  useEffect(() => {
+    document.body.style.overflow = drawerOpen ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [drawerOpen]);
 
   const toggleTheme = () => {
     const next: Theme = theme === "dark" ? "light" : "dark";
@@ -48,6 +83,11 @@ export function AppShell({
     } catch {
       /* localStorage indisponível */
     }
+  };
+
+  const navigate = (next: View) => {
+    setDrawerOpen(false);
+    onNavigate(next);
   };
 
   useEffect(() => {
@@ -66,10 +106,41 @@ export function AppShell({
     return () => window.removeEventListener("logo-updated", loadLogo);
   }, []);
 
+  const Brand = (
+    <div className={`flex items-center gap-2 ${logoBg === "transparent" ? "" : "p-2 rounded-lg"}`}
+      style={logoBg === "transparent" ? undefined : { backgroundColor: logoBg }}>
+      {logoUrl ? (
+        <img src={logoUrl} alt="Logo" className="max-h-10 max-w-full block" />
+      ) : (
+        <span className="text-sm font-bold text-corPadrao">
+          Gerador de Checklists
+        </span>
+      )}
+    </div>
+  );
+
+  const Navigation = (
+    <nav className="mt-6">
+      {NAV_ITEMS.map(({ view: v, label }) => (
+        <button key={v} onClick={() => navigate(v)} className={navClass(view === v)}>
+          {label}
+        </button>
+      ))}
+      <button
+        onClick={toggleTheme}
+        className={`${NAV_BASE} mt-6 text-ink border border-line`}
+        title="Alternar tema claro/escuro"
+      >
+        {theme === "dark" ? "🌙 Tema escuro" : "☀️ Tema claro"}
+      </button>
+    </nav>
+  );
+
   return (
-    <div className="flex min-h-screen">
+    <div className="min-h-screen">
+      {/* Sidebar desktop */}
       <aside
-        className="sidebar hidden min-[600px]:block bg-surface border-r border-line py-6 px-4 shrink-0"
+        className="hidden min-[600px]:block fixed inset-y-0 left-0 bg-surface border-r border-line py-6 px-4 shrink-0 z-30"
         style={{ width: SIDEBAR_WIDTH }}
       >
         {logoUrl && (
@@ -79,43 +150,75 @@ export function AppShell({
             }`}
             style={logoBg === "transparent" ? undefined : { backgroundColor: logoBg }}
           >
-            <img
-              src={logoUrl}
-              alt="Logo"
-              className="max-h-14 max-w-full block"
-            />
+            <img src={logoUrl} alt="Logo" className="max-h-14 max-w-full block" />
           </span>
         )}
         <h1 className="text-xs font-bold text-corPadrao">
           Gerador de Checklists
         </h1>
-        <nav className="mt-6">
-          <button onClick={() => onNavigate("home")} className={navClass(view === "home")}>
-            Início
-          </button>
-          <button onClick={() => onNavigate("templates")} className={navClass(view === "templates")}>
-            Novo Modelo
-          </button>
-          <button onClick={() => onNavigate("headers")} className={navClass(view === "headers")}>
-            Cabeçalho de Modelos
-          </button>
-          <button onClick={() => onNavigate("history")} className={navClass(view === "history")}>
-            Histórico
-          </button>
-          <button onClick={() => onNavigate("settings")} className={navClass(view === "settings")}>
-            Configurações
-          </button>
-          <button
-            onClick={toggleTheme}
-            className={`${NAV_BASE} mt-6 text-ink border border-line`}
-            title="Alternar tema claro/escuro"
-          >
-            {theme === "dark" ? "🌙 Tema escuro" : "☀️ Tema claro"}
-          </button>
-        </nav>
+        {Navigation}
       </aside>
 
-      <main className="flex-1 p-8 max-w-[1200px] mx-auto">
+      {/* Top bar mobile */}
+      <header
+        className="fixed inset-x-0 top-0 z-30 flex items-center justify-between gap-3 bg-surface border-b border-line px-3 h-14 min-[600px]:hidden"
+      >
+        <button
+          aria-label="Abrir menu"
+          onClick={() => setDrawerOpen(true)}
+          className="shrink-0 rounded-lg p-2 text-ink cursor-pointer"
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <line x1="3" y1="6" x2="21" y2="6" />
+            <line x1="3" y1="12" x2="21" y2="12" />
+            <line x1="3" y1="18" x2="21" y2="18" />
+          </svg>
+        </button>
+        {Brand}
+        <span className="text-sm font-medium text-corPadrao truncate flex-1 text-right">
+          {VIEW_LABELS[view]}
+        </span>
+      </header>
+
+      {/* Backdrop + drawer mobile */}
+      {drawerOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/40 min-[600px]:hidden"
+          onClick={() => setDrawerOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+      <aside
+        className="fixed inset-y-0 left-0 z-50 bg-surface border-r border-line overflow-y-auto py-4 transition-transform duration-200 min-[600px]:hidden"
+        style={{
+          width: DRAWER_WIDTH,
+          transform: drawerOpen ? "translateX(0)" : "translateX(-100%)",
+        }}
+      >
+        <div className="flex items-center justify-between px-4">
+          <h1 className="text-xs font-bold text-corPadrao">
+            Gerador de Checklists
+          </h1>
+          <button
+            aria-label="Fechar menu"
+            onClick={() => setDrawerOpen(false)}
+            className="rounded-lg p-2 text-ink cursor-pointer"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+        {Navigation}
+      </aside>
+
+      {/* Conteúdo */}
+      <main
+        className="mx-auto pt-[60px] p-4 min-[600px]:pt-8 min-[600px]:p-8 max-w-[1200px] min-[600px]:pl-[264px]"
+      >
         {children}
       </main>
     </div>

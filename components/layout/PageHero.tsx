@@ -8,7 +8,7 @@ interface PageHeroProps {
 
 export function PageHero({ title, description, children }: PageHeroProps) {
   return (
-    <div className="bg-gradient-to-br from-corPadrao to-mint rounded-2xl p-8 mb-8">
+    <div className="bg-gradient-to-br from-corPadrao to-mint rounded-2xl p-5 min-[600px]:p-8 mb-6 min-[600px]:mb-8">
       <h2 className="text-2xl font-bold text-white">{title}</h2>
       {description && (
         <p className="text-white/90 mt-2 whitespace-pre-line">{description}</p>

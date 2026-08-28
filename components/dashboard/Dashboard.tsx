@@ -54,16 +54,19 @@ export function Dashboard({
       <h3 className="text-lg font-semibold mb-4">
         Modelos recentes
       </h3>
-      <div className="flex items-center gap-3">
+      <div className="min-[600px]:flex min-[600px]:items-center min-[600px]:gap-3">
         <button
           onClick={() => scroll('left')}
-          className="shrink-0 bg-surface border border-line shadow-md rounded-full w-9 h-9 flex items-center justify-center text-ink cursor-pointer"
+          className="hidden min-[600px]:block shrink-0 bg-surface border border-line shadow-md rounded-full w-9 h-9 items-center justify-center text-ink cursor-pointer"
         >
           ‹
         </button>
-        <div ref={scrollRef} className="flex gap-4 overflow-x-hidden scroll-smooth flex-1 min-w-0">
+        <div
+          ref={scrollRef}
+          className="flex gap-4 min-[600px]:overflow-x-hidden scroll-smooth min-[600px]:flex-1 min-[600px]:min-w-0 max-[599px]:flex-col overflow-visible"
+        >
           {templates.slice(0, 6).map((template) => (
-            <div key={template.id} className="shrink-0 w-[calc(50%-8px)]">
+            <div key={template.id} className="shrink-0 w-full min-[600px]:w-[calc(50%-8px)]">
               <TemplateCard
                 template={template}
                 onRun={() => onRun(template)}
@@ -75,7 +78,7 @@ export function Dashboard({
         </div>
         <button
           onClick={() => scroll('right')}
-          className="shrink-0 bg-surface border border-line shadow-md rounded-full w-9 h-9 flex items-center justify-center text-ink cursor-pointer"
+          className="hidden min-[600px]:block shrink-0 bg-surface border border-line shadow-md rounded-full w-9 h-9 items-center justify-center text-ink cursor-pointer"
         >
           ›
         </button>
