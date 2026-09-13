@@ -1,4 +1,4 @@
-import type { Answers, Metadata } from '../../domain/checklist';
+import type { Answers, Metadata } from '../../../domain/checklist';
 
 export interface ResponseHistoryItem {
   id: string;

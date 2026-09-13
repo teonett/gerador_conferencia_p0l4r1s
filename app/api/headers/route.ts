@@ -1,4 +1,4 @@
-import type { HeaderField } from "../../domain/header";
+import type { HeaderField } from "../../../domain/header";
 
 function parseFields(value: unknown): HeaderField[] {
   if (typeof value === "string") {

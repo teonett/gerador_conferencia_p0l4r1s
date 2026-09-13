@@ -75,7 +75,7 @@ export async function POST(
   request: Request,
   env: { DB: D1Database },
 ): Promise<Response> {
-  const body = await request.json();
+  const body = (await request.json()) as Partial<Template>;
 
   if (!body.title || !body.items || body.items.length === 0) {
     return Response.json(

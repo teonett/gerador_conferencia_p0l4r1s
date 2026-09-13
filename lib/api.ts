@@ -2,14 +2,14 @@ import type { Template } from '../domain/checklist';
 
 export async function fetchChecklists(): Promise<Template[]> {
   const res = await fetch('/api/checklists');
-  const data = await res.json();
+  const data = (await res.json()) as { checklists?: Template[] };
   return data.checklists || [];
 }
 
 export async function fetchChecklistByShare(shareToken: string): Promise<Template | null> {
   const res = await fetch(`/api/checklists?share=${shareToken}`);
   if (!res.ok) return null;
-  const data = await res.json();
+  const data = (await res.json()) as { checklist?: Template | null };
   return data.checklist || null;
 }
 
@@ -23,7 +23,7 @@ export async function saveChecklist(template: Template): Promise<Template> {
     body: JSON.stringify(template),
   });
 
-  const data = await res.json();
+  const data = (await res.json()) as { checklist?: Template };
   return data.checklist || template;
 }
 
@@ -51,6 +51,6 @@ export async function saveResponse(
     body: formData,
   });
 
-  const data = await res.json();
+  const data = (await res.json()) as { id: string };
   return data.id;
 }

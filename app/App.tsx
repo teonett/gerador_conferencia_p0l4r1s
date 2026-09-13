@@ -65,7 +65,8 @@ export function App() {
     fetch('/api/checklists')
       .then((res) => res.json())
       .then((data) => {
-        if (data.checklists) setTemplates(data.checklists);
+        const payload = data as { checklists?: Template[] };
+        if (payload.checklists) setTemplates(payload.checklists);
       })
       .catch(() => {});
 
@@ -75,8 +76,9 @@ export function App() {
       fetch(`/api/checklists?share=${shareToken}`)
         .then((res) => res.json())
         .then((data) => {
-          if (data.checklist) {
-            setSelectedTemplate(data.checklist);
+          const payload = data as { checklist?: Template };
+          if (payload.checklist) {
+            setSelectedTemplate(payload.checklist);
             setView('run');
           }
         })
