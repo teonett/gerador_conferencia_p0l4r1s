@@ -43,7 +43,7 @@ export async function PUT(
   const parsed = responsePayloadSchema.safeParse({
     answers: parseJson(formData.get('answers'), {}),
     metadata: parseJson(formData.get('metadata'), {}),
-    observations: formData.get('observations'),
+    itemObservations: parseJson(formData.get('item_observations'), {}),
     extraItems: parseJson(formData.get('extra_items'), []),
   });
 
@@ -54,7 +54,7 @@ export async function PUT(
     );
   }
 
-  const { answers, metadata, observations, extraItems } = parsed.data;
+  const { answers, metadata, itemObservations, extraItems } = parsed.data;
   const signerName = formData.get('signerName');
 
   const kept: Record<string, string[]> = parseJson(formData.get('photos'), {});
@@ -80,12 +80,12 @@ export async function PUT(
   }
 
   await env.DB.prepare(
-    'UPDATE responses SET answers = ?, metadata = ?, observations = ?, photos = ?, signature_name = ?, extra_items = ?, updated_at = ? WHERE id = ?'
+    'UPDATE responses SET answers = ?, metadata = ?, item_observations = ?, photos = ?, signature_name = ?, extra_items = ?, updated_at = ? WHERE id = ?'
   )
     .bind(
       JSON.stringify(answers),
       JSON.stringify(metadata),
-      observations,
+      JSON.stringify(itemObservations),
       JSON.stringify(photos),
       typeof signerName === 'string' ? signerName : '',
       JSON.stringify(extraItems),

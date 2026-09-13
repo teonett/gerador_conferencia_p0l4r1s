@@ -100,14 +100,15 @@ describe('domain/schema.ts (Zod v4)', () => {
     assert.ok(!res.success);
   });
 
-  it('responsePayloadSchema aceita respostas, metadata e extraItems', () => {
+  it('responsePayloadSchema aceita respostas, metadata, itemObservations e extraItems', () => {
     const res = responsePayloadSchema.safeParse({
       answers: { q1: ['Sim'] },
       metadata: { setor: 'Administração' },
-      observations: 'Tudo ok',
+      itemObservations: { q1: 'Tudo ok' },
       extraItems: [validItem],
     });
     assert.ok(res.success, res.success ? '' : JSON.stringify(res.error.issues));
     assert.deepStrictEqual(res.data.extraItems, [validItem]);
+    assert.deepStrictEqual(res.data.itemObservations, { q1: 'Tudo ok' });
   });
 });

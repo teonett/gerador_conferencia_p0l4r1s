@@ -5,7 +5,7 @@ export interface DraftData {
   savedAt: number;
   answers: Record<string, string[]>;
   metadata: Record<string, string>;
-  observations: string;
+  itemObservations: Record<string, string>;
   photos: Record<string, Blob[]>;
   extraItems: Item[];
 }

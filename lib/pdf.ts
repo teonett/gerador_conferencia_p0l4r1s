@@ -60,7 +60,7 @@ export async function generatePdf(
   template: Template,
   answers: Record<string, string[]>,
   metadata: Record<string, string>,
-  observations: string,
+  itemObservations: Record<string, string> = {},
   signature: string,
   confirmedAt: string,
   photos: Record<string, Blob[]> = {},
@@ -208,6 +208,8 @@ export async function generatePdf(
 
   for (const [index, item] of allItems.entries()) {
     const answer = answers[item.id]?.join(", ") || "—";
+    const obsText = (itemObservations[item.id] || "").trim();
+    const rowHeight = PDF.itemRow.minHeight + (obsText ? 10 : 0);
 
     if (index % 2 === 1) {
       doc.setFillColor(...hexToRgb(COLORS.cream));
@@ -215,7 +217,7 @@ export async function generatePdf(
         PDF.itemRow.leftX,
         y,
         PDF.itemRow.width,
-        PDF.itemRow.minHeight,
+        rowHeight,
         "F",
       );
     }
@@ -227,6 +229,16 @@ export async function generatePdf(
 
     doc.setFontSize(9);
     doc.text(`Resposta: ${answer}`, PDF.itemRow.leftX + 4, y + 20);
+
+    if (obsText) {
+      const lines = doc.splitTextToSize(`Obs.: ${obsText}`, PDF.itemRow.questionTextWidth);
+      const first = Array.isArray(lines) ? lines[0] : lines;
+      const obsLine = Array.isArray(lines) && lines.length > 1 ? `${first}…` : first;
+      doc.setFontSize(8);
+      doc.setTextColor(90, 90, 90);
+      doc.text(obsLine, PDF.itemRow.leftX + 4, y + 30);
+      doc.setTextColor(0, 0, 0);
+    }
 
     const blobs = (photos[item.id] || []).slice(0, PHOTO.maxPerQuestion);
     const images = (
@@ -245,7 +257,7 @@ export async function generatePdf(
       const slotX = PDF.itemRow.imageX;
       const slotY = y + 4;
       const slotW = pageWidth - 14 - slotX;
-      const slotH = PDF.itemRow.minHeight - 8;
+      const slotH = rowHeight - 8;
       const cols = images.length === 1 ? 1 : 2;
       const rows = Math.ceil(images.length / cols);
       const cellW = slotW / cols;
@@ -281,7 +293,7 @@ export async function generatePdf(
       });
     }
 
-    y += PDF.itemRow.minHeight + 4;
+    y += rowHeight + 4;
 
     if (y > pageHeight - 40) {
       doc.addPage();

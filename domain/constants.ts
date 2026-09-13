@@ -39,10 +39,6 @@ export const OPTION = {
   outrosLabel: "Outros",
 };
 
-export const OBSERVATION = {
-  minLength: 5,
-};
-
 export const CONFIRM_DELETE_PHRASE = "APAGAR_REGISTRO>>SIM";
 
 export const SETTINGS = {

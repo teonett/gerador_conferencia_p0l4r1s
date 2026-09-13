@@ -1,6 +1,6 @@
 {
   "0": "ChecklistRunner.tsx",
-  "1": "TemplateEditor.tsx",
+  "1": "ResponseHistory.tsx",
   "2": "worker/index.ts",
   "3": "devDependencies",
   "4": "checklist.ts",

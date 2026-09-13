@@ -1,43 +1,44 @@
 # Graph Report - gerador_conferencia_p0l4r1s  (2026-09-13)
 
 ## Corpus Check
-- 57 files · ~19,717 words
+- 62 files · ~21,702 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 296 nodes · 588 edges · 15 communities (14 shown, 1 thin omitted)
+- 320 nodes · 656 edges · 15 communities (14 shown, 1 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 6 edges (avg confidence: 0.82)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `4e6a3183`
+- Built from commit: `6a622776`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
-- App.tsx
-- api/responses/route.ts
+- ChecklistRunner.tsx
+- ResponseHistory.tsx
 - worker/index.ts
 - devDependencies
-- ChecklistRunner.tsx
+- checklist.ts
 - scripts
 - compilerOptions
 - constants.ts
 - Gerador de Conferência Polaris - Documentation
+- App.tsx
 - schema.ts
 - sw.js
 
 ## God Nodes (most connected - your core abstractions)
-1. `Template` - 21 edges
-2. `compilerOptions` - 15 edges
-3. `Gerador de Conferência Polaris - Documentation` - 14 edges
-4. `HeaderModel` - 12 edges
-5. `BTN_PRIMARY` - 11 edges
-6. `scripts` - 10 edges
-7. `generatePdf()` - 9 edges
-8. `BTN_SECONDARY` - 8 edges
-9. `INPUT` - 8 edges
-10. `Item` - 8 edges
+1. `Item` - 20 edges
+2. `Template` - 20 edges
+3. `compilerOptions` - 15 edges
+4. `Gerador de Conferência Polaris - Documentation` - 14 edges
+5. `HeaderModel` - 12 edges
+6. `BTN_PRIMARY` - 11 edges
+7. `scripts` - 10 edges
+8. `BTN_SECONDARY` - 9 edges
+9. `generatePdf()` - 9 edges
+10. `INPUT` - 8 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `index.html Entry Point` --references--> `CF Favicon`  [EXTRACTED]
@@ -45,11 +46,11 @@
 - `index.html Entry Point` --conceptually_related_to--> `Gerador de Conferência Polaris - Documentation`  [INFERRED]
   index.html → README.md
 - `ResponseHistoryItem` --references--> `Answers`  [EXTRACTED]
-  app/api/responses/route.ts → domain/checklist.ts
+  app/api/responses/route.ts → domain/schema.ts
+- `ResponseHistoryItem` --references--> `Item`  [EXTRACTED]
+  app/api/responses/route.ts → domain/schema.ts
 - `DashboardProps` --references--> `Template`  [EXTRACTED]
-  components/dashboard/Dashboard.tsx → domain/checklist.ts
-- `HeadersViewProps` --references--> `HeaderModel`  [EXTRACTED]
-  components/headers/HeadersView.tsx → domain/header.ts
+  components/dashboard/Dashboard.tsx → domain/schema.ts
 
 ## Import Cycles
 - None detected.
@@ -61,29 +62,29 @@
 
 ## Communities (15 total, 1 thin omitted)
 
-### Community 0 - "App.tsx"
-Cohesion: 0.08
-Nodes (51): App(), applyPrimaryColor(), CameraCapture(), CameraCaptureProps, Dashboard(), DashboardProps, Draft, HeadersView() (+43 more)
+### Community 0 - "ChecklistRunner.tsx"
+Cohesion: 0.10
+Nodes (35): CameraCapture(), CameraCaptureProps, Dashboard(), Draft, HeadersView(), slugify(), toDrafts(), PageHero() (+27 more)
 
-### Community 1 - "api/responses/route.ts"
-Cohesion: 0.60
-Nodes (5): countPhotos(), GET(), parseJson(), ResponseHistoryItem, Metadata
+### Community 1 - "ResponseHistory.tsx"
+Cohesion: 0.16
+Nodes (18): ResponseHistory(), summarize(), AnswerMetricsBar(), AnswerMetricsBarProps, CLASS_DOT, METRIC_BG, METRIC_COLORS, AnswerClass (+10 more)
 
 ### Community 2 - "worker/index.ts"
-Cohesion: 0.10
-Nodes (24): POST(), DELETE(), PUT(), GET(), POST(), GET(), DELETE(), parseFields() (+16 more)
+Cohesion: 0.07
+Nodes (39): parseJson(), POST(), DELETE(), PUT(), GET(), POST(), DELETE(), parseFields() (+31 more)
 
 ### Community 3 - "devDependencies"
 Cohesion: 0.06
 Nodes (33): @cloudflare/vite-plugin, @cloudflare/workers-types, drizzle-kit, eslint, @eslint/js, devDependencies, @cloudflare/vite-plugin, @cloudflare/workers-types (+25 more)
 
-### Community 4 - "ChecklistRunner.tsx"
-Cohesion: 0.13
-Nodes (23): AnswerMetricsBar(), AnswerMetricsBarProps, CLASS_DOT, BulkDefaultControl(), BulkDefaultControlProps, ChecklistRunner(), FIELD_LABEL, HEADER_DATE_INPUT (+15 more)
+### Community 4 - "checklist.ts"
+Cohesion: 0.23
+Nodes (9): countPhotos(), GET(), parseJson(), ResponseHistoryItem, AnswerType, buildInitialAnswers(), SelectionType, Field (+1 more)
 
 ### Community 5 - "scripts"
-Cohesion: 0.08
-Nodes (25): drizzle-orm, hono, jspdf, dependencies, drizzle-orm, hono, jspdf, react (+17 more)
+Cohesion: 0.06
+Nodes (30): drizzle-orm, hono, jspdf, dependencies, drizzle-orm, hono, jspdf, react (+22 more)
 
 ### Community 6 - "compilerOptions"
 Cohesion: 0.07
@@ -91,35 +92,39 @@ Nodes (27): @cloudflare/workers-types, dist, DOM, DOM.Iterable, ES2022, node, no
 
 ### Community 7 - "constants.ts"
 Cohesion: 0.08
-Nodes (27): AppShell(), AppShellProps, getInitialTheme(), NAV_ITEMS, navClass(), Theme, VIEW_LABELS, CIPA_SEED (+19 more)
+Nodes (24): GET(), AppShell(), AppShellProps, getInitialTheme(), NAV_ITEMS, navClass(), Theme, VIEW_LABELS (+16 more)
 
 ### Community 8 - "Gerador de Conferência Polaris - Documentation"
 Cohesion: 0.24
 Nodes (16): index.html Entry Point, CF Favicon, Answers, applyDefaultAnswer, buildInitialAnswers, CIPA Seed Data, classifyAnswer, collectChoiceOptions (+8 more)
+
+### Community 9 - "App.tsx"
+Cohesion: 0.14
+Nodes (26): App(), applyPrimaryColor(), PhotoFile, DashboardProps, HeadersViewProps, HistoryItem, ResponseHistoryProps, BulkDefaultControlProps (+18 more)
 
 ### Community 10 - "schema.ts"
 Cohesion: 0.25
 Nodes (5): DB, checklists, headers, responses, settings
 
 ## Knowledge Gaps
-- **86 isolated node(s):** `PhotoMap`, `SettingsRow`, `CameraCaptureProps`, `Draft`, `HistoryItem` (+81 more)
+- **95 isolated node(s):** `PhotoFile`, `PhotoMap`, `SettingsRow`, `CameraCaptureProps`, `Draft` (+90 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **1 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `Template` connect `App.tsx` to `worker/index.ts`, `api.ts`, `ChecklistRunner.tsx`, `constants.ts`?**
-  _High betweenness centrality (0.037) - this node is a cross-community bridge._
+- **Why does `Item` connect `App.tsx` to `ChecklistRunner.tsx`, `ResponseHistory.tsx`, `worker/index.ts`, `checklist.ts`?**
+  _High betweenness centrality (0.032) - this node is a cross-community bridge._
+- **Why does `Template` connect `App.tsx` to `ChecklistRunner.tsx`, `ResponseHistory.tsx`, `worker/index.ts`, `checklist.ts`, `constants.ts`?**
+  _High betweenness centrality (0.031) - this node is a cross-community bridge._
 - **Why does `devDependencies` connect `devDependencies` to `scripts`?**
-  _High betweenness centrality (0.030) - this node is a cross-community bridge._
-- **What connects `PhotoMap`, `SettingsRow`, `CameraCaptureProps` to the rest of the system?**
-  _86 weakly-connected nodes found - possible documentation gaps or missing edges._
-- **Should `App.tsx` be split into smaller, more focused modules?**
-  _Cohesion score 0.08018648018648018 - nodes in this community are weakly interconnected._
+  _High betweenness centrality (0.029) - this node is a cross-community bridge._
+- **What connects `PhotoFile`, `PhotoMap`, `SettingsRow` to the rest of the system?**
+  _95 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Should `ChecklistRunner.tsx` be split into smaller, more focused modules?**
+  _Cohesion score 0.10460992907801418 - nodes in this community are weakly interconnected._
 - **Should `worker/index.ts` be split into smaller, more focused modules?**
-  _Cohesion score 0.0962566844919786 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.06775510204081632 - nodes in this community are weakly interconnected._
 - **Should `devDependencies` be split into smaller, more focused modules?**
   _Cohesion score 0.06060606060606061 - nodes in this community are weakly interconnected._
-- **Should `ChecklistRunner.tsx` be split into smaller, more focused modules?**
-  _Cohesion score 0.13068181818181818 - nodes in this community are weakly interconnected._

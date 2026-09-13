@@ -18,6 +18,7 @@ export const responses = sqliteTable('responses', {
   answers: text('answers').notNull(),
   metadata: text('metadata').notNull().default('{}'),
   observations: text('observations').notNull().default(''),
+  itemObservations: text('item_observations').notNull().default('{}'),
   photos: text('photos').notNull().default('{}'),
   signatureName: text('signature_name').notNull().default(''),
   extraItems: text('extra_items').notNull().default('[]'),

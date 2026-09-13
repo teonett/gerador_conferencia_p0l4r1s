@@ -77,32 +77,6 @@
       "source_location": "L10"
     },
     {
-      "id": "components_headers_headersview_headersviewprops",
-      "label": "HeadersViewProps",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "ChecklistRunner.tsx",
-      "file_type": "code",
-      "norm_label": "headersviewprops",
-      "source_file": "components/headers/HeadersView.tsx",
-      "source_location": "L12"
-    },
-    {
-      "id": "components_history_responsehistory_responsehistoryprops",
-      "label": "ResponseHistoryProps",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "ChecklistRunner.tsx",
-      "file_type": "code",
-      "norm_label": "responsehistoryprops",
-      "source_file": "components/history/ResponseHistory.tsx",
-      "source_location": "L29"
-    },
-    {
       "id": "components_layout_pagehero_pageheroprops",
       "label": "PageHeroProps",
       "_callable": true,
@@ -129,17 +103,17 @@
       "source_location": "L4"
     },
     {
-      "id": "components_report_reportreview_reportreviewprops",
-      "label": "ReportReviewProps",
+      "id": "components_main_mainhero_mainheroprops",
+      "label": "MainHeroProps",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
       "community": 0,
       "community_name": "ChecklistRunner.tsx",
       "file_type": "code",
-      "norm_label": "reportreviewprops",
-      "source_file": "components/report/ReportReview.tsx",
-      "source_location": "L17"
+      "norm_label": "mainheroprops",
+      "source_file": "components/main/MainHero.tsx",
+      "source_location": "L4"
     },
     {
       "id": "components_report_reportreview_savestate",
@@ -155,43 +129,17 @@
       "source_location": "L33"
     },
     {
-      "id": "components_runner_checklistrunner_checklistrunnerprops",
-      "label": "ChecklistRunnerProps",
+      "id": "components_metrics_answermetricsbar_answermetricsbarprops",
+      "label": "AnswerMetricsBarProps",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 0,
-      "community_name": "ChecklistRunner.tsx",
+      "community": 1,
+      "community_name": "ResponseHistory.tsx",
       "file_type": "code",
-      "norm_label": "checklistrunnerprops",
-      "source_file": "components/runner/ChecklistRunner.tsx",
-      "source_location": "L24"
-    },
-    {
-      "id": "domain_header_headerfield",
-      "label": "HeaderField",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "ChecklistRunner.tsx",
-      "file_type": "code",
-      "norm_label": "headerfield",
-      "source_file": "domain/header.ts",
-      "source_location": "L1"
-    },
-    {
-      "id": "domain_header_headermodel",
-      "label": "HeaderModel",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "ChecklistRunner.tsx",
-      "file_type": "code",
-      "norm_label": "headermodel",
-      "source_file": "domain/header.ts",
-      "source_location": "L6"
+      "norm_label": "answermetricsbarprops",
+      "source_file": "components/metrics/AnswerMetricsBar.tsx",
+      "source_location": "L27"
     },
     {
       "id": "domain_metrics_answerclass",
@@ -199,8 +147,8 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 0,
-      "community_name": "ChecklistRunner.tsx",
+      "community": 1,
+      "community_name": "ResponseHistory.tsx",
       "file_type": "code",
       "norm_label": "answerclass",
       "source_file": "domain/metrics.ts",
@@ -212,77 +160,25 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 0,
-      "community_name": "ChecklistRunner.tsx",
+      "community": 1,
+      "community_name": "ResponseHistory.tsx",
       "file_type": "code",
       "norm_label": "answermetrics",
       "source_file": "domain/metrics.ts",
       "source_location": "L12"
     },
     {
-      "id": "components_dashboard_dashboard_dashboardprops",
-      "label": "DashboardProps",
+      "id": "domain_schema_answers",
+      "label": "Answers",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
       "community": 1,
-      "community_name": "TemplateEditor.tsx",
+      "community_name": "ResponseHistory.tsx",
       "file_type": "code",
-      "norm_label": "dashboardprops",
-      "source_file": "components/dashboard/Dashboard.tsx",
-      "source_location": "L7"
-    },
-    {
-      "id": "components_main_mainhero_mainheroprops",
-      "label": "MainHeroProps",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "TemplateEditor.tsx",
-      "file_type": "code",
-      "norm_label": "mainheroprops",
-      "source_file": "components/main/MainHero.tsx",
-      "source_location": "L4"
-    },
-    {
-      "id": "components_templates_templatecard_templatecardprops",
-      "label": "TemplateCardProps",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "TemplateEditor.tsx",
-      "file_type": "code",
-      "norm_label": "templatecardprops",
-      "source_file": "components/templates/TemplateCard.tsx",
-      "source_location": "L4"
-    },
-    {
-      "id": "components_templates_templateeditor_templateeditorprops",
-      "label": "TemplateEditorProps",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "TemplateEditor.tsx",
-      "file_type": "code",
-      "norm_label": "templateeditorprops",
-      "source_file": "components/templates/TemplateEditor.tsx",
-      "source_location": "L8"
-    },
-    {
-      "id": "domain_schema_template",
-      "label": "Template",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "TemplateEditor.tsx",
-      "file_type": "code",
-      "norm_label": "template",
+      "norm_label": "answers",
       "source_file": "domain/schema.ts",
-      "source_location": "L100"
+      "source_location": "L102"
     },
     {
       "id": "db_index_db",
@@ -324,6 +220,19 @@
       "source_location": "L7"
     },
     {
+      "id": "domain_header_headerfield",
+      "label": "HeaderField",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "worker/index.ts",
+      "file_type": "code",
+      "norm_label": "headerfield",
+      "source_file": "domain/header.ts",
+      "source_location": "L1"
+    },
+    {
       "id": "domain_schema_responsepayload",
       "label": "ResponsePayload",
       "_callable": true,
@@ -363,45 +272,6 @@
       "source_location": "L3"
     },
     {
-      "id": "components_history_responsehistory_historyitem",
-      "label": "HistoryItem",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 4,
-      "community_name": "checklist.ts",
-      "file_type": "code",
-      "norm_label": "historyitem",
-      "source_file": "components/history/ResponseHistory.tsx",
-      "source_location": "L12"
-    },
-    {
-      "id": "components_metrics_answermetricsbar_answermetricsbarprops",
-      "label": "AnswerMetricsBarProps",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 4,
-      "community_name": "checklist.ts",
-      "file_type": "code",
-      "norm_label": "answermetricsbarprops",
-      "source_file": "components/metrics/AnswerMetricsBar.tsx",
-      "source_location": "L27"
-    },
-    {
-      "id": "components_metrics_bulkdefaultcontrol_bulkdefaultcontrolprops",
-      "label": "BulkDefaultControlProps",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 4,
-      "community_name": "checklist.ts",
-      "file_type": "code",
-      "norm_label": "bulkdefaultcontrolprops",
-      "source_file": "components/metrics/BulkDefaultControl.tsx",
-      "source_location": "L6"
-    },
-    {
       "id": "domain_checklist_answertype",
       "label": "AnswerType",
       "_callable": true,
@@ -428,19 +298,6 @@
       "source_location": "L6"
     },
     {
-      "id": "domain_schema_answers",
-      "label": "Answers",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 4,
-      "community_name": "checklist.ts",
-      "file_type": "code",
-      "norm_label": "answers",
-      "source_file": "domain/schema.ts",
-      "source_location": "L102"
-    },
-    {
       "id": "domain_schema_field",
       "label": "Field",
       "_callable": true,
@@ -454,19 +311,6 @@
       "source_location": "L101"
     },
     {
-      "id": "domain_schema_item",
-      "label": "Item",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 4,
-      "community_name": "checklist.ts",
-      "file_type": "code",
-      "norm_label": "item",
-      "source_file": "domain/schema.ts",
-      "source_location": "L99"
-    },
-    {
       "id": "domain_schema_metadata",
       "label": "Metadata",
       "_callable": true,
@@ -478,19 +322,6 @@
       "norm_label": "metadata",
       "source_file": "domain/schema.ts",
       "source_location": "L103"
-    },
-    {
-      "id": "lib_draft_draftdata",
-      "label": "DraftData",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 4,
-      "community_name": "checklist.ts",
-      "file_type": "code",
-      "norm_label": "draftdata",
-      "source_file": "lib/draft.ts",
-      "source_location": "L3"
     },
     {
       "id": "components_layout_appshell_appshellprops",
@@ -545,6 +376,175 @@
       "source_location": "L17"
     },
     {
+      "id": "components_dashboard_dashboard_dashboardprops",
+      "label": "DashboardProps",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 9,
+      "community_name": "App.tsx",
+      "file_type": "code",
+      "norm_label": "dashboardprops",
+      "source_file": "components/dashboard/Dashboard.tsx",
+      "source_location": "L7"
+    },
+    {
+      "id": "components_headers_headersview_headersviewprops",
+      "label": "HeadersViewProps",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 9,
+      "community_name": "App.tsx",
+      "file_type": "code",
+      "norm_label": "headersviewprops",
+      "source_file": "components/headers/HeadersView.tsx",
+      "source_location": "L12"
+    },
+    {
+      "id": "components_history_responsehistory_historyitem",
+      "label": "HistoryItem",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 9,
+      "community_name": "App.tsx",
+      "file_type": "code",
+      "norm_label": "historyitem",
+      "source_file": "components/history/ResponseHistory.tsx",
+      "source_location": "L12"
+    },
+    {
+      "id": "components_history_responsehistory_responsehistoryprops",
+      "label": "ResponseHistoryProps",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 9,
+      "community_name": "App.tsx",
+      "file_type": "code",
+      "norm_label": "responsehistoryprops",
+      "source_file": "components/history/ResponseHistory.tsx",
+      "source_location": "L29"
+    },
+    {
+      "id": "components_metrics_bulkdefaultcontrol_bulkdefaultcontrolprops",
+      "label": "BulkDefaultControlProps",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 9,
+      "community_name": "App.tsx",
+      "file_type": "code",
+      "norm_label": "bulkdefaultcontrolprops",
+      "source_file": "components/metrics/BulkDefaultControl.tsx",
+      "source_location": "L6"
+    },
+    {
+      "id": "components_report_reportreview_reportreviewprops",
+      "label": "ReportReviewProps",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 9,
+      "community_name": "App.tsx",
+      "file_type": "code",
+      "norm_label": "reportreviewprops",
+      "source_file": "components/report/ReportReview.tsx",
+      "source_location": "L17"
+    },
+    {
+      "id": "components_runner_checklistrunner_checklistrunnerprops",
+      "label": "ChecklistRunnerProps",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 9,
+      "community_name": "App.tsx",
+      "file_type": "code",
+      "norm_label": "checklistrunnerprops",
+      "source_file": "components/runner/ChecklistRunner.tsx",
+      "source_location": "L25"
+    },
+    {
+      "id": "components_templates_templatecard_templatecardprops",
+      "label": "TemplateCardProps",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 9,
+      "community_name": "App.tsx",
+      "file_type": "code",
+      "norm_label": "templatecardprops",
+      "source_file": "components/templates/TemplateCard.tsx",
+      "source_location": "L4"
+    },
+    {
+      "id": "components_templates_templateeditor_templateeditorprops",
+      "label": "TemplateEditorProps",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 9,
+      "community_name": "App.tsx",
+      "file_type": "code",
+      "norm_label": "templateeditorprops",
+      "source_file": "components/templates/TemplateEditor.tsx",
+      "source_location": "L8"
+    },
+    {
+      "id": "domain_header_headermodel",
+      "label": "HeaderModel",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 9,
+      "community_name": "App.tsx",
+      "file_type": "code",
+      "norm_label": "headermodel",
+      "source_file": "domain/header.ts",
+      "source_location": "L6"
+    },
+    {
+      "id": "domain_schema_item",
+      "label": "Item",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 9,
+      "community_name": "App.tsx",
+      "file_type": "code",
+      "norm_label": "item",
+      "source_file": "domain/schema.ts",
+      "source_location": "L99"
+    },
+    {
+      "id": "domain_schema_template",
+      "label": "Template",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 9,
+      "community_name": "App.tsx",
+      "file_type": "code",
+      "norm_label": "template",
+      "source_file": "domain/schema.ts",
+      "source_location": "L100"
+    },
+    {
+      "id": "lib_draft_draftdata",
+      "label": "DraftData",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 9,
+      "community_name": "App.tsx",
+      "file_type": "code",
+      "norm_label": "draftdata",
+      "source_file": "lib/draft.ts",
+      "source_location": "L3"
+    },
+    {
       "id": "components_camera_cameracapture_cameracapture",
       "label": "CameraCapture()",
       "_callable": true,
@@ -557,16 +557,52 @@
       "source_location": "L9"
     },
     {
-      "id": "components_history_responsehistory_summarize",
-      "label": "summarize()",
+      "id": "components_dashboard_dashboard_dashboard",
+      "label": "Dashboard()",
       "_callable": true,
       "_origin": "ast",
       "community": 0,
       "community_name": "ChecklistRunner.tsx",
       "file_type": "code",
-      "norm_label": "summarize()",
-      "source_file": "components/history/ResponseHistory.tsx",
-      "source_location": "L35"
+      "norm_label": "dashboard()",
+      "source_file": "components/dashboard/Dashboard.tsx",
+      "source_location": "L15"
+    },
+    {
+      "id": "components_headers_headersview_headersview",
+      "label": "HeadersView()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "ChecklistRunner.tsx",
+      "file_type": "code",
+      "norm_label": "headersview()",
+      "source_file": "components/headers/HeadersView.tsx",
+      "source_location": "L25"
+    },
+    {
+      "id": "components_headers_headersview_slugify",
+      "label": "slugify()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "ChecklistRunner.tsx",
+      "file_type": "code",
+      "norm_label": "slugify()",
+      "source_file": "components/headers/HeadersView.tsx",
+      "source_location": "L250"
+    },
+    {
+      "id": "components_headers_headersview_todrafts",
+      "label": "toDrafts()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "ChecklistRunner.tsx",
+      "file_type": "code",
+      "norm_label": "todrafts()",
+      "source_file": "components/headers/HeadersView.tsx",
+      "source_location": "L17"
     },
     {
       "id": "components_layout_pagehero_pagehero",
@@ -593,28 +629,16 @@
       "source_location": "L14"
     },
     {
-      "id": "components_metrics_answermetricsbar_answermetricsbar",
-      "label": "AnswerMetricsBar()",
+      "id": "components_main_mainhero_mainhero",
+      "label": "MainHero()",
       "_callable": true,
       "_origin": "ast",
       "community": 0,
       "community_name": "ChecklistRunner.tsx",
       "file_type": "code",
-      "norm_label": "answermetricsbar()",
-      "source_file": "components/metrics/AnswerMetricsBar.tsx",
-      "source_location": "L32"
-    },
-    {
-      "id": "components_metrics_answermetricsbar_metricchip",
-      "label": "MetricChip()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "ChecklistRunner.tsx",
-      "file_type": "code",
-      "norm_label": "metricchip()",
-      "source_file": "components/metrics/AnswerMetricsBar.tsx",
-      "source_location": "L18"
+      "norm_label": "mainhero()",
+      "source_file": "components/main/MainHero.tsx",
+      "source_location": "L13"
     },
     {
       "id": "components_metrics_bulkdefaultcontrol_bulkdefaultcontrol",
@@ -662,7 +686,55 @@
       "file_type": "code",
       "norm_label": "checklistrunner()",
       "source_file": "components/runner/ChecklistRunner.tsx",
-      "source_location": "L45"
+      "source_location": "L46"
+    },
+    {
+      "id": "components_settings_settingsview_applyprimarycolor",
+      "label": "applyPrimaryColor()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "ChecklistRunner.tsx",
+      "file_type": "code",
+      "norm_label": "applyprimarycolor()",
+      "source_file": "components/settings/SettingsView.tsx",
+      "source_location": "L13"
+    },
+    {
+      "id": "components_settings_settingsview_hextorgb",
+      "label": "hexToRgb()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "ChecklistRunner.tsx",
+      "file_type": "code",
+      "norm_label": "hextorgb()",
+      "source_file": "components/settings/SettingsView.tsx",
+      "source_location": "L6"
+    },
+    {
+      "id": "components_settings_settingsview_settingsview",
+      "label": "SettingsView()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "ChecklistRunner.tsx",
+      "file_type": "code",
+      "norm_label": "settingsview()",
+      "source_file": "components/settings/SettingsView.tsx",
+      "source_location": "L19"
+    },
+    {
+      "id": "components_templates_templatecard_templatecard",
+      "label": "TemplateCard()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "ChecklistRunner.tsx",
+      "file_type": "code",
+      "norm_label": "templatecard()",
+      "source_file": "components/templates/TemplateCard.tsx",
+      "source_location": "L11"
     },
     {
       "id": "components_ui_classes_zebrarow",
@@ -677,54 +749,6 @@
       "source_location": "L29"
     },
     {
-      "id": "domain_metrics_applydefaultanswer",
-      "label": "applyDefaultAnswer()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "ChecklistRunner.tsx",
-      "file_type": "code",
-      "norm_label": "applydefaultanswer()",
-      "source_file": "domain/metrics.ts",
-      "source_location": "L53"
-    },
-    {
-      "id": "domain_metrics_classifyanswer",
-      "label": "classifyAnswer()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "ChecklistRunner.tsx",
-      "file_type": "code",
-      "norm_label": "classifyanswer()",
-      "source_file": "domain/metrics.ts",
-      "source_location": "L5"
-    },
-    {
-      "id": "domain_metrics_collectchoiceoptions",
-      "label": "collectChoiceOptions()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "ChecklistRunner.tsx",
-      "file_type": "code",
-      "norm_label": "collectchoiceoptions()",
-      "source_file": "domain/metrics.ts",
-      "source_location": "L62"
-    },
-    {
-      "id": "domain_metrics_computeanswermetrics",
-      "label": "computeAnswerMetrics()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "ChecklistRunner.tsx",
-      "file_type": "code",
-      "norm_label": "computeanswermetrics()",
-      "source_file": "domain/metrics.ts",
-      "source_location": "L22"
-    },
-    {
       "id": "lib_images_normalizeimage",
       "label": "normalizeImage()",
       "_callable": true,
@@ -737,148 +761,160 @@
       "source_location": "L3"
     },
     {
-      "id": "tests_metrics_test_choiceitem",
-      "label": "choiceItem()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "ChecklistRunner.tsx",
-      "file_type": "code",
-      "norm_label": "choiceitem()",
-      "source_file": "tests/metrics.test.mjs",
-      "source_location": "L10"
-    },
-    {
-      "id": "components_dashboard_dashboard_dashboard",
-      "label": "Dashboard()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "TemplateEditor.tsx",
-      "file_type": "code",
-      "norm_label": "dashboard()",
-      "source_file": "components/dashboard/Dashboard.tsx",
-      "source_location": "L15"
-    },
-    {
       "id": "components_history_responsehistory_responsehistory",
       "label": "ResponseHistory()",
       "_callable": true,
       "_origin": "ast",
       "community": 1,
-      "community_name": "TemplateEditor.tsx",
+      "community_name": "ResponseHistory.tsx",
       "file_type": "code",
       "norm_label": "responsehistory()",
       "source_file": "components/history/ResponseHistory.tsx",
       "source_location": "L50"
     },
     {
-      "id": "components_main_mainhero_mainhero",
-      "label": "MainHero()",
+      "id": "components_history_responsehistory_summarize",
+      "label": "summarize()",
       "_callable": true,
       "_origin": "ast",
       "community": 1,
-      "community_name": "TemplateEditor.tsx",
+      "community_name": "ResponseHistory.tsx",
       "file_type": "code",
-      "norm_label": "mainhero()",
-      "source_file": "components/main/MainHero.tsx",
-      "source_location": "L13"
+      "norm_label": "summarize()",
+      "source_file": "components/history/ResponseHistory.tsx",
+      "source_location": "L35"
     },
     {
-      "id": "components_settings_settingsview_applyprimarycolor",
-      "label": "applyPrimaryColor()",
+      "id": "components_metrics_answermetricsbar_answermetricsbar",
+      "label": "AnswerMetricsBar()",
       "_callable": true,
       "_origin": "ast",
       "community": 1,
-      "community_name": "TemplateEditor.tsx",
+      "community_name": "ResponseHistory.tsx",
       "file_type": "code",
-      "norm_label": "applyprimarycolor()",
-      "source_file": "components/settings/SettingsView.tsx",
+      "norm_label": "answermetricsbar()",
+      "source_file": "components/metrics/AnswerMetricsBar.tsx",
+      "source_location": "L32"
+    },
+    {
+      "id": "components_metrics_answermetricsbar_metricchip",
+      "label": "MetricChip()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "ResponseHistory.tsx",
+      "file_type": "code",
+      "norm_label": "metricchip()",
+      "source_file": "components/metrics/AnswerMetricsBar.tsx",
+      "source_location": "L18"
+    },
+    {
+      "id": "domain_metrics_applydefaultanswer",
+      "label": "applyDefaultAnswer()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "ResponseHistory.tsx",
+      "file_type": "code",
+      "norm_label": "applydefaultanswer()",
+      "source_file": "domain/metrics.ts",
+      "source_location": "L53"
+    },
+    {
+      "id": "domain_metrics_classifyanswer",
+      "label": "classifyAnswer()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "ResponseHistory.tsx",
+      "file_type": "code",
+      "norm_label": "classifyanswer()",
+      "source_file": "domain/metrics.ts",
+      "source_location": "L5"
+    },
+    {
+      "id": "domain_metrics_collectchoiceoptions",
+      "label": "collectChoiceOptions()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "ResponseHistory.tsx",
+      "file_type": "code",
+      "norm_label": "collectchoiceoptions()",
+      "source_file": "domain/metrics.ts",
+      "source_location": "L62"
+    },
+    {
+      "id": "domain_metrics_computeanswermetrics",
+      "label": "computeAnswerMetrics()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "ResponseHistory.tsx",
+      "file_type": "code",
+      "norm_label": "computeanswermetrics()",
+      "source_file": "domain/metrics.ts",
+      "source_location": "L22"
+    },
+    {
+      "id": "lib_pdf_blobtoimage",
+      "label": "blobToImage()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "ResponseHistory.tsx",
+      "file_type": "code",
+      "norm_label": "blobtoimage()",
+      "source_file": "lib/pdf.ts",
       "source_location": "L13"
     },
     {
-      "id": "components_settings_settingsview_hextorgb",
+      "id": "lib_pdf_formatheaderdate",
+      "label": "formatHeaderDate()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "ResponseHistory.tsx",
+      "file_type": "code",
+      "norm_label": "formatheaderdate()",
+      "source_file": "lib/pdf.ts",
+      "source_location": "L53"
+    },
+    {
+      "id": "lib_pdf_generatepdf",
+      "label": "generatePdf()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "ResponseHistory.tsx",
+      "file_type": "code",
+      "norm_label": "generatepdf()",
+      "source_file": "lib/pdf.ts",
+      "source_location": "L59"
+    },
+    {
+      "id": "lib_pdf_hextorgb",
       "label": "hexToRgb()",
       "_callable": true,
       "_origin": "ast",
       "community": 1,
-      "community_name": "TemplateEditor.tsx",
+      "community_name": "ResponseHistory.tsx",
       "file_type": "code",
       "norm_label": "hextorgb()",
-      "source_file": "components/settings/SettingsView.tsx",
-      "source_location": "L6"
+      "source_file": "lib/pdf.ts",
+      "source_location": "L5"
     },
     {
-      "id": "components_settings_settingsview_settingsview",
-      "label": "SettingsView()",
+      "id": "tests_metrics_test_choiceitem",
+      "label": "choiceItem()",
       "_callable": true,
       "_origin": "ast",
       "community": 1,
-      "community_name": "TemplateEditor.tsx",
+      "community_name": "ResponseHistory.tsx",
       "file_type": "code",
-      "norm_label": "settingsview()",
-      "source_file": "components/settings/SettingsView.tsx",
-      "source_location": "L19"
-    },
-    {
-      "id": "components_templates_templatecard_templatecard",
-      "label": "TemplateCard()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "TemplateEditor.tsx",
-      "file_type": "code",
-      "norm_label": "templatecard()",
-      "source_file": "components/templates/TemplateCard.tsx",
-      "source_location": "L11"
-    },
-    {
-      "id": "components_templates_templateeditor_ensureoutros",
-      "label": "ensureOutros()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "TemplateEditor.tsx",
-      "file_type": "code",
-      "norm_label": "ensureoutros()",
-      "source_file": "components/templates/TemplateEditor.tsx",
-      "source_location": "L14"
-    },
-    {
-      "id": "components_templates_templateeditor_makeblankitem",
-      "label": "makeBlankItem()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "TemplateEditor.tsx",
-      "file_type": "code",
-      "norm_label": "makeblankitem()",
-      "source_file": "components/templates/TemplateEditor.tsx",
-      "source_location": "L19"
-    },
-    {
-      "id": "components_templates_templateeditor_sanitizeitem",
-      "label": "sanitizeItem()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "TemplateEditor.tsx",
-      "file_type": "code",
-      "norm_label": "sanitizeitem()",
-      "source_file": "components/templates/TemplateEditor.tsx",
-      "source_location": "L31"
-    },
-    {
-      "id": "components_templates_templateeditor_templateeditor",
-      "label": "TemplateEditor()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "TemplateEditor.tsx",
-      "file_type": "code",
-      "norm_label": "templateeditor()",
-      "source_file": "components/templates/TemplateEditor.tsx",
-      "source_location": "L49"
+      "norm_label": "choiceitem()",
+      "source_file": "tests/metrics.test.mjs",
+      "source_location": "L10"
     },
     {
       "id": "db_index_createdb",
@@ -963,18 +999,6 @@
       "norm_label": "post()",
       "source_file": "app/api/checklists/route.ts",
       "source_location": "L75"
-    },
-    {
-      "id": "app_api_files_path_route_get",
-      "label": "GET()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "worker/index.ts",
-      "file_type": "code",
-      "norm_label": "get()",
-      "source_file": "app/api/files/[...path]/route.ts",
-      "source_location": "L3"
     },
     {
       "id": "app_api_headers_id_route_delete",
@@ -1193,6 +1217,18 @@
       "source_location": "L5"
     },
     {
+      "id": "app_api_files_path_route_get",
+      "label": "GET()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 7,
+      "community_name": "constants.ts",
+      "file_type": "code",
+      "norm_label": "get()",
+      "source_file": "app/api/files/[...path]/route.ts",
+      "source_location": "L3"
+    },
+    {
       "id": "components_layout_appshell_appshell",
       "label": "AppShell()",
       "_callable": true,
@@ -1265,54 +1301,6 @@
       "source_location": "L38"
     },
     {
-      "id": "lib_pdf_blobtoimage",
-      "label": "blobToImage()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 7,
-      "community_name": "constants.ts",
-      "file_type": "code",
-      "norm_label": "blobtoimage()",
-      "source_file": "lib/pdf.ts",
-      "source_location": "L13"
-    },
-    {
-      "id": "lib_pdf_formatheaderdate",
-      "label": "formatHeaderDate()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 7,
-      "community_name": "constants.ts",
-      "file_type": "code",
-      "norm_label": "formatheaderdate()",
-      "source_file": "lib/pdf.ts",
-      "source_location": "L53"
-    },
-    {
-      "id": "lib_pdf_generatepdf",
-      "label": "generatePdf()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 7,
-      "community_name": "constants.ts",
-      "file_type": "code",
-      "norm_label": "generatepdf()",
-      "source_file": "lib/pdf.ts",
-      "source_location": "L59"
-    },
-    {
-      "id": "lib_pdf_hextorgb",
-      "label": "hexToRgb()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 7,
-      "community_name": "constants.ts",
-      "file_type": "code",
-      "norm_label": "hextorgb()",
-      "source_file": "lib/pdf.ts",
-      "source_location": "L5"
-    },
-    {
       "id": "app_app_app",
       "label": "App()",
       "_callable": true,
@@ -1337,40 +1325,52 @@
       "source_location": "L19"
     },
     {
-      "id": "components_headers_headersview_headersview",
-      "label": "HeadersView()",
+      "id": "components_templates_templateeditor_ensureoutros",
+      "label": "ensureOutros()",
       "_callable": true,
       "_origin": "ast",
       "community": 9,
       "community_name": "App.tsx",
       "file_type": "code",
-      "norm_label": "headersview()",
-      "source_file": "components/headers/HeadersView.tsx",
-      "source_location": "L25"
+      "norm_label": "ensureoutros()",
+      "source_file": "components/templates/TemplateEditor.tsx",
+      "source_location": "L14"
     },
     {
-      "id": "components_headers_headersview_slugify",
-      "label": "slugify()",
+      "id": "components_templates_templateeditor_makeblankitem",
+      "label": "makeBlankItem()",
       "_callable": true,
       "_origin": "ast",
       "community": 9,
       "community_name": "App.tsx",
       "file_type": "code",
-      "norm_label": "slugify()",
-      "source_file": "components/headers/HeadersView.tsx",
-      "source_location": "L250"
+      "norm_label": "makeblankitem()",
+      "source_file": "components/templates/TemplateEditor.tsx",
+      "source_location": "L19"
     },
     {
-      "id": "components_headers_headersview_todrafts",
-      "label": "toDrafts()",
+      "id": "components_templates_templateeditor_sanitizeitem",
+      "label": "sanitizeItem()",
       "_callable": true,
       "_origin": "ast",
       "community": 9,
       "community_name": "App.tsx",
       "file_type": "code",
-      "norm_label": "todrafts()",
-      "source_file": "components/headers/HeadersView.tsx",
-      "source_location": "L17"
+      "norm_label": "sanitizeitem()",
+      "source_file": "components/templates/TemplateEditor.tsx",
+      "source_location": "L31"
+    },
+    {
+      "id": "components_templates_templateeditor_templateeditor",
+      "label": "TemplateEditor()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 9,
+      "community_name": "App.tsx",
+      "file_type": "code",
+      "norm_label": "templateeditor()",
+      "source_file": "components/templates/TemplateEditor.tsx",
+      "source_location": "L49"
     },
     {
       "id": "lib_draft_cleardraft",
@@ -1444,6 +1444,17 @@
       "source_location": "L1"
     },
     {
+      "id": "components_dashboard_dashboard",
+      "label": "Dashboard.tsx",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "ChecklistRunner.tsx",
+      "file_type": "code",
+      "norm_label": "dashboard.tsx",
+      "source_file": "components/dashboard/Dashboard.tsx",
+      "source_location": "L1"
+    },
+    {
       "id": "components_headers_headersview",
       "label": "HeadersView.tsx",
       "_origin": "ast",
@@ -1452,17 +1463,6 @@
       "file_type": "code",
       "norm_label": "headersview.tsx",
       "source_file": "components/headers/HeadersView.tsx",
-      "source_location": "L1"
-    },
-    {
-      "id": "components_history_responsehistory",
-      "label": "ResponseHistory.tsx",
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "ChecklistRunner.tsx",
-      "file_type": "code",
-      "norm_label": "responsehistory.tsx",
-      "source_file": "components/history/ResponseHistory.tsx",
       "source_location": "L1"
     },
     {
@@ -1488,26 +1488,15 @@
       "source_location": "L1"
     },
     {
-      "id": "components_metrics_answermetricsbar",
-      "label": "AnswerMetricsBar.tsx",
+      "id": "components_main_mainhero",
+      "label": "MainHero.tsx",
       "_origin": "ast",
       "community": 0,
       "community_name": "ChecklistRunner.tsx",
       "file_type": "code",
-      "norm_label": "answermetricsbar.tsx",
-      "source_file": "components/metrics/AnswerMetricsBar.tsx",
+      "norm_label": "mainhero.tsx",
+      "source_file": "components/main/MainHero.tsx",
       "source_location": "L1"
-    },
-    {
-      "id": "components_metrics_answermetricsbar_class_dot",
-      "label": "CLASS_DOT",
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "ChecklistRunner.tsx",
-      "file_type": "code",
-      "norm_label": "class_dot",
-      "source_file": "components/metrics/AnswerMetricsBar.tsx",
-      "source_location": "L11"
     },
     {
       "id": "components_metrics_bulkdefaultcontrol",
@@ -1540,6 +1529,28 @@
       "file_type": "code",
       "norm_label": "checklistrunner.tsx",
       "source_file": "components/runner/ChecklistRunner.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "components_settings_settingsview",
+      "label": "SettingsView.tsx",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "ChecklistRunner.tsx",
+      "file_type": "code",
+      "norm_label": "settingsview.tsx",
+      "source_file": "components/settings/SettingsView.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "components_templates_templatecard",
+      "label": "TemplateCard.tsx",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "ChecklistRunner.tsx",
+      "file_type": "code",
+      "norm_label": "templatecard.tsx",
+      "source_file": "components/templates/TemplateCard.tsx",
       "source_location": "L1"
     },
     {
@@ -1585,6 +1596,28 @@
       "norm_label": "btn_secondary",
       "source_file": "components/ui/classes.ts",
       "source_location": "L6"
+    },
+    {
+      "id": "components_ui_classes_btn_success",
+      "label": "BTN_SUCCESS",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "ChecklistRunner.tsx",
+      "file_type": "code",
+      "norm_label": "btn_success",
+      "source_file": "components/ui/classes.ts",
+      "source_location": "L7"
+    },
+    {
+      "id": "components_ui_classes_btn_warning",
+      "label": "BTN_WARNING",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "ChecklistRunner.tsx",
+      "file_type": "code",
+      "norm_label": "btn_warning",
+      "source_file": "components/ui/classes.ts",
+      "source_location": "L8"
     },
     {
       "id": "components_ui_classes_card",
@@ -1664,168 +1697,102 @@
       "source_location": "L11"
     },
     {
-      "id": "components_ui_classes_metric_bg",
-      "label": "METRIC_BG",
+      "id": "tests_rendered_html_test",
+      "label": "rendered-html.test.mjs",
       "_origin": "ast",
       "community": 0,
       "community_name": "ChecklistRunner.tsx",
+      "file_type": "code",
+      "norm_label": "rendered-html.test.mjs",
+      "source_file": "tests/rendered-html.test.mjs",
+      "source_location": "L1"
+    },
+    {
+      "id": "components_history_responsehistory",
+      "label": "ResponseHistory.tsx",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "ResponseHistory.tsx",
+      "file_type": "code",
+      "norm_label": "responsehistory.tsx",
+      "source_file": "components/history/ResponseHistory.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "components_metrics_answermetricsbar",
+      "label": "AnswerMetricsBar.tsx",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "ResponseHistory.tsx",
+      "file_type": "code",
+      "norm_label": "answermetricsbar.tsx",
+      "source_file": "components/metrics/AnswerMetricsBar.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "components_metrics_answermetricsbar_class_dot",
+      "label": "CLASS_DOT",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "ResponseHistory.tsx",
+      "file_type": "code",
+      "norm_label": "class_dot",
+      "source_file": "components/metrics/AnswerMetricsBar.tsx",
+      "source_location": "L11"
+    },
+    {
+      "id": "components_ui_classes_metric_bg",
+      "label": "METRIC_BG",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "ResponseHistory.tsx",
       "file_type": "code",
       "norm_label": "metric_bg",
       "source_file": "components/ui/classes.ts",
       "source_location": "L23"
     },
     {
-      "id": "domain_constants_confirm_delete_phrase",
-      "label": "CONFIRM_DELETE_PHRASE",
+      "id": "domain_constants_metric_colors",
+      "label": "METRIC_COLORS",
       "_origin": "ast",
-      "community": 0,
-      "community_name": "ChecklistRunner.tsx",
+      "community": 1,
+      "community_name": "ResponseHistory.tsx",
       "file_type": "code",
-      "norm_label": "confirm_delete_phrase",
+      "norm_label": "metric_colors",
       "source_file": "domain/constants.ts",
-      "source_location": "L46"
-    },
-    {
-      "id": "domain_header",
-      "label": "header.ts",
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "ChecklistRunner.tsx",
-      "file_type": "code",
-      "norm_label": "header.ts",
-      "source_file": "domain/header.ts",
-      "source_location": "L1"
-    },
-    {
-      "id": "domain_header_header_default_fields",
-      "label": "HEADER_DEFAULT_FIELDS",
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "ChecklistRunner.tsx",
-      "file_type": "code",
-      "norm_label": "header_default_fields",
-      "source_file": "domain/header.ts",
-      "source_location": "L13"
+      "source_location": "L60"
     },
     {
       "id": "domain_metrics",
       "label": "metrics.ts",
       "_origin": "ast",
-      "community": 0,
-      "community_name": "ChecklistRunner.tsx",
+      "community": 1,
+      "community_name": "ResponseHistory.tsx",
       "file_type": "code",
       "norm_label": "metrics.ts",
       "source_file": "domain/metrics.ts",
       "source_location": "L1"
     },
     {
+      "id": "lib_pdf",
+      "label": "pdf.ts",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "ResponseHistory.tsx",
+      "file_type": "code",
+      "norm_label": "pdf.ts",
+      "source_file": "lib/pdf.ts",
+      "source_location": "L1"
+    },
+    {
       "id": "tests_metrics_test",
       "label": "metrics.test.mjs",
       "_origin": "ast",
-      "community": 0,
-      "community_name": "ChecklistRunner.tsx",
+      "community": 1,
+      "community_name": "ResponseHistory.tsx",
       "file_type": "code",
       "norm_label": "metrics.test.mjs",
       "source_file": "tests/metrics.test.mjs",
-      "source_location": "L1"
-    },
-    {
-      "id": "components_dashboard_dashboard",
-      "label": "Dashboard.tsx",
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "TemplateEditor.tsx",
-      "file_type": "code",
-      "norm_label": "dashboard.tsx",
-      "source_file": "components/dashboard/Dashboard.tsx",
-      "source_location": "L1"
-    },
-    {
-      "id": "components_main_mainhero",
-      "label": "MainHero.tsx",
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "TemplateEditor.tsx",
-      "file_type": "code",
-      "norm_label": "mainhero.tsx",
-      "source_file": "components/main/MainHero.tsx",
-      "source_location": "L1"
-    },
-    {
-      "id": "components_settings_settingsview",
-      "label": "SettingsView.tsx",
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "TemplateEditor.tsx",
-      "file_type": "code",
-      "norm_label": "settingsview.tsx",
-      "source_file": "components/settings/SettingsView.tsx",
-      "source_location": "L1"
-    },
-    {
-      "id": "components_templates_templatecard",
-      "label": "TemplateCard.tsx",
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "TemplateEditor.tsx",
-      "file_type": "code",
-      "norm_label": "templatecard.tsx",
-      "source_file": "components/templates/TemplateCard.tsx",
-      "source_location": "L1"
-    },
-    {
-      "id": "components_templates_templateeditor",
-      "label": "TemplateEditor.tsx",
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "TemplateEditor.tsx",
-      "file_type": "code",
-      "norm_label": "templateeditor.tsx",
-      "source_file": "components/templates/TemplateEditor.tsx",
-      "source_location": "L1"
-    },
-    {
-      "id": "components_ui_classes_btn_success",
-      "label": "BTN_SUCCESS",
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "TemplateEditor.tsx",
-      "file_type": "code",
-      "norm_label": "btn_success",
-      "source_file": "components/ui/classes.ts",
-      "source_location": "L7"
-    },
-    {
-      "id": "components_ui_classes_btn_warning",
-      "label": "BTN_WARNING",
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "TemplateEditor.tsx",
-      "file_type": "code",
-      "norm_label": "btn_warning",
-      "source_file": "components/ui/classes.ts",
-      "source_location": "L8"
-    },
-    {
-      "id": "domain_constants_logo_bg_labels",
-      "label": "LOGO_BG_LABELS",
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "TemplateEditor.tsx",
-      "file_type": "code",
-      "norm_label": "logo_bg_labels",
-      "source_file": "domain/constants.ts",
-      "source_location": "L55"
-    },
-    {
-      "id": "tests_rendered_html_test",
-      "label": "rendered-html.test.mjs",
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "TemplateEditor.tsx",
-      "file_type": "code",
-      "norm_label": "rendered-html.test.mjs",
-      "source_file": "tests/rendered-html.test.mjs",
       "source_location": "L1"
     },
     {
@@ -1870,7 +1837,7 @@
       "file_type": "code",
       "norm_label": "headers",
       "source_file": "db/schema.ts",
-      "source_location": "L33"
+      "source_location": "L34"
     },
     {
       "id": "db_schema_responses",
@@ -1892,7 +1859,7 @@
       "file_type": "code",
       "norm_label": "settings",
       "source_file": "db/schema.ts",
-      "source_location": "L28"
+      "source_location": "L29"
     },
     {
       "id": "public_sw",
@@ -1983,17 +1950,6 @@
       "source_location": "L1"
     },
     {
-      "id": "app_api_files_path_route",
-      "label": "[...path]/route.ts",
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "worker/index.ts",
-      "file_type": "code",
-      "norm_label": "[...path]/route.ts",
-      "source_file": "app/api/files/[...path]/route.ts",
-      "source_location": "L1"
-    },
-    {
       "id": "app_api_headers_id_route",
       "label": "headers/[id]/route.ts",
       "_origin": "ast",
@@ -2038,17 +1994,6 @@
       "source_location": "L1"
     },
     {
-      "id": "domain_constants_files",
-      "label": "FILES",
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "worker/index.ts",
-      "file_type": "code",
-      "norm_label": "files",
-      "source_file": "domain/constants.ts",
-      "source_location": "L60"
-    },
-    {
       "id": "domain_constants_option",
       "label": "OPTION",
       "_origin": "ast",
@@ -2068,7 +2013,29 @@
       "file_type": "code",
       "norm_label": "settings",
       "source_file": "domain/constants.ts",
-      "source_location": "L48"
+      "source_location": "L44"
+    },
+    {
+      "id": "domain_header",
+      "label": "header.ts",
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "worker/index.ts",
+      "file_type": "code",
+      "norm_label": "header.ts",
+      "source_file": "domain/header.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "domain_header_header_default_fields",
+      "label": "HEADER_DEFAULT_FIELDS",
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "worker/index.ts",
+      "file_type": "code",
+      "norm_label": "header_default_fields",
+      "source_file": "domain/header.ts",
+      "source_location": "L13"
     },
     {
       "id": "domain_schema",
@@ -3281,6 +3248,17 @@
       "source_location": "L15"
     },
     {
+      "id": "app_api_files_path_route",
+      "label": "[...path]/route.ts",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": "constants.ts",
+      "file_type": "code",
+      "norm_label": "[...path]/route.ts",
+      "source_file": "app/api/files/[...path]/route.ts",
+      "source_location": "L1"
+    },
+    {
       "id": "components_layout_appshell",
       "label": "AppShell.tsx",
       "_origin": "ast",
@@ -3377,7 +3355,7 @@
       "file_type": "code",
       "norm_label": "cipa_seed_id",
       "source_file": "domain/constants.ts",
-      "source_location": "L101"
+      "source_location": "L97"
     },
     {
       "id": "domain_constants_cipa_share_token",
@@ -3388,7 +3366,7 @@
       "file_type": "code",
       "norm_label": "cipa_share_token",
       "source_file": "domain/constants.ts",
-      "source_location": "L102"
+      "source_location": "L98"
     },
     {
       "id": "domain_constants_colors",
@@ -3402,6 +3380,17 @@
       "source_location": "L1"
     },
     {
+      "id": "domain_constants_confirm_delete_phrase",
+      "label": "CONFIRM_DELETE_PHRASE",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": "constants.ts",
+      "file_type": "code",
+      "norm_label": "confirm_delete_phrase",
+      "source_file": "domain/constants.ts",
+      "source_location": "L42"
+    },
+    {
       "id": "domain_constants_drawer_width",
       "label": "DRAWER_WIDTH",
       "_origin": "ast",
@@ -3413,15 +3402,26 @@
       "source_location": "L16"
     },
     {
-      "id": "domain_constants_metric_colors",
-      "label": "METRIC_COLORS",
+      "id": "domain_constants_files",
+      "label": "FILES",
       "_origin": "ast",
       "community": 7,
       "community_name": "constants.ts",
       "file_type": "code",
-      "norm_label": "metric_colors",
+      "norm_label": "files",
       "source_file": "domain/constants.ts",
-      "source_location": "L64"
+      "source_location": "L56"
+    },
+    {
+      "id": "domain_constants_logo_bg_labels",
+      "label": "LOGO_BG_LABELS",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": "constants.ts",
+      "file_type": "code",
+      "norm_label": "logo_bg_labels",
+      "source_file": "domain/constants.ts",
+      "source_location": "L51"
     },
     {
       "id": "domain_constants_mobile_breakpoint",
@@ -3435,17 +3435,6 @@
       "source_location": "L17"
     },
     {
-      "id": "domain_constants_observation",
-      "label": "OBSERVATION",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": "constants.ts",
-      "file_type": "code",
-      "norm_label": "observation",
-      "source_file": "domain/constants.ts",
-      "source_location": "L42"
-    },
-    {
       "id": "domain_constants_pdf",
       "label": "PDF",
       "_origin": "ast",
@@ -3454,7 +3443,7 @@
       "file_type": "code",
       "norm_label": "pdf",
       "source_file": "domain/constants.ts",
-      "source_location": "L71"
+      "source_location": "L67"
     },
     {
       "id": "domain_constants_photo",
@@ -3501,17 +3490,6 @@
       "source_location": "L1"
     },
     {
-      "id": "lib_pdf",
-      "label": "pdf.ts",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": "constants.ts",
-      "file_type": "code",
-      "norm_label": "pdf.ts",
-      "source_file": "lib/pdf.ts",
-      "source_location": "L1"
-    },
-    {
       "id": "tests_domain_test",
       "label": "domain.test.mjs",
       "_origin": "ast",
@@ -3542,6 +3520,17 @@
       "file_type": "code",
       "norm_label": "main.tsx",
       "source_file": "app/main.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "components_templates_templateeditor",
+      "label": "TemplateEditor.tsx",
+      "_origin": "ast",
+      "community": 9,
+      "community_name": "App.tsx",
+      "file_type": "code",
+      "norm_label": "templateeditor.tsx",
+      "source_file": "components/templates/TemplateEditor.tsx",
       "source_location": "L1"
     },
     {
@@ -4154,7 +4143,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "components/runner/ChecklistRunner.tsx",
-      "source_location": "L124",
+      "source_location": "L127",
       "weight": 1.0
     },
     {
@@ -4166,7 +4155,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "components/runner/ChecklistRunner.tsx",
-      "source_location": "L215",
+      "source_location": "L213",
       "weight": 1.0
     },
     {
@@ -4178,7 +4167,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "components/runner/ChecklistRunner.tsx",
-      "source_location": "L58",
+      "source_location": "L59",
       "weight": 1.0
     },
     {
@@ -4358,7 +4347,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "lib/pdf.ts",
-      "source_location": "L233",
+      "source_location": "L245",
       "weight": 1.0
     },
     {
@@ -4575,7 +4564,7 @@
       "confidence_score": 1.0,
       "context": "field",
       "source_file": "components/runner/ChecklistRunner.tsx",
-      "source_location": "L25",
+      "source_location": "L26",
       "weight": 1.0
     },
     {
@@ -4587,7 +4576,7 @@
       "confidence_score": 1.0,
       "context": "field",
       "source_file": "components/runner/ChecklistRunner.tsx",
-      "source_location": "L26",
+      "source_location": "L27",
       "weight": 1.0
     },
     {
@@ -4599,7 +4588,7 @@
       "confidence_score": 1.0,
       "context": "field",
       "source_file": "components/runner/ChecklistRunner.tsx",
-      "source_location": "L31",
+      "source_location": "L32",
       "weight": 1.0
     },
     {
@@ -5948,6 +5937,18 @@
     },
     {
       "source": "components_runner_checklistrunner",
+      "target": "components_ui_classes_btn_warning",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "components/runner/ChecklistRunner.tsx",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "components_runner_checklistrunner",
       "target": "components_ui_classes_card",
       "relation": "imports",
       "_origin": "ast",
@@ -6076,18 +6077,6 @@
       "context": "import",
       "source_file": "components/runner/ChecklistRunner.tsx",
       "source_location": "L4",
-      "weight": 1.0
-    },
-    {
-      "source": "components_runner_checklistrunner",
-      "target": "domain_constants_observation",
-      "relation": "imports",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "import",
-      "source_file": "components/runner/ChecklistRunner.tsx",
-      "source_location": "L5",
       "weight": 1.0
     },
     {
@@ -9401,7 +9390,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "components/runner/ChecklistRunner.tsx",
-      "source_location": "L24",
+      "source_location": "L25",
       "weight": 1.0
     },
     {
@@ -9412,7 +9401,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "components/runner/ChecklistRunner.tsx",
-      "source_location": "L45",
+      "source_location": "L46",
       "weight": 1.0
     },
     {
@@ -9720,7 +9709,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "db/schema.ts",
-      "source_location": "L28",
+      "source_location": "L29",
       "weight": 1.0
     },
     {
@@ -9742,7 +9731,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "db/schema.ts",
-      "source_location": "L33",
+      "source_location": "L34",
       "weight": 1.0
     },
     {
@@ -9835,28 +9824,6 @@
     },
     {
       "source": "domain_constants",
-      "target": "domain_constants_cipa_seed_id",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "domain/constants.ts",
-      "source_location": "L101",
-      "weight": 1.0
-    },
-    {
-      "source": "domain_constants",
-      "target": "domain_constants_cipa_share_token",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "domain/constants.ts",
-      "source_location": "L102",
-      "weight": 1.0
-    },
-    {
-      "source": "domain_constants",
       "target": "domain_constants_sidebar_width",
       "relation": "contains",
       "_origin": "ast",
@@ -9923,7 +9890,7 @@
     },
     {
       "source": "domain_constants",
-      "target": "domain_constants_observation",
+      "target": "domain_constants_confirm_delete_phrase",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -9934,24 +9901,13 @@
     },
     {
       "source": "domain_constants",
-      "target": "domain_constants_confirm_delete_phrase",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "domain/constants.ts",
-      "source_location": "L46",
-      "weight": 1.0
-    },
-    {
-      "source": "domain_constants",
       "target": "domain_constants_settings",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "domain/constants.ts",
-      "source_location": "L48",
+      "source_location": "L44",
       "weight": 1.0
     },
     {
@@ -9962,7 +9918,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "domain/constants.ts",
-      "source_location": "L55",
+      "source_location": "L51",
       "weight": 1.0
     },
     {
@@ -9973,7 +9929,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "domain/constants.ts",
-      "source_location": "L60",
+      "source_location": "L56",
       "weight": 1.0
     },
     {
@@ -9984,7 +9940,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "domain/constants.ts",
-      "source_location": "L64",
+      "source_location": "L60",
       "weight": 1.0
     },
     {
@@ -9995,7 +9951,29 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "domain/constants.ts",
-      "source_location": "L71",
+      "source_location": "L67",
+      "weight": 1.0
+    },
+    {
+      "source": "domain_constants",
+      "target": "domain_constants_cipa_seed_id",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "domain/constants.ts",
+      "source_location": "L97",
+      "weight": 1.0
+    },
+    {
+      "source": "domain_constants",
+      "target": "domain_constants_cipa_share_token",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "domain/constants.ts",
+      "source_location": "L98",
       "weight": 1.0
     },
     {
@@ -11521,5 +11499,5 @@
       "source_file": "README.md"
     }
   ],
-  "built_at_commit": "cb94f93a800ffe2daf5ffd4b4bab6eca4fc684ea"
+  "built_at_commit": "6a622776c42c617da1e0f9ee8f2912c681d64514"
 }

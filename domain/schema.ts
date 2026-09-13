@@ -92,7 +92,7 @@ export const metadataSchema = z.record(z.string(), z.string());
 export const responsePayloadSchema = z.object({
   answers: answersSchema,
   metadata: metadataSchema.default({}),
-  observations: z.string().default(''),
+  itemObservations: z.record(z.string(), z.string()).default({}),
   extraItems: z.array(itemSchema).default([]),
 });
 

@@ -18,7 +18,7 @@ describe("Renderização de telas (SSR)", () => {
         template: CIPA_SEED,
         initialAnswers: {},
         initialMetadata: {},
-        initialObservations: "",
+        initialObservations: {},
         initialPhotos: {},
         onFinish: () => {},
         onBack: () => {},
@@ -30,6 +30,10 @@ describe("Renderização de telas (SSR)", () => {
     assert.ok(
       text.includes("CIPA - Áreas Administrativas"),
       "deve exibir o título do modelo no header",
+    );
+    assert.ok(
+      text.includes("Observação desta pergunta"),
+      "cada pergunta deve ter a própria observação",
     );
   });
 
@@ -47,7 +51,7 @@ describe("Renderização de telas (SSR)", () => {
         },
         initialAnswers: {},
         initialMetadata: {},
-        initialObservations: "",
+        initialObservations: {},
         initialPhotos: {},
         onFinish: () => {},
         onBack: () => {},
@@ -76,7 +80,7 @@ describe("Renderização de telas (SSR)", () => {
         template: CIPA_SEED,
         initialAnswers: {},
         initialMetadata: {},
-        initialObservations: "",
+        initialObservations: {},
         initialPhotos: {},
         initialExtraItems: [
           {
@@ -96,8 +100,12 @@ describe("Renderização de telas (SSR)", () => {
     const text = html.replace(/<!-- -->/g, "");
     assert.ok(text.includes("Etapa 1 de 17"), "extras entram na contagem");
     assert.ok(
-      text.includes("Houve intercorrência na vistoria?"),
-      "extra aparece na lista de perguntas extras",
+      !text.includes("Adicionar pergunta extra"),
+      "ação de adicionar extra só aparece na última pergunta",
+    );
+    assert.ok(
+      !text.includes("Houve intercorrência na vistoria?"),
+      "perguntas extras só são exibidas quando são alcançadas",
     );
   });
 
@@ -107,7 +115,7 @@ describe("Renderização de telas (SSR)", () => {
         template: CIPA_SEED,
         answers: { "cipa-1": ["Sim"] },
         metadata: { setor: "Administração" },
-        observations: "",
+        itemObservations: {},
         photos: {},
         signature: "",
         confirmedAt: "",
@@ -139,7 +147,7 @@ describe("Renderização de telas (SSR)", () => {
         template: CIPA_SEED,
         answers: { "cipa-1": ["Sim"] },
         metadata: { setor: "Administração" },
-        observations: "",
+        itemObservations: { "cipa-1": "Vidro trincado" },
         photos: {},
         signature: "",
         confirmedAt: "",
@@ -149,6 +157,7 @@ describe("Renderização de telas (SSR)", () => {
     const text = html.replace(/<!-- -->/g, "");
     assert.ok(text.includes("Revisar e assinar"));
     assert.ok(text.includes("Resposta: Sim"));
+    assert.ok(text.includes("Obs.: Vidro trincado"), "deve exibir a observação da pergunta");
     assert.ok(
       text.includes("CIPA - Áreas Administrativas"),
       "deve exibir o título do modelo no header",

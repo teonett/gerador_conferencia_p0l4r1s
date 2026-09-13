@@ -1,0 +1,1 @@
+ALTER TABLE responses ADD COLUMN item_observations text NOT NULL DEFAULT '{}';

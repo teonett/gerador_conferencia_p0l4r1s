@@ -19,7 +19,7 @@ interface ReportReviewProps {
   header?: HeaderModel;
   answers: Record<string, string[]>;
   metadata: Record<string, string>;
-  observations: string;
+  itemObservations: Record<string, string>;
   photos: Record<string, (File & { r2Key?: string })[]>;
   signature: string;
   confirmedAt: string;
@@ -43,7 +43,7 @@ export function ReportReview({
   header,
   answers,
   metadata,
-  observations,
+  itemObservations,
   photos,
   signature: initialSignature,
   confirmedAt: initialConfirmedAt,
@@ -68,7 +68,7 @@ export function ReportReview({
       const formData = new FormData();
       formData.append("answers", JSON.stringify(answers));
       formData.append("metadata", JSON.stringify(metadata));
-      formData.append("observations", observations);
+      formData.append("item_observations", JSON.stringify(itemObservations));
       formData.append("signerName", signature);
       formData.append("extra_items", JSON.stringify(extraItems));
       const kept: Record<string, string[]> = {};
@@ -114,7 +114,7 @@ export function ReportReview({
         template,
         answers,
         metadata,
-        observations,
+        itemObservations,
         signature,
         confirmedAt,
         photos,
@@ -198,6 +198,11 @@ export function ReportReview({
             <p className="mt-2 text-corPadrao">
               Resposta: {current.join(", ") || "—"}
             </p>
+            {itemObservations[item.id]?.trim() && (
+              <p className="mt-1 text-[13px] text-gray-600">
+                Obs.: {itemObservations[item.id]}
+              </p>
+            )}
             {(photos[item.id]?.length || 0) > 0 && (
               <p className="mt-1 text-[13px] text-gray-600">
                 📷 {photos[item.id].length} foto(s)
@@ -211,13 +216,6 @@ export function ReportReview({
           </div>
         );
       })}
-
-      {observations && (
-        <div className="bg-surface rounded-xl p-4 mb-3 border border-line">
-          <p className="font-semibold">Observações</p>
-          <p className="mt-2">{observations}</p>
-        </div>
-      )}
 
       <div className="bg-surface rounded-xl p-6 mt-6 border border-line">
         <h3 className="text-base font-semibold mb-4">

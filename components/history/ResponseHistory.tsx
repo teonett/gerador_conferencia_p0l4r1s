@@ -17,7 +17,7 @@ export interface HistoryItem {
   checklistHeaderId: string | null;
   answers: Record<string, string[]>;
   metadata: Record<string, string>;
-  observations: string;
+  itemObservations: Record<string, string>;
   photos: Record<string, string[]>;
   photoCount: number;
   signatureName: string;
@@ -97,7 +97,7 @@ export function ResponseHistory({ templates, headers, onEdit }: ResponseHistoryP
       template,
       item.answers,
       item.metadata,
-      item.observations,
+      item.itemObservations || {},
       item.signatureName || '',
       new Date(item.completedAt).toISOString(),
       photoBlobs,
@@ -181,12 +181,6 @@ export function ResponseHistory({ templates, headers, onEdit }: ResponseHistoryP
             </div>
           )}
 
-          {item.observations && (
-            <p className="mt-2.5 text-[13px]">
-              <strong>Observações:</strong> {item.observations}
-            </p>
-          )}
-
           <div className="flex gap-2 mt-3.5">
             <button
               className={`${BTN_PRIMARY} text-xs!`}
@@ -238,6 +232,11 @@ export function ResponseHistory({ templates, headers, onEdit }: ResponseHistoryP
                       <p className="text-corPadrao mt-0.5">
                         Resposta: {(values || []).join(', ') || '—'}
                       </p>
+                      {item.itemObservations?.[tplItem.id]?.trim() && (
+                        <p className="text-[13px] text-gray-600 mt-0.5">
+                          Obs.: {item.itemObservations[tplItem.id]}
+                        </p>
+                      )}
                     </div>
                   );
                 })

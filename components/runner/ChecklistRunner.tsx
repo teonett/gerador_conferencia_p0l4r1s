@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import type { Template, Item } from '../../domain/checklist';
 import type { HeaderModel } from '../../domain/header';
 import { buildInitialAnswers } from '../../domain/checklist';
-import { PHOTO, OBSERVATION, OPTION } from '../../domain/constants';
+import { PHOTO, OPTION } from '../../domain/constants';
 import { applyDefaultAnswer } from '../../domain/metrics';
 import { AnswerMetricsBar } from '../metrics/AnswerMetricsBar';
 import { BulkDefaultControl } from '../metrics/BulkDefaultControl';
@@ -12,6 +12,7 @@ import { normalizeImage } from '../../lib/images';
 import {
   BTN_PRIMARY,
   BTN_SECONDARY,
+  BTN_WARNING,
   CARD,
   FIELD_LABEL,
   HEADER_DATE_INPUT,
@@ -26,13 +27,13 @@ interface ChecklistRunnerProps {
   header?: HeaderModel;
   initialAnswers?: Record<string, string[]>;
   initialMetadata?: Record<string, string>;
-  initialObservations?: string;
+  initialObservations?: Record<string, string>;
   initialPhotos?: Record<string, File[]>;
   initialExtraItems?: Item[];
   onFinish: (data: {
     answers: Record<string, string[]>;
     metadata: Record<string, string>;
-    observations: string;
+    itemObservations: Record<string, string>;
     photos: Record<string, File[]>;
     signature: string;
     confirmedAt: string;
@@ -58,7 +59,9 @@ export function ChecklistRunner({
     () => initialAnswers || buildInitialAnswers(template.items)
   );
   const [metadata, setMetadata] = useState<Record<string, string>>(initialMetadata || {});
-  const [observations, setObservations] = useState(initialObservations || '');
+  const [itemObservations, setItemObservations] = useState<Record<string, string>>(
+    initialObservations || {}
+  );
   const [photos, setPhotos] = useState<Record<string, File[]>>(initialPhotos || {});
   const [extraItems, setExtraItems] = useState<Item[]>(initialExtraItems || []);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -143,11 +146,6 @@ export function ChecklistRunner({
       return false;
     }
 
-    if (isLast && observations.trim().length > 0 && observations.trim().length < OBSERVATION.minLength) {
-      setValidationError(`Observações devem ter pelo menos ${OBSERVATION.minLength} caracteres ou ficar vazias.`);
-      return false;
-    }
-
     return true;
   };
 
@@ -161,7 +159,7 @@ export function ChecklistRunner({
       onFinish({
         answers,
         metadata,
-        observations,
+        itemObservations,
         photos,
         signature: '',
         confirmedAt: '',
@@ -337,12 +335,15 @@ export function ChecklistRunner({
 
           <div className="mt-5">
             <label className={FIELD_LABEL}>
-              Observações{isLast && <span className="text-orange"> (mínimo {OBSERVATION.minLength} caracteres)</span>}
+              Observação desta pergunta (opcional)
             </label>
             <textarea
-              value={observations}
-              onChange={(e) => { setObservations(e.target.value); setValidationError(''); }}
-              placeholder="Observações adicionais"
+              value={itemObservations[currentItem.id] || ''}
+              onChange={(e) => {
+                setItemObservations({ ...itemObservations, [currentItem.id]: e.target.value });
+                setValidationError('');
+              }}
+              placeholder="Observações específicas desta pergunta"
               rows={2}
               className={INPUT}
             />
@@ -401,8 +402,27 @@ export function ChecklistRunner({
         </div>
       )}
 
+      {!inIdentification && validationError && (
+        <p className="text-orange mt-3 text-sm">{validationError}</p>
+      )}
+
       {!inIdentification && (
-        <div className={`${CARD} p-4 mt-3 border border-dashed border-line`}>
+        <div className="flex justify-between mt-6">
+          <button
+            className={BTN_SECONDARY}
+            onClick={handlePrev}
+            disabled={currentIndex === 0 && !header}
+          >
+            Anterior
+          </button>
+          <button className={BTN_PRIMARY} onClick={handleNext}>
+            {isLast ? 'Revisar e assinar' : 'Próximo'}
+          </button>
+        </div>
+      )}
+
+      {!inIdentification && isLast && (
+        <div className={`${CARD} p-4 mt-6 border border-dashed border-orange/40`}>
           <p className="text-[13px] text-gray-600 mb-2">
             Precisa registrar mais algo além do modelo? Adicione uma pergunta
             extra (Sim/Não/Outros) só para <strong>este preenchimento</strong>.
@@ -415,7 +435,7 @@ export function ChecklistRunner({
               placeholder="Ex.: Houve intercorrência na vistoria?"
               className={INPUT}
             />
-            <button className={BTN_SECONDARY} onClick={handleAddExtra} disabled={!extraTitle.trim()}>
+            <button className={BTN_WARNING} onClick={handleAddExtra} disabled={!extraTitle.trim()}>
               + Adicionar pergunta extra
             </button>
           </div>
@@ -438,25 +458,6 @@ export function ChecklistRunner({
               ))}
             </ul>
           )}
-        </div>
-      )}
-
-      {!inIdentification && validationError && (
-        <p className="text-orange mt-3 text-sm">{validationError}</p>
-      )}
-
-      {!inIdentification && (
-        <div className="flex justify-between mt-6">
-          <button
-            className={BTN_SECONDARY}
-            onClick={handlePrev}
-            disabled={currentIndex === 0 && !header}
-          >
-            Anterior
-          </button>
-          <button className={BTN_PRIMARY} onClick={handleNext}>
-            {isLast ? 'Revisar e assinar' : 'Próximo'}
-          </button>
         </div>
       )}
 

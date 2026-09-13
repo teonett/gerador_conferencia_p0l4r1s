@@ -29,7 +29,7 @@ export function App() {
   const [editingTemplate, setEditingTemplate] = useState<Template | null>(null);
   const [answers, setAnswers] = useState<Record<string, string[]>>({});
   const [metadata, setMetadata] = useState<Record<string, string>>({});
-  const [observations, setObservations] = useState('');
+  const [itemObservations, setItemObservations] = useState<Record<string, string>>({});
   const [photos, setPhotos] = useState<Record<string, File[]>>({});
   const [extraItems, setExtraItems] = useState<Item[]>([]);
   const [signature, setSignature] = useState('');
@@ -100,7 +100,7 @@ export function App() {
     setSelectedTemplate(template);
     setAnswers({});
     setMetadata({});
-    setObservations('');
+    setItemObservations({});
     setPhotos({});
     setExtraItems([]);
     setSignature('');
@@ -124,7 +124,7 @@ export function App() {
         }
         setAnswers(draft.answers || {});
         setMetadata(draft.metadata || {});
-        setObservations(draft.observations || '');
+        setItemObservations(draft.itemObservations || {});
         setPhotos(restoredPhotos);
         setExtraItems(draft.extraItems || []);
       })
@@ -139,7 +139,7 @@ export function App() {
     clearDraft(selectedTemplate.id).catch(() => {});
     setAnswers({});
     setMetadata({});
-    setObservations('');
+    setItemObservations({});
     setPhotos({});
     setExtraItems([]);
     setSignature('');
@@ -187,7 +187,7 @@ export function App() {
   const handleFinish = (data: {
     answers: Record<string, string[]>;
     metadata: Record<string, string>;
-    observations: string;
+    itemObservations: Record<string, string>;
     photos: Record<string, File[]>;
     signature: string;
     confirmedAt: string;
@@ -196,7 +196,7 @@ export function App() {
     if (selectedTemplate) clearDraft(selectedTemplate.id).catch(() => {});
     setAnswers(data.answers);
     setMetadata(data.metadata);
-    setObservations(data.observations);
+    setItemObservations(data.itemObservations);
     setPhotos(data.photos);
     setExtraItems(data.extraItems);
     setSignature(data.signature);
@@ -212,13 +212,13 @@ export function App() {
         savedAt: Date.now(),
         answers,
         metadata,
-        observations,
+        itemObservations,
         photos,
         extraItems,
       }).catch(() => {});
     }, 800);
     return () => clearTimeout(timer);
-  }, [view, selectedTemplate, answers, metadata, observations, photos, extraItems, isEditing, draftReady]);
+  }, [view, selectedTemplate, answers, metadata, itemObservations, photos, extraItems, isEditing, draftReady]);
 
   const handleEditResponse = async (item: HistoryItem) => {
     const template = templates.find((t) => t.id === item.checklistId);
@@ -245,7 +245,7 @@ export function App() {
     setSelectedTemplate(template);
     setAnswers(item.answers);
     setMetadata(item.metadata || {});
-    setObservations(item.observations || '');
+    setItemObservations(item.itemObservations || {});
     setPhotos(r2photos);
     setExtraItems(item.extraItems || []);
     setSignature(item.signatureName || '');
@@ -289,7 +289,7 @@ export function App() {
           header={selectedTemplate.headerId ? headerById.get(selectedTemplate.headerId) : undefined}
           initialAnswers={answers}
           initialMetadata={metadata}
-          initialObservations={observations}
+          initialObservations={itemObservations}
           initialPhotos={photos}
           initialExtraItems={extraItems}
           onFinish={handleFinish}
@@ -307,7 +307,7 @@ export function App() {
           header={selectedTemplate.headerId ? headerById.get(selectedTemplate.headerId) : undefined}
           answers={answers}
           metadata={metadata}
-          observations={observations}
+          itemObservations={itemObservations}
           photos={photos as Record<string, PhotoFile[]>}
           signature={signature}
           confirmedAt={confirmedAt!}
