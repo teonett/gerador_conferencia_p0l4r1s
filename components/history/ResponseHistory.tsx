@@ -1,15 +1,15 @@
 import { useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
-import type { Template } from '../../domain/checklist';
+import type { Template, Item } from '../../domain/checklist';
 import type { HeaderModel } from '../../domain/header';
 import { CONFIRM_DELETE_PHRASE } from '../../domain/constants';
 import { classifyAnswer } from '../../domain/metrics';
 import { generatePdf } from '../../lib/pdf';
 import { MainHero } from '../main/MainHero';
 import { ConfirmModal } from '../main/ConfirmModal';
-import { BTN_DANGER, BTN_PRIMARY } from '../ui/classes';
+import { BTN_DANGER, BTN_PRIMARY, BTN_SECONDARY } from '../ui/classes';
 
-interface HistoryItem {
+export interface HistoryItem {
   id: string;
   checklistId: string;
   checklistTitle: string;
@@ -21,12 +21,15 @@ interface HistoryItem {
   photos: Record<string, string[]>;
   photoCount: number;
   signatureName: string;
+  extraItems: Item[];
   completedAt: number;
+  updatedAt: number | null;
 }
 
 interface ResponseHistoryProps {
   templates: Template[];
   headers: HeaderModel[];
+  onEdit?: (item: HistoryItem) => void;
 }
 
 function summarize(answers: Record<string, string[]>) {
@@ -44,7 +47,7 @@ function summarize(answers: Record<string, string[]>) {
   return { yes, no, other };
 }
 
-export function ResponseHistory({ templates, headers }: ResponseHistoryProps) {
+export function ResponseHistory({ templates, headers, onEdit }: ResponseHistoryProps) {
   const [items, setItems] = useState<HistoryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -98,7 +101,8 @@ export function ResponseHistory({ templates, headers }: ResponseHistoryProps) {
       item.signatureName || '',
       new Date(item.completedAt).toISOString(),
       photoBlobs,
-      item.checklistHeaderId ? headers.find((h) => h.id === item.checklistHeaderId) : undefined
+      item.checklistHeaderId ? headers.find((h) => h.id === item.checklistHeaderId) : undefined,
+      item.extraItems || []
     );
   };
 
@@ -149,6 +153,11 @@ export function ResponseHistory({ templates, headers }: ResponseHistoryProps) {
             </div>
             <span className="text-[13px] text-gray-600">
               {new Date(item.completedAt).toLocaleString('pt-BR')}
+              {item.updatedAt && item.updatedAt !== item.completedAt && (
+                <span className="text-corPadrao block">
+                  · editado {new Date(item.updatedAt).toLocaleString('pt-BR')}
+                </span>
+              )}
             </span>
           </div>
 
@@ -185,6 +194,15 @@ export function ResponseHistory({ templates, headers }: ResponseHistoryProps) {
             >
               {isExpanded ? 'Ocultar respostas' : 'Ver respostas'}
             </button>
+            {onEdit && template && (
+              <button
+                className={`${BTN_SECONDARY} text-xs!`}
+                onClick={() => onEdit(item)}
+                title={template ? 'Editar respostas, notas e fotos deste registro' : 'Modelo não encontrado; edição indisponível'}
+              >
+                ✏️ Editar
+              </button>
+            )}
             <button
               className={`${BTN_DANGER} text-xs!`}
               onClick={() => setDeleteTarget(item)}
@@ -206,12 +224,16 @@ export function ResponseHistory({ templates, headers }: ResponseHistoryProps) {
           {isExpanded && (
             <div className="mt-3 border-t border-line pt-3">
               {template ? (
-                template.items.map((tplItem, index) => {
+                [...template.items, ...(item.extraItems || [])].map((tplItem, index) => {
                   const values = item.answers[tplItem.id];
+                  const isExtra = index >= template.items.length;
                   return (
                     <div key={tplItem.id} className="mb-2.5 text-sm">
                       <p className="font-medium">
                         {index + 1}. {tplItem.title}
+                        {isExtra && (
+                          <span className="text-[11px] text-gray-600"> (extra)</span>
+                        )}
                       </p>
                       <p className="text-corPadrao mt-0.5">
                         Resposta: {(values || []).join(', ') || '—'}

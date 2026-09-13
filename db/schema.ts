@@ -20,7 +20,9 @@ export const responses = sqliteTable('responses', {
   observations: text('observations').notNull().default(''),
   photos: text('photos').notNull().default('{}'),
   signatureName: text('signature_name').notNull().default(''),
+  extraItems: text('extra_items').notNull().default('[]'),
   completedAt: integer('completed_at').notNull(),
+  updatedAt: integer('updated_at'),
 });
 
 export const settings = sqliteTable('settings', {

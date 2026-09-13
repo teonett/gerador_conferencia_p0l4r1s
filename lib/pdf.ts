@@ -1,5 +1,5 @@
 import { jsPDF } from "jspdf";
-import type { Template } from "../domain/checklist";
+import type { Template, Item } from "../domain/checklist";
 import type { HeaderModel } from "../domain/header";
 
 function hexToRgb(hex: string): [number, number, number] {
@@ -65,7 +65,9 @@ export async function generatePdf(
   confirmedAt: string,
   photos: Record<string, Blob[]> = {},
   header?: HeaderModel,
+  extraItems: Item[] = [],
 ): Promise<void> {
+  const allItems = [...template.items, ...extraItems];
   const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
@@ -165,7 +167,7 @@ export async function generatePdf(
 
   y += 4;
 
-  const metrics = computeAnswerMetrics(template.items, answers);
+  const metrics = computeAnswerMetrics(allItems, answers);
   const pct = metrics.total
     ? Math.round((metrics.answered / metrics.total) * 100)
     : 0;
@@ -204,7 +206,7 @@ export async function generatePdf(
 
   y += 12;
 
-  for (const [index, item] of template.items.entries()) {
+  for (const [index, item] of allItems.entries()) {
     const answer = answers[item.id]?.join(", ") || "—";
 
     if (index % 2 === 1) {

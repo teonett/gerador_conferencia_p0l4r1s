@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { Template } from "../../domain/checklist";
+import type { Template, Item } from "../../domain/checklist";
 import type { HeaderModel } from "../../domain/header";
 import { generatePdf } from "../../lib/pdf";
 import { AnswerMetricsBar } from "../metrics/AnswerMetricsBar";
@@ -20,10 +20,14 @@ interface ReportReviewProps {
   answers: Record<string, string[]>;
   metadata: Record<string, string>;
   observations: string;
-  photos: Record<string, File[]>;
+  photos: Record<string, (File & { r2Key?: string })[]>;
   signature: string;
   confirmedAt: string;
+  extraItems?: Item[];
+  editMode?: boolean;
+  responseId?: string;
   onBack: () => void;
+  onSaved?: () => void;
 }
 
 type SaveState = "idle" | "saving" | "saved" | "error";
@@ -43,14 +47,20 @@ export function ReportReview({
   photos,
   signature: initialSignature,
   confirmedAt: initialConfirmedAt,
+  extraItems = [],
+  editMode = false,
+  responseId,
   onBack,
+  onSaved,
 }: ReportReviewProps) {
   const [signature, setSignature] = useState(initialSignature);
-  const [confirmed, setConfirmed] = useState(!!initialConfirmedAt);
+  const [confirmed, setConfirmed] = useState(!editMode && !!initialConfirmedAt);
   const [accepted, setAccepted] = useState(false);
   const [confirmedAt, setConfirmedAt] = useState(initialConfirmedAt);
   const [generating, setGenerating] = useState(false);
   const [saveState, setSaveState] = useState<SaveState>("idle");
+
+  const allItems = [...template.items, ...extraItems];
 
   const persistResponse = async () => {
     try {
@@ -60,17 +70,30 @@ export function ReportReview({
       formData.append("metadata", JSON.stringify(metadata));
       formData.append("observations", observations);
       formData.append("signerName", signature);
+      formData.append("extra_items", JSON.stringify(extraItems));
+      const kept: Record<string, string[]> = {};
       for (const [itemId, files] of Object.entries(photos)) {
         for (const file of files) {
-          formData.append(`photo:${itemId}`, file);
+          if (file.r2Key) {
+            kept[itemId] = [...(kept[itemId] || []), file.r2Key];
+          } else {
+            formData.append(`photo:${itemId}`, file);
+          }
         }
       }
-      const res = await fetch(`/api/checklists/${template.id}/responses`, {
-        method: "POST",
+      if (editMode) {
+        formData.append("photos", JSON.stringify(kept));
+      }
+      const url = editMode
+        ? `/api/responses/${responseId}`
+        : `/api/checklists/${template.id}/responses`;
+      const res = await fetch(url, {
+        method: editMode ? "PUT" : "POST",
         body: formData,
       });
       if (!res.ok) throw new Error();
       setSaveState("saved");
+      if (onSaved) onSaved();
     } catch {
       setSaveState("error");
     }
@@ -78,7 +101,7 @@ export function ReportReview({
 
   const handleConfirm = () => {
     if (!signature || !accepted) return;
-    setConfirmedAt(new Date().toISOString());
+    setConfirmedAt(editMode && initialConfirmedAt ? initialConfirmedAt : new Date().toISOString());
     setConfirmed(true);
     persistResponse();
   };
@@ -96,6 +119,7 @@ export function ReportReview({
         confirmedAt,
         photos,
         header,
+        extraItems,
       );
     } finally {
       setGenerating(false);
@@ -113,11 +137,11 @@ export function ReportReview({
       </div>
 
       <h2 className="text-xl font-semibold mb-6">
-        Revisar e assinar
+        {editMode ? "Revisar e salvar alterações" : "Revisar e assinar"}
       </h2>
 
       <div className={`${CARD} p-6 mb-6`}>
-        <AnswerMetricsBar items={template.items} answers={answers} />
+        <AnswerMetricsBar items={allItems} answers={answers} />
       </div>
 
       <div className={`${CARD} p-6 mb-6`}>
@@ -151,9 +175,10 @@ export function ReportReview({
         )}
       </div>
 
-      {template.items.map((item, index) => {
+      {allItems.map((item, index) => {
         const current = answers[item.id] || [];
         const missingRequired = item.required && current.length === 0;
+        const isExtra = index >= template.items.length;
         return (
           <div
             key={item.id}
@@ -165,6 +190,9 @@ export function ReportReview({
               {index + 1}. {item.title}
               {item.required && (
                 <span className="text-orange"> *</span>
+              )}
+              {isExtra && (
+                <span className="text-[11px] font-normal text-gray-600"> (extra)</span>
               )}
             </p>
             <p className="mt-2 text-corPadrao">
@@ -224,18 +252,17 @@ export function ReportReview({
             onClick={handleConfirm}
             disabled={!signature || !accepted || saveState === "saving"}
           >
-            {saveState === "saving" ? "Salvando..." : "Confirmar e Finalizar"}
+            {saveState === "saving" ? "Salvando..." : editMode ? "Salvar alterações" : "Confirmar e Finalizar"}
           </button>
         )}
         {saveState === "saved" && (
           <p className="mt-3 text-[13px] text-corPadrao">
-            ✓ Resposta registrada no histórico.
+            ✓ {editMode ? "Alterações salvas no histórico." : "Resposta registrada no histórico."}
           </p>
         )}
         {saveState === "error" && (
           <p className="mt-3 text-[13px] text-orange">
-            Não foi possível salvar no histórico. Você pode baixar o PDF e
-            tentar confirmar novamente.
+            Não foi possível salvar. Você pode baixar o PDF e tentar confirmar novamente.
           </p>
         )}
       </div>

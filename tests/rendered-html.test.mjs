@@ -22,6 +22,7 @@ describe("Renderização de telas (SSR)", () => {
         initialPhotos: {},
         onFinish: () => {},
         onBack: () => {},
+        onRestart: () => {},
       }),
     );
     const text = html.replace(/<!-- -->/g, "");
@@ -50,6 +51,7 @@ describe("Renderização de telas (SSR)", () => {
         initialPhotos: {},
         onFinish: () => {},
         onBack: () => {},
+        onRestart: () => {},
       }),
     );
     const text = html.replace(/<!-- -->/g, "");
@@ -66,6 +68,69 @@ describe("Renderização de telas (SSR)", () => {
       !text.includes("Etapa 1 de 16"),
       "perguntas só aparecem após a identificação",
     );
+  });
+
+  it("ChecklistRunner conta pergunta extra na contagem de etapas", () => {
+    const html = renderToString(
+      createElement(ChecklistRunner, {
+        template: CIPA_SEED,
+        initialAnswers: {},
+        initialMetadata: {},
+        initialObservations: "",
+        initialPhotos: {},
+        initialExtraItems: [
+          {
+            id: "extra-x1",
+            title: "Houve intercorrência na vistoria?",
+            required: false,
+            options: ["Sim", "Não", "Outros"],
+            answerType: "choice",
+            selection: "single",
+          },
+        ],
+        onFinish: () => {},
+        onBack: () => {},
+        onRestart: () => {},
+      }),
+    );
+    const text = html.replace(/<!-- -->/g, "");
+    assert.ok(text.includes("Etapa 1 de 17"), "extras entram na contagem");
+    assert.ok(
+      text.includes("Houve intercorrência na vistoria?"),
+      "extra aparece na lista de perguntas extras",
+    );
+  });
+
+  it("ReportReview em modo edição exibe extras e textos de edição", () => {
+    const html = renderToString(
+      createElement(ReportReview, {
+        template: CIPA_SEED,
+        answers: { "cipa-1": ["Sim"] },
+        metadata: { setor: "Administração" },
+        observations: "",
+        photos: {},
+        signature: "",
+        confirmedAt: "",
+        extraItems: [
+          {
+            id: "extra-x1",
+            title: "Houve intercorrência na vistoria?",
+            required: false,
+            options: ["Sim", "Não", "Outros"],
+            answerType: "choice",
+            selection: "single",
+          },
+        ],
+        editMode: true,
+        responseId: "r1",
+        onBack: () => {},
+        onSaved: () => {},
+      }),
+    );
+    const text = html.replace(/<!-- -->/g, "");
+    assert.ok(text.includes("Revisar e salvar alterações"));
+    assert.ok(text.includes("Houve intercorrência na vistoria?"));
+    assert.ok(text.includes("extra"), "deve marcar a pergunta como extra");
   });
 
   it("ReportReview somente leitura renderiza respostas", () => {

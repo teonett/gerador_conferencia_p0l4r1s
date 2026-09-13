@@ -1,4 +1,4 @@
-import type { Answers, Metadata } from '../../../domain/checklist';
+import type { Answers, Metadata, Item } from '../../../domain/checklist';
 
 export interface ResponseHistoryItem {
   id: string;
@@ -12,7 +12,9 @@ export interface ResponseHistoryItem {
   photos: Record<string, string[]>;
   photoCount: number;
   signatureName: string;
+  extraItems: Item[];
   completedAt: number;
+  updatedAt: number | null;
 }
 
 function parseJson<T>(value: unknown, fallback: T): T {
@@ -37,7 +39,7 @@ export async function GET(
   env: { DB: D1Database }
 ): Promise<Response> {
   const { results } = await env.DB.prepare(
-    `SELECT r.id, r.checklist_id, r.answers, r.metadata, r.observations, r.photos, r.signature_name, r.completed_at,
+    `SELECT r.id, r.checklist_id, r.answers, r.metadata, r.observations, r.photos, r.signature_name, r.extra_items, r.completed_at, r.updated_at,
             COALESCE(c.title, 'Modelo removido') AS checklist_title,
             COALESCE(c.category, '') AS category,
             c.header_id AS checklist_header_id
@@ -59,7 +61,9 @@ export async function GET(
     photos: parseJson<Record<string, string[]>>(row.photos, {}),
     photoCount: countPhotos(row.photos),
     signatureName: typeof row.signature_name === 'string' ? row.signature_name : '',
+    extraItems: parseJson<Item[]>(row.extra_items, []),
     completedAt: row.completed_at as number,
+    updatedAt: row.updated_at as number | null,
   }));
 
   return Response.json({ responses });

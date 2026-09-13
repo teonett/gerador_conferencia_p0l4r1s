@@ -1,27 +1,32 @@
-import type { Template } from '@/domain/checklist';
+import { templateSchema } from '@/domain/schema';
 
 export async function PUT(
   request: Request,
   env: { DB: D1Database },
   params: { id: string }
 ): Promise<Response> {
-  const body = (await request.json()) as Partial<Template>;
+  const body = await request.json();
+  const parsed = templateSchema.safeParse(body);
 
-  if (!body.title || !body.items || body.items.length === 0) {
-    return Response.json({ error: 'Nome e perguntas são obrigatórios.' }, { status: 400 });
+  if (!parsed.success) {
+    return Response.json(
+      { error: parsed.error.issues.map((i) => i.message).join('. ') },
+      { status: 400 },
+    );
   }
 
+  const template = parsed.data;
   const now = Date.now();
 
   await env.DB.prepare(
     'UPDATE checklists SET title = ?, description = ?, category = ?, items = ?, header_id = ?, updated_at = ? WHERE id = ?'
   )
     .bind(
-      body.title,
-      body.description || '',
-      body.category || 'Geral',
-      JSON.stringify(body.items),
-      typeof body.headerId === 'string' && body.headerId ? body.headerId : null,
+      template.title,
+      template.description,
+      template.category,
+      JSON.stringify(template.items),
+      template.headerId || null,
       now,
       params.id
     )

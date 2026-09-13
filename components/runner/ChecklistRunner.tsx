@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import type { Template, Item } from '../../domain/checklist';
 import type { HeaderModel } from '../../domain/header';
 import { buildInitialAnswers } from '../../domain/checklist';
-import { PHOTO, OBSERVATION } from '../../domain/constants';
+import { PHOTO, OBSERVATION, OPTION } from '../../domain/constants';
 import { applyDefaultAnswer } from '../../domain/metrics';
 import { AnswerMetricsBar } from '../metrics/AnswerMetricsBar';
 import { BulkDefaultControl } from '../metrics/BulkDefaultControl';
@@ -28,6 +28,7 @@ interface ChecklistRunnerProps {
   initialMetadata?: Record<string, string>;
   initialObservations?: string;
   initialPhotos?: Record<string, File[]>;
+  initialExtraItems?: Item[];
   onFinish: (data: {
     answers: Record<string, string[]>;
     metadata: Record<string, string>;
@@ -35,8 +36,10 @@ interface ChecklistRunnerProps {
     photos: Record<string, File[]>;
     signature: string;
     confirmedAt: string;
+    extraItems: Item[];
   }) => void;
   onBack: () => void;
+  onRestart: () => void;
 }
 
 export function ChecklistRunner({
@@ -46,8 +49,10 @@ export function ChecklistRunner({
   initialMetadata,
   initialObservations,
   initialPhotos,
+  initialExtraItems,
   onFinish,
   onBack,
+  onRestart,
 }: ChecklistRunnerProps) {
   const [answers, setAnswers] = useState(
     () => initialAnswers || buildInitialAnswers(template.items)
@@ -55,10 +60,12 @@ export function ChecklistRunner({
   const [metadata, setMetadata] = useState<Record<string, string>>(initialMetadata || {});
   const [observations, setObservations] = useState(initialObservations || '');
   const [photos, setPhotos] = useState<Record<string, File[]>>(initialPhotos || {});
+  const [extraItems, setExtraItems] = useState<Item[]>(initialExtraItems || []);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [validationError, setValidationError] = useState('');
   const [cameraOpen, setCameraOpen] = useState(false);
   const [showIdentification, setShowIdentification] = useState(!!header);
+  const [extraTitle, setExtraTitle] = useState('');
 
   useEffect(() => {
     setShowIdentification(!!header);
@@ -75,11 +82,39 @@ export function ChecklistRunner({
     });
   }, [header]);
 
-  const currentItem: Item | null = template.items[currentIndex] || null;
-  const isLast = currentIndex === template.items.length - 1;
+  const items = [...template.items, ...extraItems];
+  const currentItem: Item | null = items[currentIndex] || null;
+  const isLast = currentIndex === items.length - 1;
 
   const handleAnswer = (itemId: string, value: string[]) => {
     setAnswers({ ...answers, [itemId]: value });
+    setValidationError('');
+  };
+
+  const handleAddExtra = () => {
+    const title = extraTitle.trim();
+    if (!title) return;
+    setExtraItems([
+      ...extraItems,
+      {
+        id: `extra-${crypto.randomUUID().slice(0, 8)}`,
+        title,
+        required: false,
+        options: ['Sim', 'Não', OPTION.outrosLabel],
+        answerType: 'choice',
+        selection: 'single',
+      },
+    ]);
+    setExtraTitle('');
+  };
+
+  const handleRemoveExtra = (id: string) => {
+    const next = extraItems.filter((e) => e.id !== id);
+    setExtraItems(next);
+    const newLen = template.items.length + next.length;
+    if (currentIndex > newLen - 1) {
+      setCurrentIndex(Math.max(0, newLen - 1));
+    }
     setValidationError('');
   };
 
@@ -130,6 +165,7 @@ export function ChecklistRunner({
         photos,
         signature: '',
         confirmedAt: '',
+        extraItems,
       });
     }
   };
@@ -151,27 +187,32 @@ export function ChecklistRunner({
       <PageHero title={template.title} description={template.description} />
 
       <div className="flex justify-between items-center mb-4">
-        <button className={BTN_SECONDARY} onClick={onBack}>
-          ← Voltar
-        </button>
+        <div className="flex gap-2">
+          <button className={BTN_SECONDARY} onClick={onBack}>
+            ← Voltar
+          </button>
+          <button className={BTN_SECONDARY} onClick={onRestart} title="Zerar este preenchimento (descarta o rascunho)">
+            ♻ Recomeçar
+          </button>
+        </div>
         <span className="text-gray-600 text-sm">
           {inIdentification
             ? 'Identificação'
-            : `Etapa ${currentIndex + 1} de ${template.items.length}`}
+            : `Etapa ${currentIndex + 1} de ${items.length}`}
         </span>
       </div>
 
       {!inIdentification && (
         <div className="mb-6">
-          <AnswerMetricsBar items={template.items} answers={answers} />
+          <AnswerMetricsBar items={items} answers={answers} />
         </div>
       )}
 
       {!inIdentification && (
         <BulkDefaultControl
-          items={template.items}
+          items={items}
           onApply={(option) => {
-            setAnswers(applyDefaultAnswer(template.items, answers, option));
+            setAnswers(applyDefaultAnswer(items, answers, option));
             setValidationError('');
           }}
         />
@@ -357,6 +398,46 @@ export function ChecklistRunner({
               </div>
             )}
           </div>
+        </div>
+      )}
+
+      {!inIdentification && (
+        <div className={`${CARD} p-4 mt-3 border border-dashed border-line`}>
+          <p className="text-[13px] text-gray-600 mb-2">
+            Precisa registrar mais algo além do modelo? Adicione uma pergunta
+            extra (Sim/Não/Outros) só para <strong>este preenchimento</strong>.
+          </p>
+          <div className="flex gap-2">
+            <input
+              value={extraTitle}
+              onChange={(e) => setExtraTitle(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleAddExtra()}
+              placeholder="Ex.: Houve intercorrência na vistoria?"
+              className={INPUT}
+            />
+            <button className={BTN_SECONDARY} onClick={handleAddExtra} disabled={!extraTitle.trim()}>
+              + Adicionar pergunta extra
+            </button>
+          </div>
+          {extraItems.length > 0 && (
+            <ul className="mt-3 flex flex-wrap gap-2">
+              {extraItems.map((extra) => (
+                <li
+                  key={extra.id}
+                  className="flex items-center gap-2 rounded-lg border border-line bg-surface px-3 py-1.5 text-[13px]"
+                >
+                  <span>{extra.title}</span>
+                  <button
+                    onClick={() => handleRemoveExtra(extra.id)}
+                    className="text-orange cursor-pointer"
+                    title="Remover pergunta extra"
+                  >
+                    ✕
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       )}
 

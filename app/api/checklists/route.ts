@@ -1,5 +1,6 @@
 import { CIPA_SEED } from "@/db/seed";
-import { Template } from "@/domain/checklist";
+import type { Template } from "@/domain/checklist";
+import { templateSchema } from "@/domain/schema";
 
 export async function GET(
   request: Request,
@@ -75,17 +76,19 @@ export async function POST(
   request: Request,
   env: { DB: D1Database },
 ): Promise<Response> {
-  const body = (await request.json()) as Partial<Template>;
+  const body = await request.json();
+  const parsed = templateSchema.safeParse(body);
 
-  if (!body.title || !body.items || body.items.length === 0) {
+  if (!parsed.success) {
     return Response.json(
-      { error: "Nome e questões são obrigatórios." },
+      { error: parsed.error.issues.map((i) => i.message).join('. ') },
       { status: 400 },
     );
   }
 
-  const id = body.id || crypto.randomUUID();
-  const shareToken = body.shareToken || crypto.randomUUID().slice(0, 8);
+  const template = parsed.data;
+  const id = template.id;
+  const shareToken = template.shareToken || crypto.randomUUID().slice(0, 8);
   const now = Date.now();
 
   await env.DB.prepare(
@@ -93,26 +96,16 @@ export async function POST(
   )
     .bind(
       id,
-      body.title,
-      body.description || "",
-      body.category || "Geral",
-      JSON.stringify(body.items),
-      typeof body.headerId === "string" && body.headerId ? body.headerId : null,
+      template.title,
+      template.description,
+      template.category,
+      JSON.stringify(template.items),
+      template.headerId || null,
       shareToken,
       now,
       now,
     )
     .run();
 
-  const template: Template = {
-    id,
-    title: body.title,
-    description: body.description || "",
-    category: body.category || "Geral",
-    items: body.items,
-    headerId: typeof body.headerId === "string" && body.headerId ? body.headerId : undefined,
-    shareToken,
-  };
-
-  return Response.json({ checklist: template }, { status: 201 });
+  return Response.json({ checklist: { ...template, shareToken } }, { status: 201 });
 }

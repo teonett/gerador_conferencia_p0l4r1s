@@ -1,41 +1,10 @@
-export type AnswerType = 'text' | 'choice';
-export type SelectionType = 'single' | 'multiple';
+import type { Item, Answers } from './schema';
+
+export type { Template, Item, Field, Answers, Metadata } from './schema';
+
+export type AnswerType = Item['answerType'];
+export type SelectionType = Item['selection'];
 export type View = 'home' | 'templates' | 'headers' | 'run' | 'report' | 'history' | 'settings';
-
-export interface Item {
-  id: string;
-  title: string;
-  required: boolean;
-  options: string[];
-  answerType: AnswerType;
-  selection: SelectionType;
-  defaultOption?: string;
-  hint?: string;
-}
-
-export interface Field {
-  id: string;
-  label: string;
-  type: 'text' | 'date';
-  required?: boolean;
-}
-
-export interface Template {
-  id: string;
-  title: string;
-  description: string;
-  category: string;
-  items: Item[];
-  fields?: Field[];
-  headerId?: string;
-  observations?: boolean;
-  source?: string;
-  shareToken?: string;
-  updatedAt?: string;
-}
-
-export type Answers = Record<string, string[]>;
-export type Metadata = Record<string, string>;
 
 export function buildInitialAnswers(items: Item[]): Answers {
   const initial: Answers = {};
@@ -49,16 +18,4 @@ export function buildInitialAnswers(items: Item[]): Answers {
     }
   }
   return initial;
-}
-
-export interface ResponsePayload {
-  id: string;
-  checklistId: string;
-  answers: Answers;
-  metadata: Metadata;
-  observations: string;
-  signature: string;
-  confirmedAt: string;
-  completedAt: number;
-  photos: Record<string, string>;
 }

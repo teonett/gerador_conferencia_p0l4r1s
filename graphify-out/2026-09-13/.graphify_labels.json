@@ -1,6 +1,6 @@
 {
   "0": "App.tsx",
-  "1": "ReportReview.tsx",
+  "1": "api/responses/route.ts",
   "2": "worker/index.ts",
   "3": "devDependencies",
   "4": "ChecklistRunner.tsx",
@@ -9,7 +9,7 @@
   "7": "constants.ts",
   "8": "Gerador de Conferência Polaris - Documentation",
   "10": "schema.ts",
-  "11": "TemplateEditor.tsx",
+  "11": "api.ts",
   "12": "sw.js",
   "13": "drizzle.config.ts",
   "14": "eslint.config.mjs",
