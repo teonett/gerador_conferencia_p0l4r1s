@@ -464,7 +464,7 @@
       "file_type": "code",
       "norm_label": "checklistrunnerprops",
       "source_file": "components/runner/ChecklistRunner.tsx",
-      "source_location": "L24"
+      "source_location": "L25"
     },
     {
       "id": "components_templates_templatecard_templatecardprops",
@@ -686,7 +686,7 @@
       "file_type": "code",
       "norm_label": "checklistrunner()",
       "source_file": "components/runner/ChecklistRunner.tsx",
-      "source_location": "L45"
+      "source_location": "L46"
     },
     {
       "id": "components_settings_settingsview_applyprimarycolor",
@@ -1607,6 +1607,17 @@
       "norm_label": "btn_success",
       "source_file": "components/ui/classes.ts",
       "source_location": "L7"
+    },
+    {
+      "id": "components_ui_classes_btn_warning",
+      "label": "BTN_WARNING",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "ChecklistRunner.tsx",
+      "file_type": "code",
+      "norm_label": "btn_warning",
+      "source_file": "components/ui/classes.ts",
+      "source_location": "L8"
     },
     {
       "id": "components_ui_classes_card",
@@ -3523,17 +3534,6 @@
       "source_location": "L1"
     },
     {
-      "id": "components_ui_classes_btn_warning",
-      "label": "BTN_WARNING",
-      "_origin": "ast",
-      "community": 9,
-      "community_name": "App.tsx",
-      "file_type": "code",
-      "norm_label": "btn_warning",
-      "source_file": "components/ui/classes.ts",
-      "source_location": "L8"
-    },
-    {
       "id": "lib_draft",
       "label": "draft.ts",
       "_origin": "ast",
@@ -4143,7 +4143,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "components/runner/ChecklistRunner.tsx",
-      "source_location": "L126",
+      "source_location": "L127",
       "weight": 1.0
     },
     {
@@ -4155,7 +4155,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "components/runner/ChecklistRunner.tsx",
-      "source_location": "L212",
+      "source_location": "L213",
       "weight": 1.0
     },
     {
@@ -4167,7 +4167,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "components/runner/ChecklistRunner.tsx",
-      "source_location": "L58",
+      "source_location": "L59",
       "weight": 1.0
     },
     {
@@ -4564,7 +4564,7 @@
       "confidence_score": 1.0,
       "context": "field",
       "source_file": "components/runner/ChecklistRunner.tsx",
-      "source_location": "L25",
+      "source_location": "L26",
       "weight": 1.0
     },
     {
@@ -4576,7 +4576,7 @@
       "confidence_score": 1.0,
       "context": "field",
       "source_file": "components/runner/ChecklistRunner.tsx",
-      "source_location": "L26",
+      "source_location": "L27",
       "weight": 1.0
     },
     {
@@ -4588,7 +4588,7 @@
       "confidence_score": 1.0,
       "context": "field",
       "source_file": "components/runner/ChecklistRunner.tsx",
-      "source_location": "L31",
+      "source_location": "L32",
       "weight": 1.0
     },
     {
@@ -5926,6 +5926,18 @@
     {
       "source": "components_runner_checklistrunner",
       "target": "components_ui_classes_btn_secondary",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "components/runner/ChecklistRunner.tsx",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "components_runner_checklistrunner",
+      "target": "components_ui_classes_btn_warning",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -9378,7 +9390,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "components/runner/ChecklistRunner.tsx",
-      "source_location": "L24",
+      "source_location": "L25",
       "weight": 1.0
     },
     {
@@ -9389,7 +9401,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "components/runner/ChecklistRunner.tsx",
-      "source_location": "L45",
+      "source_location": "L46",
       "weight": 1.0
     },
     {

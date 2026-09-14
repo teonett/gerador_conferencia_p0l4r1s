@@ -1,16 +1,16 @@
 # Graph Report - gerador_conferencia_p0l4r1s  (2026-09-13)
 
 ## Corpus Check
-- 62 files · ~21,720 words
+- 62 files · ~21,733 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 320 nodes · 657 edges · 15 communities (14 shown, 1 thin omitted)
+- 320 nodes · 658 edges · 15 communities (14 shown, 1 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 6 edges (avg confidence: 0.82)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `6a622776`
+- Built from commit: `a164fb73`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -117,7 +117,7 @@ _Questions this graph is uniquely positioned to answer:_
 - **Why does `Item` connect `App.tsx` to `ChecklistRunner.tsx`, `ResponseHistory.tsx`, `worker/index.ts`, `checklist.ts`?**
   _High betweenness centrality (0.032) - this node is a cross-community bridge._
 - **Why does `Template` connect `App.tsx` to `ChecklistRunner.tsx`, `ResponseHistory.tsx`, `worker/index.ts`, `checklist.ts`, `constants.ts`?**
-  _High betweenness centrality (0.031) - this node is a cross-community bridge._
+  _High betweenness centrality (0.030) - this node is a cross-community bridge._
 - **Why does `devDependencies` connect `devDependencies` to `scripts`?**
   _High betweenness centrality (0.029) - this node is a cross-community bridge._
 - **What connects `PhotoFile`, `PhotoMap`, `SettingsRow` to the rest of the system?**
@@ -125,6 +125,6 @@ _Questions this graph is uniquely positioned to answer:_
 - **Should `ChecklistRunner.tsx` be split into smaller, more focused modules?**
   _Cohesion score 0.10204081632653061 - nodes in this community are weakly interconnected._
 - **Should `worker/index.ts` be split into smaller, more focused modules?**
-  _Cohesion score 0.06775510204081632 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.06857142857142857 - nodes in this community are weakly interconnected._
 - **Should `devDependencies` be split into smaller, more focused modules?**
   _Cohesion score 0.06060606060606061 - nodes in this community are weakly interconnected._

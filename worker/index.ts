@@ -4,7 +4,7 @@ import { GET as getChecklists, POST as postChecklist } from '../app/api/checklis
 import { PUT as putChecklist, DELETE as deleteChecklist } from '../app/api/checklists/[id]/route';
 import { POST as postResponse } from '../app/api/checklists/[id]/responses/route';
 import { GET as getResponses } from '../app/api/responses/route';
-import { DELETE as deleteResponse } from '../app/api/responses/[id]/route';
+import { PUT as putResponse, DELETE as deleteResponse } from '../app/api/responses/[id]/route';
 import { GET as getSettings, POST as postSettings } from '../app/api/settings/route';
 import { GET as getHeaders, POST as postHeader } from '../app/api/headers/route';
 import { PUT as putHeader, DELETE as deleteHeader } from '../app/api/headers/[id]/route';
@@ -28,6 +28,9 @@ app.post('/api/checklists/:id/responses', (c) =>
   postResponse(c.req.raw, c.env, { id: c.req.param('id') })
 );
 app.get('/api/responses', (c) => getResponses(c.req.raw, c.env));
+app.put('/api/responses/:id', (c) =>
+  putResponse(c.req.raw, c.env, { id: c.req.param('id') })
+);
 app.delete('/api/responses/:id', (c) =>
   deleteResponse(c.req.raw, c.env, { id: c.req.param('id') })
 );

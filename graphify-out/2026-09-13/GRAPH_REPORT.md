@@ -1,11 +1,11 @@
 # Graph Report - gerador_conferencia_p0l4r1s  (2026-09-13)
 
 ## Corpus Check
-- 62 files · ~21,702 words
+- 62 files · ~21,720 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 320 nodes · 656 edges · 15 communities (14 shown, 1 thin omitted)
+- 320 nodes · 657 edges · 15 communities (14 shown, 1 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 6 edges (avg confidence: 0.82)
 - Token cost: 0 input · 0 output
 
@@ -64,7 +64,7 @@
 
 ### Community 0 - "ChecklistRunner.tsx"
 Cohesion: 0.10
-Nodes (35): CameraCapture(), CameraCaptureProps, Dashboard(), Draft, HeadersView(), slugify(), toDrafts(), PageHero() (+27 more)
+Nodes (36): CameraCapture(), CameraCaptureProps, Dashboard(), Draft, HeadersView(), slugify(), toDrafts(), PageHero() (+28 more)
 
 ### Community 1 - "ResponseHistory.tsx"
 Cohesion: 0.16
@@ -100,7 +100,7 @@ Nodes (16): index.html Entry Point, CF Favicon, Answers, applyDefaultAnswer, bui
 
 ### Community 9 - "App.tsx"
 Cohesion: 0.14
-Nodes (26): App(), applyPrimaryColor(), PhotoFile, DashboardProps, HeadersViewProps, HistoryItem, ResponseHistoryProps, BulkDefaultControlProps (+18 more)
+Nodes (25): App(), applyPrimaryColor(), PhotoFile, DashboardProps, HeadersViewProps, HistoryItem, ResponseHistoryProps, BulkDefaultControlProps (+17 more)
 
 ### Community 10 - "schema.ts"
 Cohesion: 0.25
@@ -123,7 +123,7 @@ _Questions this graph is uniquely positioned to answer:_
 - **What connects `PhotoFile`, `PhotoMap`, `SettingsRow` to the rest of the system?**
   _95 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `ChecklistRunner.tsx` be split into smaller, more focused modules?**
-  _Cohesion score 0.10460992907801418 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.10204081632653061 - nodes in this community are weakly interconnected._
 - **Should `worker/index.ts` be split into smaller, more focused modules?**
   _Cohesion score 0.06775510204081632 - nodes in this community are weakly interconnected._
 - **Should `devDependencies` be split into smaller, more focused modules?**
