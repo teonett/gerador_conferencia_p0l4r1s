@@ -1,14 +1,13 @@
-import { useEffect, useState } from 'react';
-import type { Template, Item } from '../../domain/checklist';
-import type { HeaderModel } from '../../domain/header';
-import { buildInitialAnswers } from '../../domain/checklist';
-import { PHOTO, OPTION } from '../../domain/constants';
-import { applyDefaultAnswer } from '../../domain/metrics';
-import { AnswerMetricsBar } from '../metrics/AnswerMetricsBar';
-import { BulkDefaultControl } from '../metrics/BulkDefaultControl';
-import { CameraCapture } from '../camera/CameraCapture';
-import { PageHero } from '../layout/PageHero';
-import { normalizeImage } from '../../lib/images';
+import { useEffect, useState } from "react";
+import type { Template, Item } from "../../domain/checklist";
+import type { HeaderModel } from "../../domain/header";
+import { buildInitialAnswers } from "../../domain/checklist";
+import { PHOTO, OPTION } from "../../domain/constants";
+import { applyDefaultAnswer } from "../../domain/metrics";
+import { AnswerMetricsBar } from "../metrics/AnswerMetricsBar";
+import { CameraCapture } from "../camera/CameraCapture";
+import { PageHero } from "../layout/PageHero";
+import { normalizeImage } from "../../lib/images";
 import {
   BTN_PRIMARY,
   BTN_SECONDARY,
@@ -20,7 +19,7 @@ import {
   HEADER_GRID,
   HEADER_TIME_INPUT,
   INPUT,
-} from '../ui/classes';
+} from "../ui/classes";
 
 interface ChecklistRunnerProps {
   template: Template;
@@ -56,19 +55,23 @@ export function ChecklistRunner({
   onRestart,
 }: ChecklistRunnerProps) {
   const [answers, setAnswers] = useState(
-    () => initialAnswers || buildInitialAnswers(template.items)
+    () => initialAnswers || buildInitialAnswers(template.items),
   );
-  const [metadata, setMetadata] = useState<Record<string, string>>(initialMetadata || {});
-  const [itemObservations, setItemObservations] = useState<Record<string, string>>(
-    initialObservations || {}
+  const [metadata, setMetadata] = useState<Record<string, string>>(
+    initialMetadata || {},
   );
-  const [photos, setPhotos] = useState<Record<string, File[]>>(initialPhotos || {});
+  const [itemObservations, setItemObservations] = useState<
+    Record<string, string>
+  >(initialObservations || {});
+  const [photos, setPhotos] = useState<Record<string, File[]>>(
+    initialPhotos || {},
+  );
   const [extraItems, setExtraItems] = useState<Item[]>(initialExtraItems || []);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [validationError, setValidationError] = useState('');
+  const [validationError, setValidationError] = useState("");
   const [cameraOpen, setCameraOpen] = useState(false);
   const [showIdentification, setShowIdentification] = useState(!!header);
-  const [extraTitle, setExtraTitle] = useState('');
+  const [extraTitle, setExtraTitle] = useState("");
 
   useEffect(() => {
     setShowIdentification(!!header);
@@ -76,7 +79,7 @@ export function ChecklistRunner({
     setMetadata((prev) => {
       if (prev.data && prev.hora) return prev;
       const now = new Date();
-      const hhmm = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+      const hhmm = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
       return {
         ...prev,
         data: prev.data || now.toISOString().slice(0, 10),
@@ -91,7 +94,7 @@ export function ChecklistRunner({
 
   const handleAnswer = (itemId: string, value: string[]) => {
     setAnswers({ ...answers, [itemId]: value });
-    setValidationError('');
+    setValidationError("");
   };
 
   const handleAddExtra = () => {
@@ -103,12 +106,12 @@ export function ChecklistRunner({
         id: `extra-${crypto.randomUUID().slice(0, 8)}`,
         title,
         required: false,
-        options: ['Sim', 'Não', OPTION.outrosLabel],
-        answerType: 'choice',
-        selection: 'single',
+        options: ["Sim", "Não", OPTION.outrosLabel],
+        answerType: "choice",
+        selection: "single",
       },
     ]);
-    setExtraTitle('');
+    setExtraTitle("");
   };
 
   const handleRemoveExtra = (id: string) => {
@@ -118,7 +121,7 @@ export function ChecklistRunner({
     if (currentIndex > newLen - 1) {
       setCurrentIndex(Math.max(0, newLen - 1));
     }
-    setValidationError('');
+    setValidationError("");
   };
 
   const handleAddPhoto = async (itemId: string, file: File) => {
@@ -127,8 +130,8 @@ export function ChecklistRunner({
     const blob = await normalizeImage(file);
     const normalized = new File(
       [blob],
-      `${file.name.replace(/\.[^.]+$/, '') || 'foto'}.jpg`,
-      { type: 'image/jpeg' },
+      `${file.name.replace(/\.[^.]+$/, "") || "foto"}.jpg`,
+      { type: "image/jpeg" },
     );
     setPhotos({ ...photos, [itemId]: [...current, normalized] });
   };
@@ -141,8 +144,11 @@ export function ChecklistRunner({
   const validateCurrent = (): boolean => {
     if (!currentItem) return true;
 
-    if (currentItem.required && (!answers[currentItem.id] || answers[currentItem.id].length === 0)) {
-      setValidationError('Esta pergunta é obrigatória.');
+    if (
+      currentItem.required &&
+      (!answers[currentItem.id] || answers[currentItem.id].length === 0)
+    ) {
+      setValidationError("Esta pergunta é obrigatória.");
       return false;
     }
 
@@ -154,15 +160,15 @@ export function ChecklistRunner({
 
     if (!isLast) {
       setCurrentIndex(currentIndex + 1);
-      setValidationError('');
+      setValidationError("");
     } else {
       onFinish({
         answers,
         metadata,
         itemObservations,
         photos,
-        signature: '',
-        confirmedAt: '',
+        signature: "",
+        confirmedAt: "",
         extraItems,
       });
     }
@@ -171,13 +177,13 @@ export function ChecklistRunner({
   const handlePrev = () => {
     if (currentIndex > 0) {
       setCurrentIndex(currentIndex - 1);
-      setValidationError('');
+      setValidationError("");
     } else if (header) {
       setShowIdentification(true);
     }
   };
 
-  const currentPhotos = currentItem ? (photos[currentItem.id] || []) : [];
+  const currentPhotos = currentItem ? photos[currentItem.id] || [] : [];
   const inIdentification = !!header && showIdentification;
 
   return (
@@ -189,32 +195,20 @@ export function ChecklistRunner({
           <button className={BTN_SECONDARY} onClick={onBack}>
             ← Voltar
           </button>
-          <button className={BTN_SECONDARY} onClick={onRestart} title="Zerar este preenchimento (descarta o rascunho)">
+          <button
+            className={BTN_SECONDARY}
+            onClick={onRestart}
+            title="Zerar este preenchimento (descarta o rascunho)"
+          >
             ♻ Recomeçar
           </button>
         </div>
         <span className="text-gray-600 text-sm">
           {inIdentification
-            ? 'Identificação'
+            ? "Identificação"
             : `Etapa ${currentIndex + 1} de ${items.length}`}
         </span>
       </div>
-
-      {!inIdentification && (
-        <div className="mb-6">
-          <AnswerMetricsBar items={items} answers={answers} />
-        </div>
-      )}
-
-      {!inIdentification && (
-        <BulkDefaultControl
-          items={items}
-          onApply={(option) => {
-            setAnswers(applyDefaultAnswer(items, answers, option));
-            setValidationError('');
-          }}
-        />
-      )}
 
       {inIdentification && (
         <div className={`${CARD} p-6 border border-line`}>
@@ -224,8 +218,10 @@ export function ChecklistRunner({
               <label className={FIELD_LABEL}>Data</label>
               <input
                 type="date"
-                value={metadata['data'] || ''}
-                onChange={(e) => setMetadata({ ...metadata, data: e.target.value })}
+                value={metadata["data"] || ""}
+                onChange={(e) =>
+                  setMetadata({ ...metadata, data: e.target.value })
+                }
                 className={`${INPUT} ${HEADER_DATE_INPUT}`}
               />
             </div>
@@ -233,8 +229,10 @@ export function ChecklistRunner({
               <label className={FIELD_LABEL}>Hora</label>
               <input
                 type="time"
-                value={metadata['hora'] || ''}
-                onChange={(e) => setMetadata({ ...metadata, hora: e.target.value })}
+                value={metadata["hora"] || ""}
+                onChange={(e) =>
+                  setMetadata({ ...metadata, hora: e.target.value })
+                }
                 className={`${INPUT} ${HEADER_TIME_INPUT}`}
               />
             </div>
@@ -244,14 +242,19 @@ export function ChecklistRunner({
               <div key={field.id}>
                 <label className={FIELD_LABEL}>{field.label}</label>
                 <input
-                  value={metadata[field.id] || ''}
-                  onChange={(e) => setMetadata({ ...metadata, [field.id]: e.target.value })}
+                  value={metadata[field.id] || ""}
+                  onChange={(e) =>
+                    setMetadata({ ...metadata, [field.id]: e.target.value })
+                  }
                   className={INPUT}
                 />
               </div>
             ))}
           </div>
-          <button className={`${BTN_PRIMARY} mt-5`} onClick={() => setShowIdentification(false)}>
+          <button
+            className={`${BTN_PRIMARY} mt-5`}
+            onClick={() => setShowIdentification(false)}
+          >
             Iniciar perguntas →
           </button>
         </div>
@@ -268,8 +271,10 @@ export function ChecklistRunner({
               </label>
               <input
                 type={field.type}
-                value={metadata[field.id] || ''}
-                onChange={(e) => setMetadata({ ...metadata, [field.id]: e.target.value })}
+                value={metadata[field.id] || ""}
+                onChange={(e) =>
+                  setMetadata({ ...metadata, [field.id]: e.target.value })
+                }
                 required={field.required}
                 className={INPUT}
               />
@@ -291,13 +296,18 @@ export function ChecklistRunner({
                 </span>
               </span>
             ) : (
-              <span className="inline-block ml-2 align-middle opacity-20 text-xs cursor-default" title="">ℹ️</span>
+              <span
+                className="inline-block ml-2 align-middle opacity-20 text-xs cursor-default"
+                title=""
+              >
+                ℹ️
+              </span>
             )}
           </h3>
 
-          {currentItem.answerType === 'text' ? (
+          {currentItem.answerType === "text" ? (
             <input
-              value={answers[currentItem.id]?.[0] || ''}
+              value={answers[currentItem.id]?.[0] || ""}
               onChange={(e) => handleAnswer(currentItem.id, [e.target.value])}
               placeholder="Digite sua resposta"
               className={INPUT}
@@ -310,20 +320,25 @@ export function ChecklistRunner({
                   <button
                     key={option}
                     onClick={() => {
-                      if (currentItem.selection === 'single') {
-                        handleAnswer(currentItem.id, isSelected ? [] : [option]);
+                      if (currentItem.selection === "single") {
+                        handleAnswer(
+                          currentItem.id,
+                          isSelected ? [] : [option],
+                        );
                       } else {
                         const current = answers[currentItem.id] || [];
                         handleAnswer(
                           currentItem.id,
-                          isSelected ? current.filter((o) => o !== option) : [...current, option]
+                          isSelected
+                            ? current.filter((o) => o !== option)
+                            : [...current, option],
                         );
                       }
                     }}
                     className={`px-4 py-2 rounded-lg border ${
                       isSelected
-                        ? 'border-corPadrao bg-mint text-corPadrao'
-                        : 'border-line bg-surface text-ink'
+                        ? "border-corPadrao bg-mint text-corPadrao"
+                        : "border-line bg-surface text-ink"
                     }`}
                   >
                     {option}
@@ -338,10 +353,13 @@ export function ChecklistRunner({
               Observação desta pergunta (opcional)
             </label>
             <textarea
-              value={itemObservations[currentItem.id] || ''}
+              value={itemObservations[currentItem.id] || ""}
               onChange={(e) => {
-                setItemObservations({ ...itemObservations, [currentItem.id]: e.target.value });
-                setValidationError('');
+                setItemObservations({
+                  ...itemObservations,
+                  [currentItem.id]: e.target.value,
+                });
+                setValidationError("");
               }}
               placeholder="Observações específicas desta pergunta"
               rows={2}
@@ -381,9 +399,7 @@ export function ChecklistRunner({
                 >
                   📷 Tirar foto
                 </button>
-                <label
-                  className="inline-block px-4 py-2 rounded-lg border border-dashed border-line cursor-pointer text-[13px] text-gray-600"
-                >
+                <label className="inline-block px-4 py-2 rounded-lg border border-dashed border-line cursor-pointer text-[13px] text-gray-600">
                   + Galeria
                   <input
                     type="file"
@@ -391,7 +407,7 @@ export function ChecklistRunner({
                     onChange={(e) => {
                       const file = e.target.files?.[0];
                       if (file) handleAddPhoto(currentItem.id, file);
-                      e.target.value = '';
+                      e.target.value = "";
                     }}
                     className="hidden"
                   />
@@ -416,27 +432,33 @@ export function ChecklistRunner({
             Anterior
           </button>
           <button className={BTN_PRIMARY} onClick={handleNext}>
-            {isLast ? 'Revisar e assinar' : 'Próximo'}
+            {isLast ? "Revisar e assinar" : "Próximo"}
           </button>
         </div>
       )}
 
-      {!inIdentification && isLast && (
-        <div className={`${CARD} p-4 mt-6 border border-dashed border-orange/40`}>
+      {!inIdentification && (
+        <div
+          className={`${CARD} p-4 mt-6 border border-dashed border-orange/40`}
+        >
           <p className="text-[13px] text-gray-600 mb-2">
-            Precisa registrar mais algo além do modelo? Adicione uma pergunta
-            extra (Sim/Não/Outros) só para <strong>este preenchimento</strong>.
+            <strong>Pergunta Extra: </strong>Caso precise registrar mais algum
+            registro?
           </p>
           <div className="flex gap-2">
             <input
               value={extraTitle}
               onChange={(e) => setExtraTitle(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleAddExtra()}
+              onKeyDown={(e) => e.key === "Enter" && handleAddExtra()}
               placeholder="Ex.: Houve intercorrência na vistoria?"
               className={INPUT}
             />
-            <button className={BTN_WARNING} onClick={handleAddExtra} disabled={!extraTitle.trim()}>
-              + Adicionar pergunta extra
+            <button
+              className={BTN_WARNING}
+              onClick={handleAddExtra}
+              disabled={!extraTitle.trim()}
+            >
+              [+]Adicionar
             </button>
           </div>
           {extraItems.length > 0 && (
@@ -450,7 +472,7 @@ export function ChecklistRunner({
                   <button
                     onClick={() => handleRemoveExtra(extra.id)}
                     className="text-orange cursor-pointer"
-                    title="Remover pergunta extra"
+                    title="[-]Remover"
                   >
                     ✕
                   </button>
@@ -458,6 +480,12 @@ export function ChecklistRunner({
               ))}
             </ul>
           )}
+        </div>
+      )}
+
+      {!inIdentification && (
+        <div className="mb-6">
+          <AnswerMetricsBar items={items} answers={answers} />
         </div>
       )}
 

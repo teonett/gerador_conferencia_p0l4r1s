@@ -101,7 +101,11 @@ export function ReportReview({
 
   const handleConfirm = () => {
     if (!signature || !accepted) return;
-    setConfirmedAt(editMode && initialConfirmedAt ? initialConfirmedAt : new Date().toISOString());
+    setConfirmedAt(
+      editMode && initialConfirmedAt
+        ? initialConfirmedAt
+        : new Date().toISOString(),
+    );
     setConfirmed(true);
     persistResponse();
   };
@@ -145,9 +149,7 @@ export function ReportReview({
       </div>
 
       <div className={`${CARD} p-6 mb-6`}>
-        <h3 className="text-base font-semibold mb-4">
-          Identificação
-        </h3>
+        <h3 className="text-base font-semibold mb-4">Identificação</h3>
         {header ? (
           <>
             <div className={HEADER_DATETIME}>
@@ -188,11 +190,12 @@ export function ReportReview({
           >
             <p className="font-semibold">
               {index + 1}. {item.title}
-              {item.required && (
-                <span className="text-orange"> *</span>
-              )}
+              {item.required && <span className="text-orange"> *</span>}
               {isExtra && (
-                <span className="text-[11px] font-normal text-gray-600"> (extra)</span>
+                <span className="text-[11px] font-normal text-gray-600">
+                  {" "}
+                  (extra)
+                </span>
               )}
             </p>
             <p className="mt-2 text-corPadrao">
@@ -218,9 +221,7 @@ export function ReportReview({
       })}
 
       <div className="bg-surface rounded-xl p-6 mt-6 border border-line">
-        <h3 className="text-base font-semibold mb-4">
-          Assinatura
-        </h3>
+        <h3 className="text-base font-semibold mb-4">Assinatura</h3>
         <input
           value={signature}
           onChange={(e) => setSignature(e.target.value)}
@@ -250,17 +251,25 @@ export function ReportReview({
             onClick={handleConfirm}
             disabled={!signature || !accepted || saveState === "saving"}
           >
-            {saveState === "saving" ? "Salvando..." : editMode ? "Salvar alterações" : "Confirmar e Finalizar"}
+            {saveState === "saving"
+              ? "Salvando..."
+              : editMode
+                ? "Salvar alterações"
+                : "Confirmar e Finalizar"}
           </button>
         )}
         {saveState === "saved" && (
           <p className="mt-3 text-[13px] text-corPadrao">
-            ✓ {editMode ? "Alterações salvas no histórico." : "Resposta registrada no histórico."}
+            ✓{" "}
+            {editMode
+              ? "Alterações salvas no histórico."
+              : "Resposta registrada no histórico."}
           </p>
         )}
         {saveState === "error" && (
           <p className="mt-3 text-[13px] text-orange">
-            Não foi possível salvar. Você pode baixar o PDF e tentar confirmar novamente.
+            Não foi possível salvar. Você pode baixar o PDF e tentar confirmar
+            novamente.
           </p>
         )}
       </div>

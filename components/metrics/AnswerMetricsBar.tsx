@@ -1,21 +1,29 @@
-import { useMemo } from 'react';
-import type { Answers, Item } from '../../domain/checklist';
-import { METRIC_BG } from '../ui/classes';
+import { useMemo } from "react";
+import type { Answers, Item } from "../../domain/checklist";
+import { METRIC_BG } from "../ui/classes";
 import {
   classifyAnswer,
   collectChoiceOptions,
   computeAnswerMetrics,
   type AnswerClass,
-} from '../../domain/metrics';
+} from "../../domain/metrics";
 
-const CLASS_DOT: Record<AnswerClass | 'pending', string> = {
+const CLASS_DOT: Record<AnswerClass | "pending", string> = {
   yes: METRIC_BG.yes,
   no: METRIC_BG.no,
   other: METRIC_BG.other,
-  pending: 'bg-[#9ca3af]',
+  pending: "bg-[#9ca3af]",
 };
 
-function MetricChip({ label, value, dotClass }: { label: string; value: number; dotClass: string }) {
+function MetricChip({
+  label,
+  value,
+  dotClass,
+}: {
+  label: string;
+  value: number;
+  dotClass: string;
+}) {
   return (
     <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-line bg-surface text-[13px]">
       <span className={`w-2 h-2 rounded-full ${dotClass}`} />
@@ -30,7 +38,10 @@ interface AnswerMetricsBarProps {
 }
 
 export function AnswerMetricsBar({ items, answers }: AnswerMetricsBarProps) {
-  const metrics = useMemo(() => computeAnswerMetrics(items, answers), [items, answers]);
+  const metrics = useMemo(
+    () => computeAnswerMetrics(items, answers),
+    [items, answers],
+  );
   const options = useMemo(() => collectChoiceOptions(items), [items]);
 
   return (
@@ -39,7 +50,12 @@ export function AnswerMetricsBar({ items, answers }: AnswerMetricsBarProps) {
         <span>
           {metrics.answered} de {metrics.total} respondidas
         </span>
-        <span>{metrics.total > 0 ? Math.round((metrics.answered / metrics.total) * 100) : 0}%</span>
+        <span>
+          {metrics.total > 0
+            ? Math.round((metrics.answered / metrics.total) * 100)
+            : 0}
+          %
+        </span>
       </div>
       <div className="flex h-2.5 rounded-[5px] overflow-hidden bg-metric-pending">
         {metrics.yes > 0 && (
@@ -73,7 +89,11 @@ export function AnswerMetricsBar({ items, answers }: AnswerMetricsBarProps) {
             dotClass={CLASS_DOT[classifyAnswer(option)]}
           />
         ))}
-        <MetricChip label="Pendentes" value={metrics.pending} dotClass={CLASS_DOT.pending} />
+        <MetricChip
+          label="Pendentes"
+          value={metrics.pending}
+          dotClass={CLASS_DOT.pending}
+        />
       </div>
     </div>
   );
